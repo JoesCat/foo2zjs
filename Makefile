@@ -1063,7 +1063,9 @@ install-hotplug-prog:
 	$(USBDIR)/hplj1000 install-usblp
 
 install-hotplug-osx:
+ifeq ($(UNAME),Darwin)
 	cd osx-hotplug; $(MAKE) PREFIX=$(PREFIX) install-hotplug
+endif
 
 install-filter:
 	if [ "$(CUPS_SERVERBIN)" != "" ]; then \
@@ -1526,7 +1528,9 @@ man-icc2ps:
 	cd icc2ps; $(MAKE) man
 
 man-osx-hotplug:
+ifeq ($(UNAME),Darwin)
 	cd osx-hotplug; $(MAKE) man
+endif
 
 .1in.1: 
 	-rm -f $*.1
