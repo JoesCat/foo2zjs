@@ -1,3 +1,9 @@
+foo2zjs (20200505dfsg0-1) UNRELEASED; urgency=medium
+
+  * Update to new upstream version 20200505dfsg0.
+
+ -- Didier Raboud <odyx@debian.org>  Mon, 25 May 2020 22:04:15 +0200
+
 foo2zjs (20171202dfsg0-4) unstable; urgency=medium
 
   [ Didier Raboud ]
