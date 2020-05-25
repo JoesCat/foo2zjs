@@ -249,6 +249,7 @@ FILES	=	\
 		modify-ppd \
 		command2foo2lava-pjl.c \
 		myftpput \
+		SmartInstallDisable-Tool.run \
 		$(NULL)
 
 # CUPS vars
@@ -398,6 +399,8 @@ all:	all-test $(PROGS) $(BINPROGS) $(SHELLS) getweb \
 	all-icc2ps all-osx-hotplug man doc \
 	all-done
 
+MACOSX_stdio=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/stdio.h
+
 all-test:
 	#
 	# Dependencies...
@@ -410,7 +413,9 @@ all-test:
 	    echo "      ***"; \
 	    exit 1; \
 	fi
-	@if ! test -f /usr/include/stdio.h; then \
+	@if [ "`ls $(MACOSX_stdio) 2> /dev/null`" != "" ]; then \
+	    : ; \
+	elif ! test -f /usr/include/stdio.h; then \
 	    echo "      ***"; \
 	    echo "      *** Error: /usr/include/stdio.h is not installed!"; \
 	    echo "      ***"; \
@@ -631,7 +636,7 @@ command2foo2lava-pjl.o: command2foo2lava-pjl.c
 install: all install-test install-prog install-icc2ps install-osx-hotplug \
 	    install-extra install-crd install-foo install-ppd \
 	    install-gui install-desktop install-filter \
-	    install-man install-doc
+	    install-man install-doc install-aa
 	#
 	# If you use CUPS, then restart the spooler:
 	#	make cups
@@ -639,11 +644,11 @@ install: all install-test install-prog install-icc2ps install-osx-hotplug \
 	# Now use your printer configuration GUI to create a new printer.
 	#
 	# On Redhat 7.2/7.3/8.0/9.0 and Fedora Core 1-5, run "printconf-gui".
-	# On Fedora 6/7/8/9/10/11/12, run "system-config-printer".
+	# On Fedora 6/7/.../28, run "system-config-printer".
 	# On Mandrake, run "printerdrake"
 	# On Suse 9.x/10.x/11.x, run "yast"
 	# On Ubuntu 5.10/6.06/6.10/7.04, run "gnome-cups-manager"
-	# On Ubuntu 7.10/8.x/9.x, run "system-config-printer".
+	# On Ubuntu 7.10/8.x/.../18.x, run "system-config-printer".
 
 install-test:
 	#
@@ -991,7 +996,7 @@ install-hotplug-test:
 	    echo "      *** Error: system-config-printer-udev is installed!"; \
 	    echo "      ***"; \
 	    echo "      *** Remove it with: (Fedora)"; \
-	    echo "      *** 	# yum remove system-config-printer-udev"; \
+	    echo "      *** 	# dnf remove system-config-printer-udev"; \
 	    echo "      *** OR"; \
 	    echo "      *** 	# rpm -e --nodeps system-config-printer-udev"; \
 	    echo "      *** OR (Ubuntu, Debian)"; \
@@ -1034,6 +1039,7 @@ install-hotplug-prog:
 	    elif [ -x /usr/lib/systemd/systemd-udevd ]; then \
 		version=`/usr/lib/systemd/systemd-udevd --version 2>/dev/null`; \
 	    fi; \
+	    version=`echo $$version | sed -e 's/^v//' -e 's/-.*//' `; \
 	    if [ "$$version" = "" ]; then version=0; fi; \
 	    echo "***"; \
 	    echo "*** udev version $$version"; \
@@ -1076,6 +1082,19 @@ install-filter:
 	if [ "$(CUPS_SERVERBIN)" != "" ]; then \
 	    $(INSTALL) -d $(CUPS_SERVERBIN)/filter; \
 	    ln -sf $(BIN)/command2foo2lava-pjl $(CUPS_SERVERBIN)/filter/; \
+	fi
+
+install-aa:
+	#
+	# openSUSE tumbleweed distro breaks ghostscript with pipes!
+	# 
+	if [ -f /etc/apparmor.d/ghostscript ]; then \
+	    aa-disable --no-reload ghostscript; \
+	fi
+
+uninstall-aa:
+	if [ -f /etc/apparmor.d/ghostscript ]; then \
+	    aa-enforce ghostscript; \
 	fi
 
 CUPSDCONF=/etc/cups/cupsd.conf
@@ -1137,11 +1156,9 @@ cups:	FRC
 	elif [ -x /usr/local/etc/rc.d/cups.sh.sample ]; then \
 	    cp /usr/local/etc/rc.d/cups.sh.sample /usr/local/etc/rc.d/cups.sh; \
 	    /usr/local/etc/rc.d/cups.sh restart; \
-	elif [ -x /bin/systemctl ]; then \
-	    systemctl restart cups.service; \
-	    if [ $$? != 0 ]; then \
-		systemctl restart org.cups.cupsd.service; \
-	    fi \
+	elif [ -x /bin/systemctl -o -x /usr/bin/systemctl ]; then \
+	    systemctl restart cups.service \
+		|| systemctl restart org.cups.cupsd.service; \
 	elif [ -x /bin/launchctl ]; then \
 	    /bin/launchctl unload $(MACLOAD); \
 	    /bin/launchctl load $(MACLOAD); \
@@ -1154,7 +1171,7 @@ cups:	FRC
 #
 # Uninstall
 #
-uninstall:
+uninstall: uninstall-aa
 	cd osx-hotplug; $(MAKE) PREFIX=$(PREFIX) uninstall
 	-rm -f /etc/hotplug/usb/hplj1000
 	-rm -f /etc/hotplug/usb/hplj1005
@@ -1227,7 +1244,7 @@ uninstall:
 #
 clean:
 	-rm -f $(PROGS) $(BINPROGS) $(SHELLS)
-	-rm -f *.zc *.zm
+	-rm -f *.zc *.zm *.zm1
 	-rm -f xxx.* xxxomatic
 	-rm -f foo2zjs.o jbig.o jbig_ar.o zjsdecode.o foo2hp.o
 	-rm -f foo2oak.o oakdecode.o
@@ -1447,12 +1464,14 @@ ppd:
 	> foomatic-db/oldprinterids
 	cd foomatic-db; rm -f db; ln -sf . db
 	cd foomatic-db; rm -f source; ln -sf . source
+	# for i in foomatic-db/printer/Samsung-ML*xml;
 	for i in foomatic-db/printer/$(FOOPRINT); \
 	do \
 	    printer=`basename $$i .xml`; \
 	    case "$$printer" in \
 	    *"d-Color_P160"*)   driver=foo2hiperc;; \
 	    *M1005*|*M1120*)    driver=foo2xqx;; \
+	    *M1132*)		driver=foo2xqx;; \
 	    *P1[05]0[5678]*)    driver=foo2xqx;; \
 	    *P2014*)            driver=foo2xqx;; \
 	    *M1212*)            driver=foo2xqx;; \
@@ -1482,6 +1501,7 @@ ppd:
 	    *C3530*)	        driver=foo2hiperc;; \
 	    *C5[12568][05]0*)   driver=foo2hiperc;; \
 	    *CLP*|*CLX*|*6110*) driver=foo2qpdl;; \
+	    *ML-167*)		driver=foo2qpdl;; \
 	    *6015*|*1355*)	driver=foo2hbpl2;; \
 	    *C1765*)		driver=foo2hbpl2;; \
 	    *CX17*)		driver=foo2hbpl2;; \
@@ -1494,12 +1514,17 @@ ppd:
 	    *)                  driver=foo2zjs;; \
 	    esac; \
 	    echo $$driver - $$printer; \
-	    ENGINE=../foomatic/foomatic-db-engine; \
-	    PERL5LIB=$$ENGINE/lib \
-		FOOMATICDB=foomatic-db \
-		$$ENGINE/foomatic-ppdfile \
-		-d $$driver -p $$printer \
-		> PPD/$$printer.ppd; \
+	    if true; then \
+		foomatic-ppdfile -d $$driver -p $$printer > PPD/$$printer.ppd; \
+	    else \
+		# 09/06/18: Use the older foomatic??? \
+		ENGINE=../foomatic/foomatic-db-engine; \
+		PERL5LIB=$$ENGINE/lib \
+		    FOOMATICDB=foomatic-db \
+		    $$ENGINE/foomatic-ppdfile \
+		    -d $$driver -p $$printer \
+		    > PPD/$$printer.ppd; \
+	    fi \
 	done
 
 oldppd:
