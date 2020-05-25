@@ -1490,6 +1490,7 @@ ppd:
 	    esac; \
 	    echo $$driver - $$printer; \
 	    if true; then \
+		FOOMATICDB=foomatic-db \
 		foomatic-ppdfile -d $$driver -p $$printer > PPD/$$printer.ppd; \
 	    else \
 		# 09/06/18: Use the older foomatic??? \
