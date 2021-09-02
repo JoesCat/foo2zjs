@@ -13,7 +13,7 @@ Build-Depends:
  libcups2-dev,
  libjbig-dev,
  liblcms2-utils,
- pyppd (>= 1.0.2-1~),
+ pyppd,
  time,
 Standards-Version: 4.5.0
 Vcs-Browser: https://salsa.debian.org/printing-team/foo2zjs
@@ -40,9 +40,7 @@ Suggests:
  hannah-foo2zjs,
  psutils,
 Breaks:
- cups (<< 1.5.0-3~),
  foo2zjs (<< 20111023dfsg0-1~),
- udev (<< 136-1),
 Replaces:
  foo2zjs (<< 20111023dfsg0-1~),
 Description: printer driver for ZjStream-based printers
@@ -71,13 +69,9 @@ Suggests:
 Enhances:
  printer-driver-foo2zjs (>= ${source:Version}),
 Breaks:
- cups (<< 1.5.0-3~),
  foo2zjs (<< 20111023dfsg0-1~),
- printer-driver-foo2zjs (<< 20131225dfsg0-5~),
- udev (<< 136-1),
 Replaces:
  foo2zjs (<< 20111023dfsg0-1~),
- printer-driver-foo2zjs (<< 20131225dfsg0-5~),
 Description: printer driver for ZjStream-based printers - common files
  foo2zjs is an open source printer driver for printers that use the
  Zenographics ZjStream wire protocol for their print data, such as the
