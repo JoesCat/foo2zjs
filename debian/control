@@ -7,7 +7,7 @@ Priority: optional
 Build-Depends:
  cups-filters | foomatic-filters,
  dc,
- debhelper-compat (= 12),
+ debhelper-compat (= 13),
  foomatic-db-engine,
  ghostscript,
  libcups2-dev,
