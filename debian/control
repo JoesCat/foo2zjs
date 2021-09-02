@@ -1,18 +1,20 @@
 Source: foo2zjs
 Maintainer: Debian Printing Team <debian-printing@lists.debian.org>
-Uploaders: Didier Raboud <odyx@debian.org>
+Uploaders:
+ Didier Raboud <odyx@debian.org>,
 Section: text
 Priority: optional
-Build-Depends: debhelper-compat (= 12),
-               ghostscript,
-               cups-filters | foomatic-filters,
-               foomatic-db-engine,
-               libcups2-dev,
-               liblcms2-utils,
-               dc,
-               time,
-               pyppd (>= 1.0.2-1~),
-               libjbig-dev
+Build-Depends:
+ cups-filters | foomatic-filters,
+ dc,
+ debhelper-compat (= 12),
+ foomatic-db-engine,
+ ghostscript,
+ libcups2-dev,
+ libjbig-dev,
+ liblcms2-utils,
+ pyppd (>= 1.0.2-1~),
+ time,
 Standards-Version: 4.5.0
 Vcs-Browser: https://salsa.debian.org/printing-team/foo2zjs
 Vcs-Git: https://salsa.debian.org/printing-team/foo2zjs.git
@@ -20,24 +22,29 @@ Homepage: http://foo2zjs.rkkda.com/
 
 Package: printer-driver-foo2zjs
 Architecture: any
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
-         ${ubuntu:mscompress},
-         cups-filters | foomatic-filters,
-         dc,
-         printer-driver-foo2zjs-common (>= ${source:Version}),
-         liblcms2-utils
-Recommends: wget,
-            unzip,
-            ${debian:mscompress},
-            cups,
-            cups-client
-Suggests: psutils,
-          hannah-foo2zjs
-Breaks: udev (<< 136-1),
-        cups (<< 1.5.0-3~),
-        foo2zjs (<< 20111023dfsg0-1~)
-Replaces: foo2zjs (<< 20111023dfsg0-1~)
+Depends:
+ cups-filters | foomatic-filters,
+ dc,
+ liblcms2-utils,
+ printer-driver-foo2zjs-common (>= ${source:Version}),
+ ${misc:Depends},
+ ${shlibs:Depends},
+ ${ubuntu:mscompress},
+Recommends:
+ cups,
+ cups-client,
+ unzip,
+ wget,
+ ${debian:mscompress},
+Suggests:
+ hannah-foo2zjs,
+ psutils,
+Breaks:
+ cups (<< 1.5.0-3~),
+ foo2zjs (<< 20111023dfsg0-1~),
+ udev (<< 136-1),
+Replaces:
+ foo2zjs (<< 20111023dfsg0-1~),
 Description: printer driver for ZjStream-based printers
  foo2zjs is an open source printer driver for printers that use the
  Zenographics ZjStream wire protocol for their print data, such as the
@@ -52,19 +59,25 @@ Description: printer driver for ZjStream-based printers
 
 Package: printer-driver-foo2zjs-common
 Architecture: all
-Depends: ${misc:Depends}
-Recommends: ${debian:tix},
-            ${debian:tk},
-            printer-driver-foo2zjs (>= ${source:Version})
-Suggests: ${ubuntu:tix},
-          ${ubuntu:tk}
-Enhances: printer-driver-foo2zjs (>= ${source:Version})
-Breaks: udev (<< 136-1),
-        cups (<< 1.5.0-3~),
-        foo2zjs (<< 20111023dfsg0-1~),
-        printer-driver-foo2zjs (<< 20131225dfsg0-5~)
-Replaces: foo2zjs (<< 20111023dfsg0-1~),
-          printer-driver-foo2zjs (<< 20131225dfsg0-5~)
+Depends:
+ ${misc:Depends},
+Recommends:
+ printer-driver-foo2zjs (>= ${source:Version}),
+ ${debian:tix},
+ ${debian:tk},
+Suggests:
+ ${ubuntu:tix},
+ ${ubuntu:tk},
+Enhances:
+ printer-driver-foo2zjs (>= ${source:Version}),
+Breaks:
+ cups (<< 1.5.0-3~),
+ foo2zjs (<< 20111023dfsg0-1~),
+ printer-driver-foo2zjs (<< 20131225dfsg0-5~),
+ udev (<< 136-1),
+Replaces:
+ foo2zjs (<< 20111023dfsg0-1~),
+ printer-driver-foo2zjs (<< 20131225dfsg0-5~),
 Description: printer driver for ZjStream-based printers - common files
  foo2zjs is an open source printer driver for printers that use the
  Zenographics ZjStream wire protocol for their print data, such as the

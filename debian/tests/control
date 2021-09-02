@@ -1,3 +1,6 @@
 Tests: printer-driver-foo2zjs
 Restrictions: needs-root
-Depends: printer-driver-foo2zjs, cups, cups-client (>= 1.7.3-5~)
+Depends:
+ cups,
+ cups-client (>= 1.7.3-5~),
+ printer-driver-foo2zjs,
