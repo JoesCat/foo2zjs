@@ -14,7 +14,7 @@ Build-Depends:
  liblcms2-utils,
  pyppd,
  time,
-Standards-Version: 4.6.0
+Standards-Version: 4.7.0
 Vcs-Browser: https://salsa.debian.org/printing-team/foo2zjs
 Vcs-Git: https://salsa.debian.org/printing-team/foo2zjs.git
 Homepage: http://foo2zjs.rkkda.com/
