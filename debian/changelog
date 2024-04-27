@@ -1,3 +1,16 @@
+foo2zjs (20200505dfsg0-3) unstable; urgency=medium
+
+  [ Thorsten Alteholz ]
+  * debian/control: add myself as Uploader:
+  * debian/control: bump standard to 4.7.0 (no changes)
+  * debian/gbp.conf: latest pristine-tar is missing, so don't use it
+
+  [ Helmut Grohne, Chris Hofstaedtler ]
+  * DEP17: Move all aliased files to /usr. (Closes: #1060769)
+    Thanks a lot for preparing the patch
+
+ -- Thorsten Alteholz <debian@alteholz.de>  Sat, 27 Apr 2024 09:32:30 +0200
+
 foo2zjs (20200505dfsg0-2) unstable; urgency=medium
 
   * Remove myself from Uploaders
