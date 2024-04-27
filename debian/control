@@ -1,5 +1,6 @@
 Source: foo2zjs
 Maintainer: Debian Printing Team <debian-printing@lists.debian.org>
+Uploaders: Thorsten Alteholz <debian@alteholz.de>
 Section: text
 Priority: optional
 Build-Depends:
