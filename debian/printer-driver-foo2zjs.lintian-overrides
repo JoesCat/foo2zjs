@@ -1,5 +1,5 @@
 # That's on purpose, getweb can go fetch these from the web
-package-contains-empty-directory lib/firmware/hp/
+package-contains-empty-directory usr/lib/firmware/hp/
 
 # Manpages are shipped in printer-driver-foo2zjs-common
 no-manual-page usr/bin/arm2hpdl
