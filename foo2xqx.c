@@ -95,6 +95,7 @@ int	BlackClears = 0;
 int	AllIsBlack = 0;
 int	OutputStartPlane = 1;
 int	ExtraPad = 16;
+int	ReducedResolution = 0;
 
 int	LogicalOffsetX = 0;
 int	LogicalOffsetY = 0;
@@ -174,6 +175,8 @@ usage(void)
 "                    257=16k197x273, 263=16k184x260, 264=16k195x270\n"
 "-n copies         Number of copies [%d]\n"
 "-r <xres>x<yres>  Set device resolution in pixels/inch [%dx%d]\n"
+"-R                Enable special reduced resolution mode for draft printing\n"
+"                    on HP LaserJet P1005, P1006, P1007, P1008, P1009\n"
 "-s source         Source code to send to printer [%d]\n"
 "                    1=upper 2=lower 4=manual 7=auto\n"
 "                    Code numbers may vary with printer model\n"
@@ -1360,7 +1363,7 @@ main(int argc, char *argv[])
     int i, j;
 
     while ( (c = getopt(argc, argv,
-		    "cd:g:n:m:p:r:s:tT:u:l:L:ABPJ:S:U:X:D:V?h")) != EOF)
+		    "cd:g:n:m:p:r:Rs:tT:u:l:L:ABPJ:S:U:X:D:V?h")) != EOF)
 	switch (c)
 	{
 	case 'c':	Mode = MODE_COLOR; break;
@@ -1383,6 +1386,7 @@ main(int argc, char *argv[])
 	case 'r':	if (parse_xy(optarg, &ResX, &ResY))
 			    error(1, "Illegal format '%s' for -r\n", optarg);
 			break;
+	case 'R':	ReducedResolution = 1; break;
 	case 's':	SourceCode = atoi(optarg); break;
 	case 't':	SaveToner = 1; break;
 	case 'T':	PrintDensity = atoi(optarg);
@@ -1434,6 +1438,13 @@ main(int argc, char *argv[])
 
     Bpp = ResX / 600;
     ResX = 600;
+
+    if (ReducedResolution)
+    {
+	Bpp = 2;
+	ResY = 400;
+    }
+
     if (SaveToner)
     {
 	SaveToner = 0;
