@@ -61,7 +61,7 @@
 *Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "DRV:Dfoo2hiperc,R1,M0,TF;"
+*1284DeviceID: "MFG:Oki;MDL:C310dn;DRV:Dfoo2hiperc,R1,M0,TF;"
 
 *driverName foo2hiperc: ""
 *driverType F/Filter: ""

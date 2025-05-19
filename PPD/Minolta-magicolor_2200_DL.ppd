@@ -61,7 +61,7 @@
 *Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "DRV:Dfoo2zjs,R1,M0,TF;"
+*1284DeviceID: "MFG:Minolta;MDL:magicolor 2200 DL;DRV:Dfoo2zjs,R1,M0,TF;"
 
 *driverName foo2zjs: ""
 *driverType F/Filter: ""

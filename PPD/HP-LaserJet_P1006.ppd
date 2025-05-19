@@ -105,8 +105,8 @@
 *FoomaticRIPOption Resolution: enum CmdLine A
 *OrderDependency: 130 AnySetup *Resolution
 *DefaultResolution: 1200x600dpi
-*Resolution 600x600dpi/600x600 dpi: "%% FoomaticRIPOptionSetting: Resolution=600x600dpi"
-*FoomaticRIPOptionSetting Resolution=600x600dpi: "-r600x600 "
+*Resolution 600x400dpi/600x400 dpi: "%% FoomaticRIPOptionSetting: Resolution=600x400dpi"
+*FoomaticRIPOptionSetting Resolution=600x400dpi: "-r1200x600 -R "
 *Resolution 1200x600dpi/1200x600 dpi: "%% FoomaticRIPOptionSetting: Resolution=1200x600dpi"
 *FoomaticRIPOptionSetting Resolution=1200x600dpi: "-r1200x600 "
 *CloseUI: *Resolution

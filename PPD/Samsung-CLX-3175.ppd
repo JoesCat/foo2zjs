@@ -61,7 +61,7 @@
 *Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "DRV:Dfoo2qpdl,R1,M0,TF;"
+*1284DeviceID: "MFG:Samsung;MDL:CLX-3175;DRV:Dfoo2qpdl,R1,M0,TF;"
 
 *driverName foo2qpdl: ""
 *driverType F/Filter: ""

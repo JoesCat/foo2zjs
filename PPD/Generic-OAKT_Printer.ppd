@@ -61,7 +61,7 @@
 *Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "DRV:Dfoo2oak,R1,M0,TF;"
+*1284DeviceID: "MFG:Generic;MDL:OAKT Printer;DRV:Dfoo2oak,R1,M0,TF;"
 
 *driverName foo2oak: ""
 *driverType F/Filter: ""

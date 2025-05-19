@@ -61,7 +61,7 @@
 *Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "DRV:Dfoo2oak-z1,R1,M0,TF;"
+*1284DeviceID: "MFG:Kyocera;MDL:KM-1635;DRV:Dfoo2oak-z1,R1,M0,TF;"
 
 *driverName foo2oak-z1: ""
 *driverType F/Filter: ""
