@@ -740,7 +740,7 @@ install-crd:
 	# Install prebuilt CRD files (from m2300w project)
 	#
 	$(INSTALL) -d $(SHAREZJS)/
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREZJS)/crd/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREZJS)/crd/
 	for i in crd/zjs/*.*; do \
 	    $(INSTALL) -c -m 644 $$i $(SHAREZJS)/crd/; \
 	done
@@ -748,7 +748,7 @@ install-crd:
 	# Install prebuilt CRD files for CLP-300/CLP-600
 	#
 	$(INSTALL) -d $(SHAREQPDL)/
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREQPDL)/crd/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREQPDL)/crd/
 	for i in crd/qpdl/*cms* crd/qpdl/*.ps; do \
 	    $(INSTALL) -c -m 644 $$i $(SHAREQPDL)/crd/; \
 	done
@@ -758,7 +758,7 @@ install-psfiles:
 	# Install prebuilt psfiles files (from m2300w project)
 	#
 	$(INSTALL) -d $(SHAREHP)/
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREHP)/psfiles/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHP)/psfiles/
 	for i in psfiles/*.*; do \
 	    $(INSTALL) -c -m 644 $$i $(SHAREHP)/psfiles/; \
 	done
@@ -772,14 +772,14 @@ install-extra:
 	#
 	$(INSTALL) -d $(SHAREZJS)/
 	# foo2zjs ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREZJS)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREZJS)/icm/
 	for i in DL*.icm CP*.icm km2430*.icm hp-cp1025*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREZJS)/icm/; \
 	    fi; \
 	done
 	# foo2zjs Firmware files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREZJS)/firmware/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREZJS)/firmware/
 	for i in sihp1*.img; do \
 	    if [ -f $$i ]; then \
 		base=`basename $$i .img`; \
@@ -788,7 +788,7 @@ install-extra:
 	    fi; \
 	done
 	# foo2xqx Firmware files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREXQX)/firmware/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREXQX)/firmware/
 	for i in sihpP*.img; do \
 	    if [ -f $$i ]; then \
 		base=`basename $$i .img`; \
@@ -797,56 +797,56 @@ install-extra:
 	    fi; \
 	done
 	# foo2oak ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREOAK)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREOAK)/icm/
 	for i in hpclj2[56]*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREOAK)/icm/; \
 	    fi; \
 	done
 	# foo2hp ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREHP)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHP)/icm/
 	for i in hpclj26*.icm km2430*.icm hp1215*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREHP)/icm/; \
 	    fi; \
 	done
 	# foo2lava ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHARELAVA)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHARELAVA)/icm/
 	for i in km-1600*.icm km2530*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHARELAVA)/icm/; \
 	    fi; \
 	done
 	# foo2qpdl ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREQPDL)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREQPDL)/icm/
 	for i in samclp*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREQPDL)/icm/; \
 	    fi; \
 	done
 	# foo2slx ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHARESLX)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHARESLX)/icm/
 	for i in lex*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHARESLX)/icm/; \
 	    fi; \
 	done
 	# foo2hiperc ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREHC)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHC)/icm/
 	for i in OK*.icm C3400*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREHC)/icm/; \
 	    fi; \
 	done
 	# foo2hbpl ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREHBPL)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHBPL)/icm/
 	for i in hbpl*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREHBPL)/icm/; \
 	    fi; \
 	done
 	# foo2ddst ICM files (if any)
-	$(INSTALL) $(LPuid) $(LPgid) -m 775 -d $(SHAREDDST)/icm/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREDDST)/icm/
 	for i in ddst*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREDDST)/icm/; \
@@ -870,7 +870,7 @@ install-ppd:
 		manuf=`echo "$$ppd" | sed 's/-.*//'`; \
 		$(INSTALL) $(LPgid) -d $(VARPPD)/user/$$manuf; \
 		modify-ppd <$$ppd | gzip > $(VARPPD)/user/$$manuf/$$ppd.gz; \
-		chmod 664 $(VARPPD)/user/$$manuf/$$ppd.gz; \
+		chmod 644 $(VARPPD)/user/$$manuf/$$ppd.gz; \
 	    done; \
 	    ppdmgr -u; \
 	elif [ -d $(PPD) ]; then \
@@ -887,7 +887,7 @@ install-ppd:
 	    cd PPD; \
 	    for ppd in *.ppd; do \
 		modify-ppd <$$ppd | gzip > $(PPD)/foo2zjs/$$ppd.gz; \
-		chmod 664 $(PPD)/foo2zjs/$$ppd.gz; \
+		chmod 644 $(PPD)/foo2zjs/$$ppd.gz; \
 	    done; \
 	fi
 	#
@@ -897,21 +897,21 @@ install-ppd:
 	    cd PPD; \
 	    for ppd in *.ppd; do \
 		modify-ppd <$$ppd | gzip > $(MODEL)/$$ppd.gz; \
-		chmod 664 $(MODEL)/$$ppd.gz; \
+		chmod 644 $(MODEL)/$$ppd.gz; \
 	    done; \
 	elif [ -d $(LOCALMODEL) ]; then \
 	    rm -f $(LOCALMODEL)/KonicaMinolta*; \
 	    cd PPD; \
 	    for ppd in *.ppd; do \
 		modify-ppd <$$ppd | gzip > $(LOCALMODEL)/$$ppd.gz; \
-		chmod 664 $(LOCALMODEL)/$$ppd.gz; \
+		chmod 644 $(LOCALMODEL)/$$ppd.gz; \
 	    done; \
 	elif [ -d $(MACMODEL) ]; then \
 	    rm -f $(MACMODEL)/KonicaMinolta*; \
 	    cd PPD; \
 	    for ppd in *.ppd; do \
 		modify-ppd <$$ppd | gzip > $(MACMODEL)/$$ppd.gz; \
-		chmod 664 $(MACMODEL)/$$ppd.gz; \
+		chmod 644 $(MACMODEL)/$$ppd.gz; \
 	    done; \
 	fi
 
