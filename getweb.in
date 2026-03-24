@@ -329,33 +329,33 @@ getone() {
 	;;
     1025)
 	gettgz \
-	    https://www.quirinux.org/printer hp-cp1025.tar.gz \
+	    https://www.quirinux.org/printers hp-cp1025.tar.gz \
 	    ""
 	copyright "(c) Copyright Rick Richardson 2010.  All Rights Reserved"
 	puticm foo2zjs
 	;;
     1215|1600|2600*)
 	gettgz \
-	    https://www.quirinux.org/printer hpclj2600n.tar.gz \
+	    https://www.quirinux.org/printers hpclj2600n.tar.gz \
 	    ""
 	gettgz \
-	    https://www.quirinux.org/printer km2430.tar.gz \
+	    https://www.quirinux.org/printers km2430.tar.gz \
 	    "km2430_2.icm"
 	copyright "(c) Copyright Hewlett-Packard 2003"
 	copyright "(c) Copyright Rick Richardson 2006.  All Rights Reserved"
 	gettgz \
-	    https://www.quirinux.org/printer hp1215.tar.gz \
+	    https://www.quirinux.org/printers hp1215.tar.gz \
 	    ""
 	copyright "(c) Copyright Rick Richardson 2008.  All Rights Reserved"
 	puticm foo2hp
 	;;
     300|310|315|325|360|365|2160|3160|3175|3185|6110)
 	gettgz \
-	    https://www.quirinux.org/printer samclp300.tar.gz \
+	    https://www.quirinux.org/printers samclp300.tar.gz \
 	    ""
 	copyright "(c) Copyright Rick Richardson 2007.  All Rights Reserved"
 	gettgz \
-	    https://www.quirinux.org/printer samclp315.tar.gz \
+	    https://www.quirinux.org/printers samclp315.tar.gz \
 	    ""
 	copyright "(c) Copyright Rick Richardson 2008.  All Rights Reserved"
 	puticm foo2qpdl
@@ -365,7 +365,7 @@ getone() {
 
     500)
 	gettgz \
-	    https://www.quirinux.org/printer lexc500.tar.gz \
+	    https://www.quirinux.org/printers lexc500.tar.gz \
 	    ""
 	copyright "(c) Copyright Lexmark 2006"
 	puticm foo2slx
@@ -388,49 +388,49 @@ getone() {
 	;;
     301)
 	gettgz \
-	    https://www.quirinux.org/printer okic301.tar.gz \
+	    https://www.quirinux.org/printers okic301.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2012"
 	puticm foo2hiperc
 	;;
     c310)
 	gettgz \
-	    https://www.quirinux.org/printer okic310.tar.gz \
+	    https://www.quirinux.org/printers okic310.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2010"
 	puticm foo2hiperc
 	;;
     c511)
 	gettgz \
-	    https://www.quirinux.org/printer okic511.tar.gz \
+	    https://www.quirinux.org/printers okic511.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2012"
 	puticm foo2hiperc
 	;;
     c810)
 	gettgz \
-	    https://www.quirinux.org/printer okic810.tar.gz \
+	    https://www.quirinux.org/printers okic810.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2012"
 	puticm foo2hiperc
 	;;
     3100|3200|5100|5150|5200|5250)
 	gettgz \
-	    https://www.quirinux.org/printer okic3200.tar.gz \
+	    https://www.quirinux.org/printers okic3200.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2005"
 	puticm foo2hiperc
 	;;
     3300|3400|3530)
 	gettgz \
-	    https://www.quirinux.org/printer okic3400.tar.gz \
+	    https://www.quirinux.org/printers okic3400.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2006"
 	puticm foo2hiperc
 	;;
     5500|5600|5800|160)
 	gettgz \
-	    https://www.quirinux.org/printer okic5600.tar.gz \
+	    https://www.quirinux.org/printers okic5600.tar.gz \
 	    ""
 	copyright "(c) Copyright Okidata 2006"
 	puticm foo2hiperc
