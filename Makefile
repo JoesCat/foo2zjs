@@ -1060,7 +1060,8 @@ install-filter:
 	if [ "$(CUPS_SERVERBIN)" != "" ]; then \
 	    $(INSTALL) -d $(CUPS_SERVERBIN)/filter; \
 	    ln -sf $(BIN)/command2foo2lava-pjl $(CUPS_SERVERBIN)/filter/; \
-	fi
+	fi; \
+	ln -sf $(BIN)/psicc $(BIN)/foo2zjs-icc2ps
 
 install-aa:
 	#
