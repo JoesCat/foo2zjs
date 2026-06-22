@@ -8,6 +8,13 @@
 2020-02-07:	Rick Richardson <rick.richardson@comcast.net>
 	* Add Cassette 2 to foo2oak-z1-InputSlot.xml (KM-1635)
 
+2020-01-30:	Didier Raboud <odyx@debian.org>
+	* Commit patch queue (exported by git-debrebase)
+	  This includes debian patches 0001 to 0025
+	* 0025-Re-enable-manual-duplex-printing-for-Samsung-CLP-300.patch
+	    Closes debian #627542
+	    Sam Morris <sam@robots.org.uk>
+
 2020-01-18:	Didier Raboud <odyx@debian.org>
 	* Commit patch queue (exported by git-debrebase)
 	  This includes debian patches 0001 to 0024
