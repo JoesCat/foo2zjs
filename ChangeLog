@@ -8,6 +8,100 @@
 2020-02-07:	Rick Richardson <rick.richardson@comcast.net>
 	* Add Cassette 2 to foo2oak-z1-InputSlot.xml (KM-1635)
 
+2020-01-18:	Didier Raboud <odyx@debian.org>
+	* Commit patch queue (exported by git-debrebase)
+	  This includes debian patches 0001 to 0024
+	* 0001-Update-makefiles-to-Debian-best-practices.patch
+	    Luca Capello <luca@pca.it>, Didier Raboud <odyx@debian.org>
+	* 0002-Fix-icc2ps-build.patch
+	    Include unistd.h to make sure the swab function is not
+	    implicitly declared, also declare _XOPEN_SOURCE to have
+	    it available  through unistd.h, and therefore declare
+	    _GNU_SOURCE to have  strcasecmp() and vsnprintf()
+	    Didier Raboud <odyx@debian.org>
+	* 0003-Don-t-build-icc2ps-but-use-psicc-from-liblcms2-utils.patch
+	    Don't build icc2ps but use psicc from liblcms2-utils instead.
+	    Michael Gilbert <mgilbert@debian.org>
+	* 0004-Use-the-Debian-provided-libjbig.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0005-Link-against-system-liblcms1.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0006-Correct-the-udev-rules.patch
+	    Correct the udev rules:
+	    a) remove KERNEL=="lp*", as usblp is now blacklisted by CUPS
+	       (it will work without CUPS too).
+	    b) Replace paths: /etc/hotplug/usb/ by no path, as the
+	       binaries are shipped in /lib/udev/
+	    c) Drop the MODE specification
+	    d) Add ACTION=="ADD", otherwise the firmware script runs
+	       after unplugging as well
+	    Didier Raboud <odyx@debian.org>
+	    Peter De Wachter <pdewacht@gmail.com>
+	    Luca Capello <luca@pca.it>
+	* 0007-Remove-Encoding-from-.desktop-file.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0008-Do-not-display-the-icon-by-default.patch
+	    Do not display the icon by default. See #579154
+	    Didier Raboud <odyx@debian.org>
+	* 0009-Launch-the-_gui.tcl-directly-instead-of-launching-wi.patch
+	    Launch the _gui.tcl directly (instead of launching wish
+	    outside of it), avoids a lintian warning.
+	    Didier Raboud <odyx@debian.org>
+	* 0010-Correct-the-path-for-the-usb_printerid-program.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0011-Improve-getweb-also-for-installing-the-firmware.patch
+	    Improve getweb also for installing the firmware
+	    Fix the icm file installing code to create inexistant folders
+	    Didier Raboud <odyx@debian.org>
+	* 0012-Use-the-same-firmware-folder-for-all-HP-LJ-printers.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0013-Firmware-directory-is-lib-firmware-hp-Closes-517957.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0014-Don-t-delete-printer-profile-in-clean-target.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0015-Fixes-errors-and-hyphen-as-minus-in-manpages.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0016-Fix-various-spelling-errors.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0017-Delay-firmware-transfer-for-UDEV-automatic-printer-s.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0018-Removed-the-lines-in-the-UDEV-script-for-the-automat.patch
+	    Removed the lines in the UDEV script for the automatic
+	    firmware upload into the printer which remove the UDEV rules
+	    files for HPLIP's automatic firmware upload. Bug-Ubuntu:
+	    https://bugs.launchpad.net/ubuntu/+source/foo2zjs/+bug/783389
+	    Till Kamppeter <till.kamppeter@gmail.com>
+	* 0019-The-firmware-upload-script-tried-to-upload-the-firmw.patch
+	    The firmware upload script tried to upload the firmware via
+	    the usblp kernel module and with the CUPS USB backend (using
+	    libusb) in parallel, making the printer crash. Bug-Ubuntu:
+	    https://bugs.launchpad.net/bugs/1003843
+	    Till Kamppeter <till.kamppeter@gmail.com>
+	* 0020-Prevent-an-infinite-loop-when-loading-the-firmware.patch
+	    When using the load_cups method, the CUPS backend will
+	    internally unload and reload the usblp module. This will
+	    generate SUBSYSTEM=usbmisc events that need to be ignored
+	    in the CUPS code path, or this script will be rerun in an
+	    infite loop. But when using the load_usblp method, the usblp
+	    module is obviously needed. So in this situation we need to
+	    ignore the SUBSYSTEM=usb events.
+	    Bug-Debian: http://bugs.debian.org/663868
+	    Peter De Wachter <pdewacht@gmail.com>
+	* 0021-Build-manpages-reproducibly-through-reading-the-MODT.patch
+	    Build manpages reproducibly, through reading the MODTIME from
+	    debian/changelog exclusively, and giving LC_ALL=C.UTF-8 TZ=UTC
+	    to various commands
+	    Didier Raboud <odyx@debian.org>
+	* 0022-Don-t-try-to-install-hotplug-osx-on-all-UNAME-s.patch
+	    Didier Raboud <odyx@debian.org>
+	* 0023-Don-t-test-for-stdio.h-in-fullpath.patch
+	    Don't test for stdio.h in fullpath. Closes debian #910322
+	    Helmut Grohne <helmut@subdivi.de>
+	* 0024-Drop-lsomelib-make-dependencies-to-progress-towards-.patch
+	    Drop -lsomelib make dependencies to progress towards
+	    cross-buildability. Closes debian #949207
+	    Helmut Grohne <helmut@subdivi.de>
+
 2019-09-09:	Rick Richardson <rick.richardson@comcast.net>
 	* Add SmartInstallDisable-Tool.run since it was gone from
 	      http://hplipopensource.com/hplip-web/smartinstall/
