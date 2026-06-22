@@ -1,3 +1,11 @@
+2021-09-02:	Didier Raboud <odyx@debian.org>
+	* Commit patch queue (exported by git-debrebase)
+	  This includes debian patches 0001 to 0027
+	* 0027-getweb-use-quirinux.org-mirror-as-the-original-site-.patch
+	    getweb: use quirinux.org mirror as the original site is down
+	    Origin: https://github.com/koenkooi/foo2zjs/pull/3
+	    Debian-Bug: #992282
+
 2020-05-25:	Didier Raboud <odyx@debian.org>
 	* Commit patch queue (exported by git-debrebase)
 	  This includes debian patches 0001 to 0026
