@@ -1,3 +1,8 @@
+2020-05-25:	Didier Raboud <odyx@debian.org>
+	* Commit patch queue (exported by git-debrebase)
+	  This includes debian patches 0001 to 0026
+	* 0026-Specify-FOOMATICDB-when-calling-foomatic-ppfile.patch
+
 2020-05-05:	Rick Richardson <rick.richardson@comcast.net>
 	* foo2hbpl2.c: SaveToner implemented for color pages,
 	  thanks to bedi@3mtech.sk .
