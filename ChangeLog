@@ -1,3 +1,32 @@
+2026-02-06:	ValdikSS <iam@valdikss.org.ru>
+	First release under OpenPrinting umbrella.
+	https://github.com/OpenPrinting/foo2zjs/releases/tag/20260206
+	* Fix for lower resolution printing on HP LaserJet P1005-1009
+	  See launchpad/897809
+	* PPD files regenerated with proper DeviceID using
+	  foomatic-db-engine/11
+	* Additional DeviceID: Minolta 2300/2430, Xerox WC 3045
+	  see Fedora downstream patch: foo2zjs-device-ids.patch
+	* Makefile: chmod 775 → 755, 664 → 644
+	* Getweb: change printer files path of quirinux. Fixes #4
+
+2025-05-18:	ValdikSS <iam@valdikss.org.ru>
+	* tag 20250518 release point created.
+	* Add ReducedResolution mode (`-R`) for HP LaserJet P1005-1009
+	  Unlike other XQX-based models, HP LaserJet P1005-1009 can't
+	  print in real 600x600 DPI mode, requiring special 600x400 mode,
+	  in which the rendering is performed in 1200x600 resolution,
+	  but the XQX_START_PAGE header tells the printer to use 600x400
+	  printing resolution. LP: #897809
+	* PPD files regenerated with latest fixes and proper DeviceID
+
+2024-04-27:	Thorsten Alteholz <debian@alteholz.de>
+	* tag 20240427 release point created.
+	* DEP17: Move all aliased files to /usr. (Close debian: #1060769)
+	  Thanks a lot for preparing the patch to:
+	  Helmut Grohne, Chris Hofstaedtler
+	* NOTE: Became aware that pristine tar got lost meanwhile.
+
 2021-09-02:	Didier Raboud <odyx@debian.org>
 	* Commit patch queue (exported by git-debrebase)
 	  This includes debian patches 0001 to 0027
