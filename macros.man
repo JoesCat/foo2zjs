@@ -94,7 +94,7 @@
 '\" pdfdest LINKNAME
 '\"
 .de pdfdest
-.pdfmark "/Dest /\\$1 /View [/XYZ \-5 PL null] /DEST"
+.pdfmark "/Dest /\\$1 /View [/XYZ -5 PL null] /DEST"
 ..
 '\"
 '\" pdfbookmark COUNT LINKNAME STRING
@@ -140,7 +140,7 @@
 .       \}
 .   \}
 .   ds hhh \\*[rr_labels!\\n[rr_i]]
-.   pdfbookmark \-\\n[rr_count] Link\\n[rr_i] "\\*[hhh]"
+.   pdfbookmark -\\n[rr_count] Link\\n[rr_i] "\\*[hhh]"
 .\}
 ..
 '\"
@@ -159,7 +159,7 @@
 	/Subject (\*[an-title] Manual Page) \
 	/Author (Rick Richardson) \
 	/Keywords (printing) \
-	/Creator (groff \n(.x.\n(.y.\n(.Y \-man) \
+	/Creator (groff \n(.x.\n(.y.\n(.Y -man) \
 	/CreationDate (\*[an-extra1]) \
 	/ModDate (\*[an-extra1]) \
 	/DOCINFO"
