@@ -1448,6 +1448,7 @@ ppd:
 	    *"d-Color_P160"*)   driver=foo2hiperc;; \
 	    *M1005*|*M1120*)    driver=foo2xqx;; \
 	    *M1132*)		driver=foo2xqx;; \
+	    *M1136*)		driver=foo2xqx;; \
 	    *P1[05]0[5678]*)    driver=foo2xqx;; \
 	    *P2014*)            driver=foo2xqx;; \
 	    *M1212*)            driver=foo2xqx;; \
