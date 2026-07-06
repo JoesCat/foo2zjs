@@ -1559,7 +1559,10 @@ main(int argc, char *argv[])
 			else
 			    MediaCode = atoi(optarg);
 			break;
-	case 'n':	Copies = atoi(optarg); break;
+	case 'n':	Copies = atoi(optarg);
+			if (Copies < 1 || Copies > 999)
+			    error(1, "Illegal value '%s' for Copies -n\n", optarg);
+			break;
 	case 'p':	if (strstr(optarg,"in") || strstr(optarg, "mm"))
 			    PaperStr = optarg;
 			else

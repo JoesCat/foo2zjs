@@ -1521,7 +1521,10 @@ main(int argc, char *argv[])
 			    error(1, "Illegal Y value '%s' for -g\n", optarg);
 			break;
 	case 'm':	MediaCode = atoi(optarg); break;
-	case 'n':	Copies = atoi(optarg); break;
+	case 'n':	Copies = atoi(optarg);
+			if (Copies < 1 || Copies > 999)
+			    error(1, "Illegal value '%s' for Copies -n\n", optarg);
+			break;
 	case 'p':	PaperCode = atoi(optarg); break;
 	case 'r':	if (parse_xy(optarg, &ResX, &ResY))
 			    error(1, "Illegal format '%s' for -r\n", optarg);
