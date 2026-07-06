@@ -1428,7 +1428,7 @@ main(int argc, char *argv[])
 	case 'S':	Color2Mono = atoi(optarg);
 			Mode = MODE_COLOR;
 			if (Color2Mono < 0 || Color2Mono > 4)
-			    error(1, "Illegal value '%s' for -C\n", optarg);
+			    error(1, "Illegal value '%s' for -S\n", optarg);
 			break;
 	case 'd':	Duplex = atoi(optarg); break;
 	case 'g':	if (parse_xy(optarg, &PageWidth, &PageHeight))
