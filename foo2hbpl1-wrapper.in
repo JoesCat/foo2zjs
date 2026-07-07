@@ -28,6 +28,8 @@ VERSION='$Id: foo2hbpl1-wrapper.in,v 1.3 2014/03/24 23:14:24 rick Exp $'
 # Dell C1760w
 # Epson AcuLaser C1700
 # Fuji-Xerox DocuPrint CP105b
+# Xerox Phaser 6000B
+# and the Xerox Phaser 6010N
 #
 
 PROGNAME="$0"

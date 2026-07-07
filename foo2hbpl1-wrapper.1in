@@ -7,23 +7,21 @@
 '\"	MANUAL PAGE SOURCE
 '\"==========================================================================
 .SH NAME
-foo2hbpl1-wrapper \- Convert Postscript into a ZJS printer stream
+foo2hbpl1-wrapper \- Convert Postscript into a HBPLv1 printer stream
 .SH SYNOPSIS
 .B foo2hbpl1-wrapper
 .RI [ options "] [" ps-file ]
 .SH DESCRIPTION
 .B foo2hbpl1-wrapper
-is a Foomatic compatible printer wrapper for the \fBfoo2hbpl1\fP printer driver.
-This script reads a Postscript \fIps-file\fP or standard input
-and converts it to Zenographics ZjStream printer format
-for driving the
+is a Foomatic compatible printer wrapper for the \fBfoo2hbpl1\fP printer
+driver. This script reads a Postscript \fIps-file\fP or standard input and
+converts it to Host Based Printer Language (v1) format for driving the
 Dell 1250c, Dell C1660w, Dell C1760w,
-Epson AcuLaser C1700,
-and Fuji-Xerox CP105b printers.
+Epson AcuLaser C1700, Fuji-Xerox CP105b,
+Xerox Phaser 6000B and the Xerox Phaser 6010N printers.
 .P
-This script can be used in a standalone fashion, but is intended to
-be called from a printer spooler system which uses the Foomatic
-printer database.
+This script can be used in standalone fashion, but is intended to be called
+from a printer spooler system which uses the Foomatic printer database.
 
 .SH COMMAND LINE OPTIONS
 .SS Normal Options
@@ -206,7 +204,7 @@ l l.
 Set Debug level [0].
 
 .SH EXAMPLES
-Create a monochrome ZjStream from a Postscript document,
+Create a monochrome HBPL1v1 from a Postscript document,
 examine it, and then print it using a RAW print queue:
 
 .RS
@@ -217,7 +215,7 @@ lpr \-P raw testpage.prn
 .fi
 .RE
 .P
-Create a color ZjStream stream from a Postscript document:
+Create a color HBPL1v1 stream from a Postscript document:
 
 .RS
 .nf

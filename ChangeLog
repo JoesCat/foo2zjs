@@ -6,7 +6,10 @@
 	  color and grayscale documents without resetting printer."
 	  NOTE: patch was merged, not applied, so it can co-exists with
 	  existing hbpl(2) code, not replace it. Patch date=2014-04-05.
+	  Additional HBPLv1 printers added: Dell 1250c, C1660w, C1760w,
+	  Epson AcuLaser C1700, and Fuji-Xerox CP105b.
 	  Merged by Joe Da Silva <digital#joescat.com> 2026-07-06
+	* Added HBPLv1 Xerox Phaser printers 6000B and 6010N.
 
 2026-02-06:	ValdikSS <iam@valdikss.org.ru>
 	First release under OpenPrinting umbrella.

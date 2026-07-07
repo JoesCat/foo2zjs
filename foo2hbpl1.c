@@ -12,6 +12,8 @@ With this utility, you can print to some Dell and Fuji printers, such as these:
     - Dell C1760			B/W and Color
     - Epson AcuLaser C1700		B/W and Color
     - Fuji-Xerox DocuPrint CP105	B/W and Color
+    - Xerox Phaser 6000B		B/W and Color
+    - Xerox Phaser 6010N		B/W and Color
 
 AUTHORS
 This program was originally written by Dave Coffin in March 2014.
@@ -28,11 +30,8 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-If you want to use this program under different license conditions,
-then contact the author for an arrangement.
+along with this program; if not, see
+<https://www.gnu.org/licenses/>.
 
 */
 

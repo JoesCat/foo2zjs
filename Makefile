@@ -388,7 +388,7 @@ JBGOPTS=-m 16 -d 0 -p 92	# Equivalent options for pbmtojbg
 .pbm.ddst:
 	./foo2ddst < $*.pbm > $*.ddst
 
-.pbm.hbpl:
+.pbm.hbpl1:
 	./foo2hbpl1 < $*.pbm > $*.hbpl1
 
 #
@@ -1526,6 +1526,8 @@ ppd:
 	    *1660*|*1760*)	driver=foo2hbpl1;; \
 	    *C1700*)		driver=foo2hbpl1;; \
 	    *CP105*)		driver=foo2hbpl1;; \
+	    *6000B*)		driver=foo2hbpl1;; \
+	    *6010N*)		driver=foo2hbpl1;; \
 	    *)                  driver=foo2zjs;; \
 	    esac; \
 	    echo $$driver - $$printer; \

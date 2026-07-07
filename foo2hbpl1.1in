@@ -14,10 +14,11 @@ foo2hbpl1 \- Convert Ghostscript output to an HBPLv1 printer stream
 .SH DESCRIPTION
 .B foo2hbpl1
 converts Ghostscript pbmraw, pgmraw, ppmraw, or pamcmyk32 output
-formats to monochrome or color HBPL version 1 streams, to drive the
+formats to Monochrome or Color HBPL version 1 streams, to drive
+HBPLv1 compatible printers like the
 Dell 1250c, Dell C1660w, Dell C1760w,
-Epson AcuLaser C1700,
-and Fuji-Xerox CP105b printers.
+Epson AcuLaser C1700, Fuji-Xerox CP105b,
+Xerox Phaser 6000B and the Xerox Phaser 6010N.
 
 .SH COMMAND LINE OPTIONS
 .TP
@@ -27,7 +28,7 @@ Filename string to send to printer.
 .BI \-U\0 username
 Username string to send to printer.
 .SH EXAMPLES
-Create a black and white ZJS stream:
+Create a black and white HBPL1v1 stream:
 
 .RS
 .nf
@@ -38,7 +39,7 @@ gs \-q \-dBATCH \-dSAFER \-dQUIET \-dNOPAUSE \
 .fi
 .RE
 .P
-Create a color ZJS stream:
+Create a color HBPL1v1 stream:
 
 .RS
 .nf

@@ -17,13 +17,14 @@ HBPL is Host Based Printer Language.
 .P
 There are two versions of HBPL in existence.
 .P
-Version one is an HBPL stream with JBIG2 (?) data.
-This data is used by the Dell 1250c,
-Dell C1660w, Epson AcuLaser C1700, Fuji-Xerox cp105b, and similar printers.
-These printers are unsupported.
+Version one is an HBPL stream without JBIG2 data.
+This data is used by the Dell 1250c, Dell C1660w, Dell C1760w,
+Epson AcuLaser C1700, Fuji-Xerox CP105b,
+Xerox Phaser 6000B and the Xerox Phaser 6010N.
+These printers are supported by foo2hbpl1-wrapper et al.
 .P
-Version two is an HBPL stream with JBIG encoded data. This data
-is used by the Xerox WorkCentre 6015,
+Version two is an HBPL stream with JBIG encoded data.
+This data is used by the Xerox WorkCentre 6015,
 Fuji Xerox DocuPrint CM205, Dell 1355c, and similar printers.
 These printers are supported by foo2hbpl2-wrapper et al.
 .P
@@ -195,6 +196,8 @@ $ hbpldecode \-h 6015c-color.prn
 .SH FILES
 .BR /usr/bin/hbpldecode
 .SH SEE ALSO
+.BR foo2hbpl1-wrapper (1),
+.BR foo2hbpl1 (1)
 .BR foo2hbpl2-wrapper (1),
 .BR foo2hbpl2 (1)
 .SH "AUTHOR"
