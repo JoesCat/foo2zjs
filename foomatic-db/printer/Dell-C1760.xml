@@ -61,9 +61,10 @@
     <!--not "unverified"--><!--no "contrib_url"-->
     <comments> <en>
 
-	The Dell C1760 is color printer with a 2014 street price of $300.
+	The Dell C1760 is a compact color LED Laser printer that prints
+	up to 12ppm (black) and 10ppm (color).
 
-	These printers are supported by the foo2hbpl1 open software printer
+	This printer is supported by the foo2hbpl1 open software printer
 	driver.
 
     </en> </comments>

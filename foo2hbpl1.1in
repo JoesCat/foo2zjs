@@ -31,9 +31,9 @@ Create a black and white ZJS stream:
 
 .RS
 .nf
-gs -q -dBATCH -dSAFER -dQUIET -dNOPAUSE \ 
-    -sPAPERSIZE=letter -r600x600 -sDEVICE=pgmraw \ 
-    -sOutputFile=- - < testpage.ps \ 
+gs \-q \-dBATCH \-dSAFER \-dQUIET \-dNOPAUSE \ 
+    \-sPAPERSIZE=letter \-r600x600 \-sDEVICE=pgmraw \ 
+    \-sOutputFile=- \- < testpage.ps \ 
 | foo2hbpl1 >testpage.zm
 .fi
 .RE
@@ -42,9 +42,9 @@ Create a color ZJS stream:
 
 .RS
 .nf
-gs -q -dBATCH -dSAFER -dQUIET -dNOPAUSE \ 
-    -sPAPERSIZE=letter -g5100x6600 -r600x600 -sDEVICE=pamcmyk32 \ 
-    -sOutputFile=- - < testpage.ps \ 
+gs \-q \-dBATCH \-dSAFER \-dQUIET \-dNOPAUSE \ 
+    \-sPAPERSIZE=letter \-g5100x6600 \-r600x600 \-sDEVICE=pamcmyk32 \ 
+    \-sOutputFile=- \- < testpage.ps \ 
 | foo2hbpl1 >testpage.zc
 .fi
 .RE
@@ -61,7 +61,7 @@ Peter Korf <peter@niendo.de>
 .br
 Dave Coffin <dcoffin@cybercom.net>
 .br
-${URLHBPL}/
+${URLHBPL1}/
 '\"
 '\"
 '\"
