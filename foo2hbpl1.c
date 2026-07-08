@@ -56,6 +56,22 @@ char	*Username = NULL;
 char	*Filename = NULL;
 int	Clip[] = { 8,8,8,8 };
 
+static const char *mname[13] = { //Known media types
+	"",
+	"NORMAL",		// 1=plain paper
+	"THICK",		// 2=thick paper
+	"HIGHQUALITY",		// 3=high quality paper
+	"COAT2",		// 4=coated paper
+	"LABEL",		// 5=label
+	"ENVELOPE",		// 6=envelope
+	"RECYCLED",		// 7=recycled
+	"NORMALREV",		// 8=plain paper (reverse-side)
+	"THICKSIDE2",		// 9=thick paper (reverse-side)
+	"HIGHQUALITYREV",	// 10=high quality paper (reverse-side)
+	"COATEDPAPER2REV",	// 11=coated paper (reverse-side)
+	"RECYCLEREV"		// 12=recycled (reverse-side)
+};
+
 void
 usage(void)
 {
@@ -267,21 +283,6 @@ start_doc(int color)
     struct tm *tmp;
     char datestr[16], timestr[16];
     char cname[128] = "My Computer";
-    char *mname[] =
-    {	"",
-	"NORMAL",
-	"THICK",
-	"HIGHQUALITY",
-	"COAT2",
-	"LABEL",
-	"ENVELOPE",
-	"RECYCLED",
-	"NORMALREV",
-	"THICKSIDE2",
-	"HIGHQUALITYREV",
-	"COATEDPAPER2REV",
-	"RECYCLEREV",
-    };
 
     t = time(NULL);
     tmp = localtime(&t);
