@@ -52,9 +52,10 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.3 2014/03/30 05:08:32 rick Exp $";
  * Command line options
  */
 int	MediaCode = -1;		// -1=undefined (default to paper)
+int	Model = -1;		// -1=undefined (default -z0)
+int	pagenum = 0;		// no pages, no printer codes sent
 char	*Username = NULL;
 char	*Filename = NULL;
-int	Model = -1;		// -1=undefined (default -z0)
 int	Clip[] = { 8,8,8,8 };
 
 static const char *mname[2+24] = { //Known media types
@@ -145,7 +146,12 @@ error(int fatal, char *fmt, ...)
     vfprintf(stderr, fmt, ap);
     va_end(ap);
 
-    if (fatal) exit(fatal);
+    if (fatal) {
+	if (pagenum)
+	    printf("\033%%-12345X@PJL EOJ\n%s",
+		   (pagenum > 0 && Model > 0 ? "@PJL RESET\n" : ""));
+	exit(fatal);
+    }
 }
 
 struct stream
@@ -337,7 +343,7 @@ start_doc(int color)
 /* Lines end with \n, not \r\n */
 
     printf(
-	"\033%%-12345X@PJL SET STRINGCODESET=UTF8\n"
+	"\033%%-12345X%s@PJL SET STRINGCODESET=UTF8\n"
 	"@PJL COMMENT DATE=%s\n"
 	"@PJL COMMENT TIME=%s\n"
 	"@PJL COMMENT DNAME=%s\n"
@@ -378,6 +384,7 @@ start_doc(int color)
 	"@PJL SET JOBATTR=\"@GDFT=0\"\n"
 	"@PJL SET JOBATTR=\"@IDFT=0\"\n"
 	"@PJL ENTER LANGUAGE=HBPL\n"
+	, (Model > 0 ? "@PJL RESET\n" : "")
 	, datestr, timestr
 	, Filename ? Filename : ""
 	, Username ? Username : ""
@@ -386,6 +393,8 @@ start_doc(int color)
 	, Username ? Username : ""
 	, cname);
     fwrite (reca, 1, sizeof reca, stdout);
+
+    pagenum++;	// Now begin printing as "JOB START=1"...
 }
 
 #define IP (((int *)image) + off)
@@ -461,7 +470,6 @@ encode_page(int color, int width, int height, char *image)
 	{ 0x22,0x63,0x1c5,0x1d5,0x1e5,0x01,0x3e6 }, // for images
     };
     unsigned char *blank;
-    static int pagenum = 0;
     struct stream stream[5] = { { 0 } };
     int dirs[] = { -1,0,-1,1,2 }, rotor[] = { 0,1,2,3,4 };
     int i, j, row, col, deep, dir, run, try, bdir, brun, total;
@@ -483,7 +491,7 @@ encode_page(int color, int width, int height, char *image)
 	head[21] = 2;
     }
     width = -(-width & -8);
-    setle (head+33, 4, ++pagenum);
+    setle (head+33, 4, pagenum++);
     setle (head+39, 4, width);
     setle (head+43, 4, height);
     setle (head+70, 4, width);
@@ -771,6 +779,8 @@ main(int argc, char *argv[])
 	    fclose(ifp);
 	}
     }
-    puts("B\033%-12345X@PJL EOJ");
+    if (pagenum)
+	printf("\033%%-12345X@PJL EOJ\n%s",
+		(pagenum > 0 && Model > 0 ? "@PJL RESET\n" : ""));
     return 0;
 }
