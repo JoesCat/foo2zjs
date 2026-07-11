@@ -12,8 +12,8 @@ With this utility, you can print to some Dell and Fuji printers, such as these:
     - Dell C1760			B/W and Color
     - Epson AcuLaser C1700		B/W and Color
     - Fuji-Xerox DocuPrint CP105	B/W and Color
-    - Xerox Phaser 6000B		B/W and Color
-    - Xerox Phaser 6010N		B/W and Color
+    - Xerox Phaser 6000B		B/W and Color	-z1
+    - Xerox Phaser 6010N		B/W and Color	-z1
 
 AUTHORS
 This program was originally written by Dave Coffin in March 2014.
@@ -51,25 +51,41 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.3 2014/03/30 05:08:32 rick Exp $";
 /*
  * Command line options
  */
-int	MediaCode = 0;
+int	MediaCode = -1;		// -1=undefined (default to paper)
 char	*Username = NULL;
 char	*Filename = NULL;
+int	Model = -1;		// -1=undefined (default -z0)
 int	Clip[] = { 8,8,8,8 };
 
-static const char *mname[13] = { //Known media types
-	"",
-	"NORMAL",		// 1=plain paper
-	"THICK",		// 2=thick paper
-	"HIGHQUALITY",		// 3=high quality paper
-	"COAT2",		// 4=coated paper
-	"LABEL",		// 5=label
-	"ENVELOPE",		// 6=envelope
-	"RECYCLED",		// 7=recycled
-	"NORMALREV",		// 8=plain paper (reverse-side)
-	"THICKSIDE2",		// 9=thick paper (reverse-side)
-	"HIGHQUALITYREV",	// 10=high quality paper (reverse-side)
-	"COATEDPAPER2REV",	// 11=coated paper (reverse-side)
-	"RECYCLEREV"		// 12=recycled (reverse-side)
+static const char *mname[2+24] = { //Known media types
+	"COATEDPAPER2",		// z1/--, 4=coated, light weight glossy card? (z1)
+	"RECYCLE",		// z1/--, 7=recycled paper
+	// maintain -m[1..12] media compatibility sequence for -z0,-z1,-zX...
+	"NORMAL",		// z1/z0, 1=plain paper
+	"THICK",		// z1/z0, 2=thick, bond paper
+	"HIGHQUALITY",		// z1/z0, 3=high-quality, premium, cotton?
+	"COAT2",		// --/z0, 4=coated, light weight glossy card? (z0)
+	"LABEL",		// z1/z0, 5=label
+	"ENVELOPE",		// z1/z0, 6=envelope
+	"RECYCLED",		// --/z0, 7=recycled paper
+	"NORMALREV",		// z1/z0, 8=plain paper (side2)
+	"THICKSIDE2",		// z1/z0, 9=thick, bond paper (side2)
+	"HIGHQUALITYREV",	// z1/z0, 10=high-quality, premium, cotton? (side2)
+	"COATEDPAPER2REV",	// z1/z0, 11=coated, light weight glossy card? (side2)
+	"RECYCLEREV",		// z1/z0, 12=recycled paper (side2)
+	// include these -m[1..24] media codes for -z1
+	"LETTERHEAD",		// z1/--, 13,letterhead
+	"LETTERHEADREV",	// z1/--, 14,letterhead (side2)
+	"PREPRINTED",		// z1/--, 15,pre-printed
+	"PREPRINTEDREV",	// z1/--, 16,pre-printed (side2)
+	"PREPUNCHED",		// z1/--, 17,pre-punched?
+	"PREPUNCHEDREV",	// z1/--, 18,pre-punched? (side2)
+	"COLOR",		// z1/--, 19,colored
+	"COLORREV",		// z1/--, 20,colored (side2)
+	"USER1",		// z1/--, 21,custom (not sure if more params needed?)
+	"USER1REV",		// z1/--, 22,custom (side2)
+	"SPECIAL",		// z1/--, 23,special
+	"SPECIALREV"		// z1/--, 24,special (side2)
 };
 
 void
@@ -85,19 +101,38 @@ usage(void)
 "	gs -q -dBATCH -dSAFER -dQUIET -dNOPAUSE \\ \n"
 "		-sPAPERSIZE=letter -r600x600 -sDEVICE=pamcmyk32 \\ \n"
 "		-sOutputFile=- - < testpage.ps \\ \n"
-"	| foo2hbpl1 >testpage.zc\n"
+"	| foo2hbpl1 -m1 -z0 >testpage.zc\n"
 "\n"
-"Options:\n"
-"-m media	Media code to send to printer [1 or 6]\n"
-"		  1=plain, 2=bond, 3=lwcard, 4=lwgcard, 5=labels,\n"
-"		  6=envelope, 7=recycled, 8=plain2, 9=bond2,\n"
-"		  10=lwcard2, 11=lwgcard2, 12=recycled2\n"
+"Normal Options:\n"
+"-m media	Media code to send to printer\n"
+"		-z0:\n"
+"		  1=plain, 2=thick, 3=high-quality, 4=coated,\n"
+"		  5=label, 6=envelope, 7=recycled, 8=plain (side2),\n"
+"		  9=thick (side2), 10=high-quality (side2),\n"
+"		  11=coated (side2), 12=recycled (side2)\n"
+"		-z1: above plus\n"
+"		  13=letterhead, 14=letterhead (side2),\n"
+"		  15=preprinted, 16=preprinted (side2),\n"
+"		  17=prepunched, 18=prepunched (side2),\n"
+"		  19=color, 20=color (side2),\n"
+"		  21=user, 22=user (side2),\n"
+"		  23=special, 24=special (side2)\n"
+"-J filename       Filename string to send to printer [%s]\n"
+"-U username       Username string to send to printer [%s]\n"
+"\n"
+"Printer Tweaking Options:\n"
 "-u left,top,right,bottom\n"
 "		Erase margins of specified width [%d,%d,%d,%d]\n"
-"-J filename	Filename string to send to printer\n"
-"-U username	Username string to send to printer\n"
+"-z model	Model: [%d]\n"
+"                 0=(default) (Need more info for list)\n"
+"                 1=(example: Xerox 6000/6010)\n"
+"\n"
+"Debugging Options:\n"
 "-V		Version %s\n"
+	, Filename ? Filename : ""
+	, Username ? Username : ""
 	, Clip[0], Clip[1], Clip[2], Clip[3]
+	, Model
 	, Version);
 }
 
@@ -436,8 +471,8 @@ encode_page(int color, int width, int height, char *image)
     for (i = 0; i < sizeof papers / sizeof *papers; i++)
 	if (abs(width-papers[i+1]) < 36 && abs(height-papers[i+2]) < 36)
 	    paper = papers[i];
-    if (!MediaCode)
-	MediaCode = paper & 1 ? 6 : 1;
+    if (MediaCode < 0)
+	MediaCode = paper & 1 ? 6+1 : 1+1;
     if (!pagenum)
 	start_doc(color);
     head[12] = paper >> 1;
@@ -686,7 +721,7 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:u:J:U:V")) != EOF)
+    while ( (c = getopt(argc, argv, "m:u:z:J:U:V")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
@@ -696,9 +731,26 @@ main(int argc, char *argv[])
 		   break;
 	case 'J':  if (optarg[0]) Filename = optarg; break;
 	case 'U':  if (optarg[0]) Username = optarg; break;
+	case 'z':  Model = atoi(optarg);
+		       if (Model < 0 || Model > 1)
+			   error(1, "Illegal value '%s' for -z\n", optarg);
+		   break;
 	case 'V':  printf("%s\n", Version); return 0;
 	default:   usage(); return 1;
 	}
+
+    if (Model < 0) Model = 0;
+    if (MediaCode != -1 && (MediaCode <= 0 || ( \
+	(Model == 0 && MediaCode > 12 ) || \
+	(Model == 1 && MediaCode > 24))))
+	error(1, "Illegal value for -m. For -z%d range is -m[1..%d]\n", \
+	      Model, (Model ? 24 : 12), optarg);
+    if (Model > 0) {
+	if (MediaCode == 4) MediaCode = 0-1;
+	else if (MediaCode == 7) MediaCode = 1-1;
+    }
+    MediaCode++;
+
 
     argc -= optind;
     argv += optind;

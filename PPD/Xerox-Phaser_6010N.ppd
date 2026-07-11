@@ -27,17 +27,17 @@
 *FileVersion:	"1.1"
 *LanguageVersion: English 
 *LanguageEncoding: ISOLatin1
-*PCFileName:	"FOO2HBPL1.PPD"
+*PCFileName:	"FOO2HBPL1-.PPD"
 *Manufacturer:	"Xerox"
 *Product:	"(Phaser 6010N)"
 *cupsVersion:	1.0
-*cupsManualCopies: True
+*cupsManualCopies: False
 *cupsModelNumber:  2
 *cupsFilter:	"application/vnd.cups-postscript 100 foomatic-rip"
 *cupsFilter:	"application/vnd.cups-pdf 0 foomatic-rip"
 *%pprRIP:        foomatic-rip other
 *ModelName:     "Xerox Phaser 6010N"
-*ShortNickName: "Xerox Phaser 6010N foo2hbpl1"
+*ShortNickName: "Xerox Phaser 6010N foo2hbpl1-z1"
 *NickName:      "Xerox Phaser 6010N Foomatic/foo2hbpl1 (recommended)"
 *PSVersion:	"(3010.000) 550"
 *PSVersion:	"(3010.000) 651"
@@ -58,12 +58,12 @@
 *ColorDevice:	True
 *DefaultColorSpace: RGB
 *FileSystem:	False
-*Throughput:	"12"
+*Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "MFG:Xerox;CMD:HBPL;MDL:Phaser 6010N;DRV:Dfoo2hbpl1,R1,M0,TF;"
+*1284DeviceID: "MFG:Xerox;CMD:HBPL;MDL:Phaser 6010N;DRV:Dfoo2hbpl1-z1,R1,M0,TF;"
 
-*driverName foo2hbpl1: ""
+*driverName foo2hbpl1-z1: ""
 *driverType F/Filter: ""
 *driverUrl: "http://foo2hbpl1.rkkda.com/"
 *driverObsolete: False
@@ -73,21 +73,21 @@
 
 *HWMargins: 11 11 11 11
 *VariablePaperSize: True
-*MaxMediaWidth: 612
-*MaxMediaHeight: 1008
+*MaxMediaWidth: 100000
+*MaxMediaHeight: 100000
 *NonUIOrderDependency: 135 AnySetup *CustomPageSize
 *CustomPageSize True: "pop pop pop pop pop
 %% FoomaticRIPOptionSetting: PageSize=Custom"
 *End
 *FoomaticRIPOptionSetting PageSize=Custom: "-pCustom.%0x%1 "
-*ParamCustomPageSize Width: 1 points 216 612
-*ParamCustomPageSize Height: 2 points 360 1008
+*ParamCustomPageSize Width: 1 points 36 100000
+*ParamCustomPageSize Height: 2 points 36 100000
 *ParamCustomPageSize Orientation: 3 int 0 0
 *ParamCustomPageSize WidthOffset: 4 points 0 0
 *ParamCustomPageSize HeightOffset: 5 points 1 1
 
-*FoomaticIDs: Xerox-Phaser_6010N foo2hbpl1
-*FoomaticRIPCommandLine: "foo2hbpl1-wrapper %A"
+*FoomaticIDs: Xerox-Phaser_6010N foo2hbpl1-z1
+*FoomaticRIPCommandLine: "foo2hbpl1-wrapper -z1 %A"
 
 *OpenGroup: General/General
 
@@ -192,28 +192,52 @@
 *DefaultMediaType: plain
 *MediaType plain/Plain Paper: "%% FoomaticRIPOptionSetting: MediaType=plain"
 *FoomaticRIPOptionSetting MediaType=plain: "-m1 "
-*MediaType plain2/Plain Paper Side 2: "%% FoomaticRIPOptionSetting: MediaType=plain2"
+*MediaType plain2/Plain Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=plain2"
 *FoomaticRIPOptionSetting MediaType=plain2: "-m8 "
-*MediaType bond/Bond: "%% FoomaticRIPOptionSetting: MediaType=bond"
-*FoomaticRIPOptionSetting MediaType=bond: "-m2 "
-*MediaType bond2/Bond Side 2: "%% FoomaticRIPOptionSetting: MediaType=bond2"
-*FoomaticRIPOptionSetting MediaType=bond2: "-m9 "
-*MediaType envelope/Envelope: "%% FoomaticRIPOptionSetting: MediaType=envelope"
-*FoomaticRIPOptionSetting MediaType=envelope: "-m6 "
+*MediaType thick/Thick Stock: "%% FoomaticRIPOptionSetting: MediaType=thick"
+*FoomaticRIPOptionSetting MediaType=thick: "-m2 "
+*MediaType thick2/Thick Stock - Side 2: "%% FoomaticRIPOptionSetting: MediaType=thick2"
+*FoomaticRIPOptionSetting MediaType=thick2: "-m9 "
 *MediaType labels/Labels: "%% FoomaticRIPOptionSetting: MediaType=labels"
 *FoomaticRIPOptionSetting MediaType=labels: "-m5 "
-*MediaType lwcard/Light Weight Card: "%% FoomaticRIPOptionSetting: MediaType=lwcard"
-*FoomaticRIPOptionSetting MediaType=lwcard: "-m3 "
-*MediaType lwcard2/Light Weight Card Side 2: "%% FoomaticRIPOptionSetting: MediaType=lwcard2"
-*FoomaticRIPOptionSetting MediaType=lwcard2: "-m10 "
-*MediaType lwgcard/Light Weight Glossy Card: "%% FoomaticRIPOptionSetting: MediaType=lwgcard"
-*FoomaticRIPOptionSetting MediaType=lwgcard: "-m4 "
-*MediaType lwgcard2/Light Weight Glossy Card Side 2: "%% FoomaticRIPOptionSetting: MediaType=lwgcard2"
-*FoomaticRIPOptionSetting MediaType=lwgcard2: "-m11 "
+*MediaType envelope/Envelope: "%% FoomaticRIPOptionSetting: MediaType=envelope"
+*FoomaticRIPOptionSetting MediaType=envelope: "-m6 "
+*MediaType highquality/High Quality: "%% FoomaticRIPOptionSetting: MediaType=highquality"
+*FoomaticRIPOptionSetting MediaType=highquality: "-m3 "
+*MediaType highquality2/High Quality - Side 2: "%% FoomaticRIPOptionSetting: MediaType=highquality2"
+*FoomaticRIPOptionSetting MediaType=highquality2: "-m10 "
+*MediaType coated/Coated Paper: "%% FoomaticRIPOptionSetting: MediaType=coated"
+*FoomaticRIPOptionSetting MediaType=coated: "-m4 "
+*MediaType coated2/Coated Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=coated2"
+*FoomaticRIPOptionSetting MediaType=coated2: "-m11 "
 *MediaType recycled/Recycled Paper: "%% FoomaticRIPOptionSetting: MediaType=recycled"
 *FoomaticRIPOptionSetting MediaType=recycled: "-m7 "
-*MediaType recycled2/Recycled Paper Side 2: "%% FoomaticRIPOptionSetting: MediaType=recycled2"
+*MediaType recycled2/Recycled Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=recycled2"
 *FoomaticRIPOptionSetting MediaType=recycled2: "-m12 "
+*MediaType letterhead/Letterhead: "%% FoomaticRIPOptionSetting: MediaType=letterhead"
+*FoomaticRIPOptionSetting MediaType=letterhead: "-m13 "
+*MediaType letterhead2/Letterhead - Side 2: "%% FoomaticRIPOptionSetting: MediaType=letterhead2"
+*FoomaticRIPOptionSetting MediaType=letterhead2: "-m14 "
+*MediaType preprinted/Preprinted Paper: "%% FoomaticRIPOptionSetting: MediaType=preprinted"
+*FoomaticRIPOptionSetting MediaType=preprinted: "-m15 "
+*MediaType preprinted2/Preprinted Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=preprinted2"
+*FoomaticRIPOptionSetting MediaType=preprinted2: "-m16 "
+*MediaType prepunched/Prepunched Paper: "%% FoomaticRIPOptionSetting: MediaType=prepunched"
+*FoomaticRIPOptionSetting MediaType=prepunched: "-m17 "
+*MediaType prepunched2/Prepunched Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=prepunched2"
+*FoomaticRIPOptionSetting MediaType=prepunched2: "-m18 "
+*MediaType color/Color Paper: "%% FoomaticRIPOptionSetting: MediaType=color"
+*FoomaticRIPOptionSetting MediaType=color: "-m19 "
+*MediaType color2/Color Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=color2"
+*FoomaticRIPOptionSetting MediaType=color2: "-m20 "
+*MediaType custom/Custom Paper: "%% FoomaticRIPOptionSetting: MediaType=custom"
+*FoomaticRIPOptionSetting MediaType=custom: "-m21 "
+*MediaType custom2/Custom Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=custom2"
+*FoomaticRIPOptionSetting MediaType=custom2: "-m22 "
+*MediaType special/Special Paper: "%% FoomaticRIPOptionSetting: MediaType=Special"
+*FoomaticRIPOptionSetting MediaType=special: "-m23 "
+*MediaType special2/Special Paper - side 2: "%% FoomaticRIPOptionSetting: MediaType=special2"
+*FoomaticRIPOptionSetting MediaType=special2: "-m24 "
 *CloseUI: *MediaType
 
 *OpenUI *Copies/Copies: PickOne

@@ -1526,8 +1526,8 @@ ppd:
 	    *1660*|*1760*)	driver=foo2hbpl1;; \
 	    *C1700*)		driver=foo2hbpl1;; \
 	    *CP105*)		driver=foo2hbpl1;; \
-	    *6000B*)		driver=foo2hbpl1;; \
-	    *6010N*)		driver=foo2hbpl1;; \
+	    *6000B*)		driver=foo2hbpl1-z1;; \
+	    *6010N*)		driver=foo2hbpl1-z1;; \
 	    *)                  driver=foo2zjs;; \
 	    esac; \
 	    echo $$driver - $$printer; \

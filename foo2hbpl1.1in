@@ -21,12 +21,53 @@ Epson AcuLaser C1700, Fuji-Xerox CP105b,
 Xerox Phaser 6000B and the Xerox Phaser 6010N.
 
 .SH COMMAND LINE OPTIONS
+.SS Normal Options
+These are the options used to select the parameters of a
+print job that are usually controlled on a per job basis.
+.TP
+.BI \-m\0 media
+Media code to send to printer [1] or [6].
+.TS
+l r r r r.
+_
+Media	\-m	\-m	\-m	\-m
+\^	\-z0	\-z0	\-z1	\-z1
+\^	side1	side2	side1	side2
+_
+plain	1	8	1	8
+thick	2	9	2	9
+high-quality	3	10	3	10
+coated	4	11	4	11
+label	5	na	5	na
+envelope	6	na	6	na
+recycled	7	12	7	12
+letterhead	na	na	13	14
+preprinted	na	na	15	16
+prepunched	na	na	17	18
+color	na	na	19	20
+user1	na	na	21	22
+special	na	na	23	24
+.TE
 .TP
 .BI \-J\0 filename
 Filename string to send to printer.
 .TP
 .BI \-U\0 username
 Username string to send to printer.
+.SS Printer Tweaking Options
+These are the options used to customize the operation of \fBfoo2hbpl1\fP
+for a particular printer.
+.TP
+.BI \-z\0 model
+Model. Default is [0].
+.TS
+l l.
+_
+Model	Example printer(s)
+_
+z0	Dell 1250c / C1660 / C1760
+z1	Xerox 6000 / 6010
+.TE
 .SH EXAMPLES
 Create a black and white HBPL1v1 stream:
 

@@ -21,7 +21,5 @@
 	<printer><id>printer/Dell-C1760</id></printer>
 	<printer><id>printer/Epson-AcuLaser_C1700</id></printer>
 	<printer><id>printer/Fuji_Xerox-DocuPrint_CP105</id></printer>
-	<printer><id>printer/Xerox-Phaser_6000B</id></printer>
-	<printer><id>printer/Xerox-Phaser_6010N</id></printer>
     </printers>
 </driver>

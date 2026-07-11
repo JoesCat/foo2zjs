@@ -12,11 +12,11 @@
 	</resolution>
 	<margins>
 	    <general>
-		<unit>inch</unit>
-		<top>0.085</top>
-		<bottom>0.085</bottom>
-		<left>0.085</left>
-		<right>0.085</right>
+		<unit>mm</unit>
+		<top>2.117</top>
+		<bottom>2.117</bottom>
+		<left>2.117</left>
+		<right>2.117</right>
 	    </general>
 	</margins>
 <!--
@@ -57,7 +57,7 @@
 	</snmp>
     </autodetect>
     <functionality>C</functionality>
-    <driver>foo2hbpl1</driver>
+    <driver>foo2hbpl1-z1</driver>
     <!--not "unverified"--><!--no "contrib_url"-->
     <comments> <en>
 

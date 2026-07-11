@@ -46,24 +46,27 @@ Duplex code to send to printer [1].
 .TE
 .TP
 .BI \-m\0 media
-Media code to send to printer [1].
+Media code to send to printer [1] or [6].
 .TS
-l r.
+l r r r r.
 _
-Media	HBPL
+Media	\-m	\-m	\-m	\-m
+\^	\-z0	\-z0	\-z1	\-z1
+\^	side1	side2	side1	side2
 _
-plain	1
-bond	2
-lwcard	3
-lwgcard	4
-labels	5
-envelope	6
-recycled	7
-plain2	8
-bond2	9
-lwcard2	10
-lwgcard2	11
-recycled2	12
+plain	1	8	1	8
+thick	2	9	2	9
+high-quality	3	10	3	10
+coated	4	11	4	11
+label	5	na	5	na
+envelope	6	na	6	na
+recycled	7	12	7	12
+letterhead	na	na	13	14
+preprinted	na	na	15	16
+prepunched	na	na	17	18
+color	na	na	19	20
+user1	na	na	21	22
+special	na	na	23	24
 .TE
 .TP
 .BI \-p\0 paper
@@ -155,6 +158,17 @@ Do not send START_PLANE codes on monochrome output.  May be
 needed by some monochrome-only printers, such as the
 HP LaserJet 1000.
 .TP
+.BI \-z\0 model
+Model. Default is [0].
+.TS
+l l.
+_
+Model	Example printer(s)
+_
+z0	Dell 1250c / C1660 / C1760
+z1	Xerox 6000 / 6010
+.TE
+.TP
 .BI \-X\0 padlen
 Add extra zero padding to the end of BID segments.  The default is
 16 bytes.  Padding 16 bytes of zeroes
@@ -210,7 +224,7 @@ examine it, and then print it using a RAW print queue:
 .RS
 .nf
 foo2hbpl1-wrapper testpage.ps > testpage.prn
-hbpl1decode < testpage.prn
+hbpldecode < testpage.prn
 lpr \-P raw testpage.prn
 .fi
 .RE
