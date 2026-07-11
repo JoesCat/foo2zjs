@@ -621,12 +621,20 @@ getint(FILE *fp)
     {
 	while (isspace(c = fgetc(fp)));
 	if (c == '#')
-	    while (fgetc(fp) != '\n');
-	else break;
+	{
+	    while ((c = fgetc(fp)) != '\n')
+		if (c < 0)
+		    return -1;
+	}
+	else
+	    break;
     }
-    if (!isdigit(c)) return -1;
+    if (!isdigit(c))
+	return -1;
     for (ret = c-'0'; isdigit(c = fgetc(fp)); )
 	ret = ret*10 + c-'0';
+    if (c < 0)
+	return -1;
     return ret;
 }
 
