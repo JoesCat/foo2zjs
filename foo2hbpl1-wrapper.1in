@@ -90,7 +90,15 @@ envDL	12
 .TE
 .TP
 .BI \-n\0 copies
-Number of copies [1].
+Number of copies of each page [1]. Only available for \-z1 printers.
+.TS
+l l l.
+_
+Model	Range	Example printer(s)
+_
+z0	\-	Dell 1250c / C1660 / C1760
+z1	1-999	Xerox 6000 / 6010
+.TE
 .TP
 .BI \-r\0 xres x yres
 Set device resolution in pixels/inch [1200x600].

@@ -51,6 +51,7 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.3 2014/03/30 05:08:32 rick Exp $";
 /*
  * Command line options
  */
+int	Copies = 1;		// [1..999] Page Copies (default=1)
 int	MediaCode = -1;		// -1=undefined (default to paper)
 int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
@@ -118,8 +119,9 @@ usage(void)
 "		  19=color, 20=color (side2),\n"
 "		  21=user, 22=user (side2),\n"
 "		  23=special, 24=special (side2)\n"
-"-J filename       Filename string to send to printer [%s]\n"
-"-U username       Username string to send to printer [%s]\n"
+"-n copies	Number of copies [%d]\n"
+"-J filename	Filename string to send to printer [%s]\n"
+"-U username	Username string to send to printer [%s]\n"
 "\n"
 "Printer Tweaking Options:\n"
 "-u left,top,right,bottom\n"
@@ -130,6 +132,7 @@ usage(void)
 "\n"
 "Debugging Options:\n"
 "-V		Version %s\n"
+	, Copies
 	, Filename ? Filename : ""
 	, Username ? Username : ""
 	, Clip[0], Clip[1], Clip[2], Clip[3]
@@ -361,7 +364,7 @@ start_doc(int color)
 	"@PJL SET JOBATTR=\"@TRAP=ON\"\n"
 	"@PJL SET JOBATTR=\"@JOAU=%s\"\n"
 	"@PJL SET JOBATTR=\"@CNAM=%s\"\n"
-	"@PJL SET COPIES=1\n"
+	"@PJL SET COPIES=%-2d\n"
 	"@PJL SET QTY=1\n"
 	"@PJL SET PAPERDIRECTION=SEF\n"
 	"@PJL SET RESOLUTION=600\n"
@@ -391,7 +394,8 @@ start_doc(int color)
 	, mname[MediaCode]
 	, color ? "COLOR" : "GRAYSCALE"
 	, Username ? Username : ""
-	, cname);
+	, cname
+	, Copies);
     fwrite (reca, 1, sizeof reca, stdout);
 
     pagenum++;	// Now begin printing as "JOB START=1"...
@@ -491,7 +495,7 @@ encode_page(int color, int width, int height, char *image)
 	head[21] = 2;
     }
     width = -(-width & -8);
-    setle (head+33, 4, pagenum++);
+    setle (head+33, 4, pagenum);
     setle (head+39, 4, width);
     setle (head+43, 4, height);
     setle (head+70, 4, width);
@@ -600,6 +604,7 @@ encode_page(int color, int width, int height, char *image)
     }
     free(blank-width/8-1);
     printf("SD");
+    pagenum +=Copies;
 }
 #undef IP
 #undef CP
@@ -729,10 +734,11 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:u:z:J:U:V")) != EOF)
+    while ( (c = getopt(argc, argv, "m:n:u:z:J:U:V")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
+	case 'n':  Copies = atoi(optarg); break;
 	case 'u':  if (sscanf(optarg, "%d,%d,%d,%d",
 			Clip, Clip+1, Clip+2, Clip+3) != 4)
 		      error(1, "Must specify four clipping margins!\n");
@@ -758,7 +764,10 @@ main(int argc, char *argv[])
 	else if (MediaCode == 7) MediaCode = 1-1;
     }
     MediaCode++;
-
+    if (Model <= 0 && Copies !=1)
+	error(1, "Illegal value for -n. Must be 1 for -z0 printers!\n");
+    if (Copies < 1 || Copies > 999)
+	error(1, "Illegal value for -n%d. Must be a number [1..999]!\n", Copies);
 
     argc -= optind;
     argv += optind;

@@ -31,7 +31,7 @@
 *Manufacturer:	"Dell"
 *Product:	"(1250c)"
 *cupsVersion:	1.0
-*cupsManualCopies: False
+*cupsManualCopies: True
 *cupsModelNumber:  2
 *cupsFilter:	"application/vnd.cups-postscript 100 foomatic-rip"
 *cupsFilter:	"application/vnd.cups-pdf 0 foomatic-rip"
