@@ -52,6 +52,7 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.3 2014/03/30 05:08:32 rick Exp $";
  * Command line options
  */
 int	Copies = 1;		// [1..999] Page Copies (default=1)
+int	Debug = 0;
 int	MediaCode = -1;		// -1=undefined (default to paper)
 int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
@@ -131,13 +132,29 @@ usage(void)
 "                 1=(example: Xerox 6000/6010)\n"
 "\n"
 "Debugging Options:\n"
+"-D lvl		Set Debug level [%d]\n"
 "-V		Version %s\n"
 	, Copies
 	, Filename ? Filename : ""
 	, Username ? Username : ""
 	, Clip[0], Clip[1], Clip[2], Clip[3]
 	, Model
+	, Debug
 	, Version);
+}
+
+void
+debug(int level, char *fmt, ...)
+{
+    va_list ap;
+
+    if (Debug < level)
+	return;
+
+    setvbuf(stderr, (char *) NULL, _IOLBF, BUFSIZ);
+    va_start(ap, fmt);
+    vfprintf(stderr, fmt, ap);
+    va_end(ap);
 }
 
 void
@@ -398,6 +415,7 @@ start_doc(int color)
 	, Copies);
     fwrite (reca, 1, sizeof reca, stdout);
 
+    debug(1, "Done start_doc(%d). Init printer JOB.\n", color);
     pagenum++;	// Now begin printing as "JOB START=1"...
 }
 
@@ -480,6 +498,11 @@ encode_page(int color, int width, int height, char *image)
     int paper = 510, hsel = 0, off = 0, bit = 0, stat = 0;
     int margin = width-96;
 
+    if (Debug > 0)
+	fprintf(stderr,"start encode_page(%d)\n", pagenum);
+
+    deep = 1 + color*3;
+
     for (i = 0; i < sizeof papers / sizeof *papers; i++)
 	if (abs(width-papers[i+1]) < 36 && abs(height-papers[i+2]) < 36)
 	    paper = papers[i];
@@ -494,6 +517,10 @@ encode_page(int color, int width, int height, char *image)
 	setle (head+17, 2, (height*254+300)/600);
 	head[21] = 2;
     }
+    debug(1, "  width=%d height=%d color=%d deep=%d=%s\n", \
+		width, height, color, deep, color ? "CYMK" : "GRAY");
+    debug(1, "  media=%d=%s paper#%d\n", MediaCode-1, mname[MediaCode], paper);
+
     width = -(-width & -8);
     setle (head+33, 4, pagenum);
     setle (head+39, 4, width);
@@ -504,7 +531,6 @@ encode_page(int color, int width, int height, char *image)
     if (color)	body[6] = 1;
     else	body[4] = 8;
 
-    deep = 1 + color*3;
     for (i=1; i < 5; i++)
 	dirs[i] -= width;
     if (!color) dirs[4] = -8;
@@ -604,6 +630,7 @@ encode_page(int color, int width, int height, char *image)
     }
     free(blank-width/8-1);
     printf("SD");
+    debug(1, "end encode_page(%d), Copies(%d)\n", pagenum, Copies);
     pagenum +=Copies;
 }
 #undef IP
@@ -635,6 +662,7 @@ getint(FILE *fp)
 	ret = ret*10 + c-'0';
     if (c < 0)
 	return -1;
+    debug(2,"  getint(%d)\n", ret);
     return ret;
 }
 
@@ -645,6 +673,9 @@ do_file(FILE *fp)
     int wide, deep, byte, row, col, i, k;
     char tupl[128], line[128];
     unsigned char *image, *sp, *dp;
+
+    if (Debug > 0)
+	fprintf(stderr,"start do_file()\n  get dimensions\n");
 
     while ((type = fgetc(fp)) != EOF)
     {
@@ -684,6 +715,8 @@ six:	    iwide = getint(fp);
 	default:
 	    goto fail;
 	}
+	debug(1, "  iwide=%d ihigh=%d imax=%d ideep=%d\n", \
+		    iwide, ihigh, imax, ideep);
 	if (iwide <= 0 || ihigh <= 0 || imax != 255) goto fail;
 	wide = -(-iwide & -8);
         if (ideep)
@@ -691,6 +724,10 @@ six:	    iwide = getint(fp);
 	else
 	    ibyte = wide >> 3;
 	byte = wide * deep;
+
+	debug(1, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
+		    wide, deep, ibyte, byte);
+
 	image = calloc (ihigh+2, byte);
 	for (row = 1; row <= ihigh; row++)
 	{
@@ -702,20 +739,20 @@ six:	    iwide = getint(fp);
 		dp += deep;
 		switch (ideep)
 		{
-		case 0:
+		case 0: // BITMAP
 		    *dp = ((image[col >> 3] >> (~col & 7)) & 1) * 255;
 		    break;
-		case 1:
+		case 1: // GRAY
 		    *dp = ~*sp;
 		    break;
-		case 3:
+		case 3: // RGB
 		    for (k = sp[2], i = 0; i < 2; i++)
 			if (k < sp[i]) k = sp[i];
 		    *dp = ~k;
 		    for (i = 0; i < 3; i++)
 			dp[i+1] = k ? (k - sp[i]) * 255 / k : 255;
 		    break;
-		case 4:
+		case 4: // CMYK
 		    for (i=0; i < 4; i++)
 			dp[i] = sp[((i-1) & 3)];
 		    break;
@@ -732,6 +769,7 @@ six:	    iwide = getint(fp);
 	encode_page(deep > 1, iwide, ihigh, (char *) image);
 	free(image);
     }
+    debug(1, "end do_file()\n");
     return;
 fail:
     fprintf (stderr, "Not an acceptable PBM, PPM or PAM file!!!\n");
@@ -742,7 +780,7 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:n:u:z:J:U:V")) != EOF)
+    while ( (c = getopt(argc, argv, "m:n:u:z:J:U:D:V")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
@@ -757,6 +795,7 @@ main(int argc, char *argv[])
 		       if (Model < 0 || Model > 1)
 			   error(1, "Illegal value '%s' for -z\n", optarg);
 		   break;
+	case 'D':  Debug = atoi(optarg); break;
 	case 'V':  printf("%s\n", Version); return 0;
 	default:   usage(); return 1;
 	}
@@ -797,7 +836,10 @@ main(int argc, char *argv[])
 	}
     }
     if (pagenum)
+    {
 	printf("\033%%-12345X@PJL EOJ\n%s",
 		(pagenum > 0 && Model > 0 ? "@PJL RESET\n" : ""));
+	debug(1, "Done main(). End printer JOB.\n");
+    }
     return 0;
 }

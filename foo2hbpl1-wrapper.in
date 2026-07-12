@@ -579,7 +579,7 @@ foo2zjs-pstops $PSTOPS_OPTS | \
 $PREFILTER \
 | ($GS $PAPERSIZE -g$DIM -r$RES $GSDEV $GSOPTS \
     -sOutputFile="|cat 1>&3" $GAMMAFILE -_ >/dev/null) 3>&1 \
-| foo2hbpl1 -m$MEDIA $COPIES $CLIP_ALL -J "$LPJOB" -U "$USER"
+| foo2hbpl1 -m$MEDIA $COPIES $CLIP_ALL -J "$LPJOB" -U "$USER" -D$DEBUG
 
 #
 #	Log the command line, for debugging and problem reports
