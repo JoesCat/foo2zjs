@@ -91,6 +91,22 @@ static const char *mname[2+24] = { //Known media types
 	"SPECIALREV"		// z1/--, 24,special (side2)
 };
 
+static const short papers[11] = { // Official sizes to nearest 1/600 inch
+	// will accept +-1.5mm (35/600 inch) tolerance
+	  0, 5100, 6600,	// Letter
+	  2, 5100, 8400,	// Legal
+	  4, 4961, 7016,	// A4
+	  6, 4350, 6300,	// Executive
+	 13, 2475, 5700,	// #10 envelope
+	 15, 2325, 4500,	// Monarch envelope
+	 17, 3827, 5409,	// C5 envelope
+	 19, 2599, 5197,	// DL envelope
+//	 ??, 4158, 5906,	// B5 ISO
+	 22, 4299, 6071,	// B5 JIS
+	 30, 3496, 4961,	// A5
+	410, 5100, 7800,	// Folio
+};
+
 void
 usage(void)
 {
@@ -469,22 +485,6 @@ encode_page(int color, int width, int height, char *image)
 	0x00,0x00,0x00,0x00,	// 40,deep2
 	0x00,0x00,0x00,0x00,	// 44,deep3
 	0x00,0x00,0x00,0x00
-    };
-    static short papers[] =
-    {	// Official sizes to nearest 1/600 inch
-	// will accept +-1.5mm (35/600 inch) tolerance
-	  0, 5100, 6600,	// Letter
-	  2, 5100, 8400,	// Legal
-	  4, 4961, 7016,	// A4
-	  6, 4350, 6300,	// Executive
-	 13, 2475, 5700,	// #10 envelope
-	 15, 2325, 4500,	// Monarch envelope
-	 17, 3827, 5409,	// C5 envelope
-	 19, 2599, 5197,	// DL envelope
-//	 ??, 4158, 5906,	// B5 ISO
-	 22, 4299, 6071,	// B5 JIS
-	 30, 3496, 4961,	// A5
-	410, 5100, 7800,	// Folio
     };
     static const unsigned short huff[2][8] =
     {
