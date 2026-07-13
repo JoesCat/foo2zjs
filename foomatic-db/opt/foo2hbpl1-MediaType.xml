@@ -24,19 +24,19 @@
 	    <ev_driverval>1</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-MediaType-2">
-	    <ev_longname> <en>Bond</en> </ev_longname>
-	    <ev_shortname> <en>bond</en> </ev_shortname>
-	    <ev_driverval>2</ev_driverval>
+	    <ev_longname> <en>Plain Paper - Side 2</en> </ev_longname>
+	    <ev_shortname> <en>plain2</en> </ev_shortname>
+	    <ev_driverval>8</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-MediaType-3">
-	    <ev_longname> <en>Light Weight Card</en> </ev_longname>
-	    <ev_shortname> <en>lwcard</en> </ev_shortname>
-	    <ev_driverval>3</ev_driverval>
+	    <ev_longname> <en>Thick Stock</en> </ev_longname>
+	    <ev_shortname> <en>thick</en> </ev_shortname>
+	    <ev_driverval>2</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-MediaType-4">
-	    <ev_longname> <en>Light Weight Glossy Card</en> </ev_longname>
-	    <ev_shortname> <en>lwgcard</en> </ev_shortname>
-	    <ev_driverval>4</ev_driverval>
+	    <ev_longname> <en>Thick Stock - Side 2</en> </ev_longname>
+	    <ev_shortname> <en>thick2</en> </ev_shortname>
+	    <ev_driverval>9</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-MediaType-5">
 	    <ev_longname> <en>Labels</en> </ev_longname>
@@ -49,32 +49,32 @@
 	    <ev_driverval>6</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-MediaType-7">
+	    <ev_longname> <en>High Quality</en> </ev_longname>
+	    <ev_shortname> <en>highquality</en> </ev_shortname>
+	    <ev_driverval>3</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-MediaType-8">
+	    <ev_longname> <en>High Quality - Side 2</en> </ev_longname>
+	    <ev_shortname> <en>highquality2</en> </ev_shortname>
+	    <ev_driverval>10</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-MediaType-9">
+	    <ev_longname> <en>Coated Paper</en> </ev_longname>
+	    <ev_shortname> <en>coated</en> </ev_shortname>
+	    <ev_driverval>4</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-MediaType-10">
+	    <ev_longname> <en>Coated Paper - Side 2</en> </ev_longname>
+	    <ev_shortname> <en>coated2</en> </ev_shortname>
+	    <ev_driverval>11</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-MediaType-11">
 	    <ev_longname> <en>Recycled Paper</en> </ev_longname>
 	    <ev_shortname> <en>recycled</en> </ev_shortname>
 	    <ev_driverval>7</ev_driverval>
 	</enum_val>
-	<enum_val id="ev/foo2hbpl1-MediaType-8">
-	    <ev_longname> <en>Plain Paper Side 2</en> </ev_longname>
-	    <ev_shortname> <en>plain2</en> </ev_shortname>
-	    <ev_driverval>8</ev_driverval>
-	</enum_val>
-	<enum_val id="ev/foo2hbpl1-MediaType-9">
-	    <ev_longname> <en>Bond Side 2</en> </ev_longname>
-	    <ev_shortname> <en>bond2</en> </ev_shortname>
-	    <ev_driverval>9</ev_driverval>
-	</enum_val>
-	<enum_val id="ev/foo2hbpl1-MediaType-10">
-	    <ev_longname> <en>Light Weight Card Side 2</en> </ev_longname>
-	    <ev_shortname> <en>lwcard2</en> </ev_shortname>
-	    <ev_driverval>10</ev_driverval>
-	</enum_val>
-	<enum_val id="ev/foo2hbpl1-MediaType-11">
-	    <ev_longname> <en>Light Weight Glossy Card Side 2</en></ev_longname>
-	    <ev_shortname> <en>lwgcard2</en> </ev_shortname>
-	    <ev_driverval>11</ev_driverval>
-	</enum_val>
 	<enum_val id="ev/foo2hbpl1-MediaType-12">
-	    <ev_longname> <en>Recycled Paper Side 2</en> </ev_longname>
+	    <ev_longname> <en>Recycled Paper - Side 2</en> </ev_longname>
 	    <ev_shortname> <en>recycled2</en> </ev_shortname>
 	    <ev_driverval>12</ev_driverval>
 	</enum_val>
