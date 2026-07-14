@@ -70,23 +70,19 @@ special	\-	\-	23	24
 .TE
 .TP
 .BI \-p\0 paper
-Paper size code to send to printer [1].
+Paper code sizes autodetected by printer [0].
 .TS
-l r.
-_
-Paper	HBPL
-_
-A4	1
-B5jis	2
-letter	4
-executive	5
-fanfold german legal	6
-folio	6
-legal	7
-env#10	9
-envMonarch	10
-envC5	11
-envDL	12
+box;
+| n l | n l.
+0	Letter	1	Legal
+2	A4	3	Executive
+\-	\-	\-	\-
+6	env #10	7	env Monarch
+8	env C5	9	env DL
+\-	\-	11	B5jis
+\-	\-	\-	\-
+\-	\-	15	A5
+205	Folio	255	Custom (X x Y)
 .TE
 .TP
 .BI \-n\0 copies

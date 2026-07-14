@@ -49,6 +49,22 @@ user1	\-	\-	21	22
 special	\-	\-	23	24
 .TE
 .TP
+.BI \-p\0 paper
+Paper code sizes autodetected by printer [0].
+.TS
+box;
+| n l | n l.
+0	Letter	1	Legal
+2	A4	3	Executive
+\-	\-	\-	\-
+6	env #10	7	env Monarch
+8	env C5	9	env DL
+\-	\-	11	B5jis
+\-	\-	\-	\-
+\-	\-	15	A5
+205	Folio	255	Custom (X x Y)
+.TE
+.TP
 .BI \-n\0 copies
 Number of copies of each page [1]. Only available for \-z1 printers.
 .TS

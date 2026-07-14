@@ -54,11 +54,12 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.3 2014/03/30 05:08:32 rick Exp $";
 int	Copies = 1;		// [1..999] Page Copies (default=1)
 int	Debug = 0;
 int	MediaCode = -1;		// -1=undefined (default to paper)
+int	PaperCode = 0;		// (default=letter)
 int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
 char	*Username = NULL;
 char	*Filename = NULL;
-int	Clip[] = { 8,8,8,8 };
+int	Clip[] = { 33,33,33,33 };
 
 static const char *mname[2+24] = { //Known media types
 	"COATEDPAPER2",		// z1/--, 4=coated, light weight glossy card? (z1)
@@ -91,20 +92,49 @@ static const char *mname[2+24] = { //Known media types
 	"SPECIALREV"		// z1/--, 24,special (side2)
 };
 
-static const short papers[11] = { // Official sizes to nearest 1/600 inch
+static const char *pname[12] = { //Known paper types
+	"LETTER",		// 0
+	"LEGAL",		// 1
+	"A4",			// 2
+	"EXECUTIVE",		// 3
+// unknown 4,5
+	"COM10",		// 6
+	"MONARCH",		// 7
+	"C5",			// 8
+	"DL",			// 9
+// unknown 10
+	"JISB5",		// 11
+// unknown 12,13,14
+	"A5",			// 15
+	"FOLIO",		// 205
+// fanfold german legal
+	"CUSTOM"		// 255
+};
+
+static const short papers[] = { // Official sizes to nearest 1/600 inch
+	// Official sizes to nearest 1/600 inch
 	// will accept +-1.5mm (35/600 inch) tolerance
-	  0, 5100, 6600,	// Letter
-	  2, 5100, 8400,	// Legal
-	  4, 4961, 7016,	// A4
-	  6, 4350, 6300,	// Executive
-	 13, 2475, 5700,	// #10 envelope
-	 15, 2325, 4500,	// Monarch envelope
-	 17, 3827, 5409,	// C5 envelope
-	 19, 2599, 5197,	// DL envelope
-//	 ??, 4158, 5906,	// B5 ISO
-	 22, 4299, 6071,	// B5 JIS
-	 30, 3496, 4961,	// A5
-	410, 5100, 7800,	// Folio
+	// NOTE: printer appears only able to accept < 22cm max paper width
+	// {codeHBPL, media=[envelope=6,default=1], sizeX, sizeY}
+	  0, 5100, 6600, //0,l, 8.50" x 11.0" / 215.9mm x 279.4mm Letter
+	  2, 5100, 8400, //1,l, 8.50" x 14.0" / 215.9mm x 355.6mm Legal
+	  4, 4961, 7016, //2,l, 210.0mm x 297.0mm / 8.27" x 11.7" A4
+	  6, 4350, 6300, //3,l, 7.25" x 10.5" / 184.2mm x 266.7mm Executive
+// unknown 4
+// unknown 5
+	 13, 2475, 5700, //6,e, 4.125" x 9.5" / 104.8mm x 241.3mm #10 envelope
+	 15, 2325, 4500, //7,e, 3.875" x 7.5" / 98.4mm x 190.5mm Monarch envelope
+	 17, 3827, 5409, //8,e, 162.0mm x 229.0mm / 6.38" x 9.02" C5 envelope
+	 19, 2599, 5197, //9,e, 110.0mm x 220.0mm / 4.33" x 8.67" DL envelope
+// unknown 10
+	 22, 4299, 6071, //11,l, 182.0mm x 257.0mm / 7.17" x 10.1" B5jis
+// unknown 12
+// unknown 13
+// unknown 14
+	 30, 3496, 4961, //15,l, 148.0mm x 210.0mm / 5.83" x 8.27" A5
+	410, 5100, 7800, //205,l, 8.50" x 13.0" / 215.9mm x 330.2mm Folio
+//	205, 5100, 7800, //205,l, 8.5" x 13.0" / 215.9mm x 330.2mm fanfold german legal
+	510		 //255,l, Custom paper size (needs also X and Y)
 };
 
 void
@@ -136,6 +166,10 @@ usage(void)
 "		  19=color, 20=color (side2),\n"
 "		  21=user, 22=user (side2),\n"
 "		  23=special, 24=special (side2)\n"
+"-p paper	Paper code autodetected by printer [%d]\n"
+"		  0=letter, 1=legal, 2=A4, 3=executive, 6=env#10,\n"
+"		  7=envMonarch, 8=envC5, 9=envDL, 11=B5jis,\n"
+"		  15=A5, 205=folio, 255=custom (XxY)\n"
 "-n copies	Number of copies [%d]\n"
 "-J filename	Filename string to send to printer [%s]\n"
 "-U username	Username string to send to printer [%s]\n"
@@ -150,6 +184,7 @@ usage(void)
 "Debugging Options:\n"
 "-D lvl		Set Debug level [%d]\n"
 "-V		Version %s\n"
+	, PaperCode
 	, Copies
 	, Filename ? Filename : ""
 	, Username ? Username : ""
@@ -498,28 +533,34 @@ encode_page(int color, int width, int height, char *image)
     int paper = 510, hsel = 0, off = 0, bit = 0, stat = 0;
     int margin = width-96;
 
-    if (Debug > 0)
-	fprintf(stderr,"start encode_page(%d)\n", pagenum);
+    debug(1, "start encode_page(%d)\n", pagenum);
 
     deep = 1 + color*3;
 
-    for (i = 0; i < sizeof papers / sizeof *papers; i++)
+    // autodetect paper size (portrait)
+    for (i = 0; papers[i] < 255*2; i+=3)
 	if (abs(width-papers[i+1]) < 36 && abs(height-papers[i+2]) < 36)
-	    paper = papers[i];
+	{
+	    paper = i;
+	    goto psize;
+	}
+    paper = i; // 255, use custom paper size if you are here
+    setle (head+15, 2,  (width*254+300)/600);  // units of 0.1mm
+    setle (head+17, 2, (height*254+300)/600);
+    head[21] = 2;
+psize:
+    head[12] = papers[paper]>>1;
     if (MediaCode < 0)
-	MediaCode = paper & 1 ? 6+1 : 1+1;
+	MediaCode = ((papers[paper] & 1) ? 6+1 : 1+1);
+
+    debug(2, "  width=%d height=%d color=%d deep=%d=%s\n", \
+		width, height, color, deep, color ? "CYMK" : "GRAY");
+    debug(2, "  paper#%d,%d=%s media=%d=%s\n", \
+		paper, papers[paper]>>1, pname[paper], \
+		(MediaCode >= 1+1 ? MediaCode-1 : MediaCode), mname[MediaCode]);
+
     if (!pagenum)
 	start_doc(color);
-    head[12] = paper >> 1;
-    if (paper == 510)
-    {
-	setle (head+15, 2,  (width*254+300)/600);  // units of 0.1mm
-	setle (head+17, 2, (height*254+300)/600);
-	head[21] = 2;
-    }
-    debug(1, "  width=%d height=%d color=%d deep=%d=%s\n", \
-		width, height, color, deep, color ? "CYMK" : "GRAY");
-    debug(1, "  media=%d=%s paper#%d\n", MediaCode-1, mname[MediaCode], paper);
 
     width = -(-width & -8);
     setle (head+33, 4, pagenum);
@@ -662,7 +703,7 @@ getint(FILE *fp)
 	ret = ret*10 + c-'0';
     if (c < 0)
 	return -1;
-    debug(2,"  getint(%d)\n", ret);
+    debug(3, "  getint(%d)\n", ret);
     return ret;
 }
 
@@ -674,8 +715,7 @@ do_file(FILE *fp)
     char tupl[128], line[128];
     unsigned char *image, *sp, *dp;
 
-    if (Debug > 0)
-	fprintf(stderr,"start do_file()\n  get dimensions\n");
+    debug(1, "start do_file()\n  get dimensions\n");
 
     while ((type = fgetc(fp)) != EOF)
     {
@@ -715,7 +755,7 @@ six:	    iwide = getint(fp);
 	default:
 	    goto fail;
 	}
-	debug(1, "  iwide=%d ihigh=%d imax=%d ideep=%d\n", \
+	debug(2, "  iwide=%d ihigh=%d imax=%d ideep=%d\n", \
 		    iwide, ihigh, imax, ideep);
 	if (iwide <= 0 || ihigh <= 0 || imax != 255) goto fail;
 	wide = -(-iwide & -8);
@@ -725,7 +765,7 @@ six:	    iwide = getint(fp);
 	    ibyte = wide >> 3;
 	byte = wide * deep;
 
-	debug(1, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
+	debug(2, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
 		    wide, deep, ibyte, byte);
 
 	image = calloc (ihigh+2, byte);
@@ -780,11 +820,12 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:n:u:z:J:U:D:V")) != EOF)
+    while ( (c = getopt(argc, argv, "m:n:p:u:z:J:U:D:V")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
 	case 'n':  Copies = atoi(optarg); break;
+	case 'p':  PaperCode = atoi(optarg); break;
 	case 'u':  if (sscanf(optarg, "%d,%d,%d,%d",
 			Clip, Clip+1, Clip+2, Clip+3) != 4)
 		      error(1, "Must specify four clipping margins!\n");
@@ -806,15 +847,20 @@ main(int argc, char *argv[])
 	(Model == 1 && MediaCode > 24))))
 	error(1, "Illegal value for -m. For -z%d range is -m[1..%d]\n", \
 	      Model, (Model ? 24 : 12), optarg);
-    if (Model > 0) {
-	if (MediaCode == 4) MediaCode = 0-1;
-	else if (MediaCode == 7) MediaCode = 1-1;
+    if (MediaCode != -1)
+    {
+	MediaCode++;
+	if (Model > 0) {
+	    if (MediaCode == 4+1) MediaCode = 0;
+	    else if (MediaCode == 7+1) MediaCode = 1;
+	}
     }
-    MediaCode++;
     if (Model <= 0 && Copies !=1)
 	error(1, "Illegal value for -n. Must be 1 for -z0 printers!\n");
     if (Copies < 1 || Copies > 999)
 	error(1, "Illegal value for -n%d. Must be a number [1..999]!\n", Copies);
+    for (i = 0; i < 4; ++i)
+	if (Clip[i] < 33) Clip[i] = 33;
 
     argc -= optind;
     argv += optind;
