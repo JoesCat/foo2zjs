@@ -133,6 +133,8 @@
 *FoomaticRIPOptionSetting PageSize=EnvMonarch: "-p7 "
 *PageSize Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
 *FoomaticRIPOptionSetting PageSize=Executive: "-p3 "
+*PageSize FanfoldGermanLegal/Fanfold German Legal: "%% FoomaticRIPOptionSetting: PageSize=FanfoldGermanLegal"
+*FoomaticRIPOptionSetting PageSize=FanfoldGermanLegal: "-p205 "
 *PageSize Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
 *FoomaticRIPOptionSetting PageSize=Folio: "-p205 "
 *PageSize Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
@@ -142,7 +144,7 @@
 *OpenUI *PageRegion: PickOne
 *OrderDependency: 135 AnySetup *PageRegion
 *DefaultPageRegion: Letter
-*PageRegion Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
+*PageRegion Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
 *PageRegion A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
 *PageRegion A5/A5: "%% FoomaticRIPOptionSetting: PageSize=A5"
 *PageRegion B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
@@ -151,6 +153,7 @@
 *PageRegion EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
 *PageRegion EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
 *PageRegion Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
+*PageRegion FanfoldGermanLegal/Fanfold German Legal: "%% FoomaticRIPOptionSetting: PageSize=FanfoldGermanLegal"
 *PageRegion Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
 *PageRegion Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
 *CloseUI: *PageRegion
@@ -165,6 +168,7 @@
 *ImageableArea EnvDL/Env DL: "20 20.00 291 603.00"
 *ImageableArea EnvMonarch/Env Monarch: "20 20.00 259 520.00"
 *ImageableArea Executive/Executive: "20 20.00 502 736.00"
+*ImageableArea FanfoldGermanLegal/Fanfold German Legal: "20 20.00 598 916.00"
 *ImageableArea Folio/Folio: "20 20.00 598 916.00"
 *ImageableArea Legal/Legal: "20 20.00 598 988.00"
 
@@ -178,6 +182,7 @@
 *PaperDimension EnvDL/Env DL: "311 623"
 *PaperDimension EnvMonarch/Env Monarch: "279 540"
 *PaperDimension Executive/Executive: "522 756"
+*PaperDimension FanfoldGermanLegal/Fanfold German Legal: "612 1008"
 *PaperDimension Folio/Folio: "612 936"
 *PaperDimension Legal/Legal: "612 1008"
 

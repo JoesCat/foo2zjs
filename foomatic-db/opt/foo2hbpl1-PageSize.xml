@@ -14,6 +14,10 @@
 	<driver>foo2hbpl1</driver>
 	<arg_defval>ev/foo2hbpl1-PageSize-4</arg_defval>
 	</constraint>
+	<constraint sense="true">
+	<driver>foo2hbpl1-z1</driver>
+	<arg_defval>ev/foo2hbpl1-PageSize-4</arg_defval>
+	</constraint>
     </constraints>
     <enum_vals>
 	<enum_val id="ev/foo2hbpl1-PageSize-1">
@@ -33,47 +37,52 @@
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-4">
 	    <ev_longname> <en>Letter (8.5 x 11&quot;)</en> </ev_longname>
-	    <ev_shortname> <en>letter</en> </ev_shortname>
+	    <ev_shortname> <en>Letter</en> </ev_shortname>
 	    <ev_driverval>0</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-5">
 	    <ev_longname> <en>Executive (7.25 x 10.5&quot;)</en> </ev_longname>
-	    <ev_shortname> <en>executive</en> </ev_shortname>
+	    <ev_shortname> <en>Executive</en> </ev_shortname>
 	    <ev_driverval>3</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-6">
 	    <ev_longname> <en>Folio (8.5 x 13&quot;)</en> </ev_longname>
-	    <ev_shortname> <en>folio</en> </ev_shortname>
+	    <ev_shortname> <en>Folio</en> </ev_shortname>
 	    <ev_driverval>205</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-7">
-	    <ev_longname> <en>Legal (8.5 x 14&quot;)</en> </ev_longname>
-	    <ev_shortname> <en>legal</en> </ev_shortname>
-	    <ev_driverval>1</ev_driverval>
+	    <ev_longname> <en>Fanfold German Legal</en> </ev_longname>
+	    <ev_shortname> <en>FanfoldGermanLegal</en> </ev_shortname>
+	    <ev_driverval>205</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-8">
-	    <ev_longname> <en>Env #10 (4.125 x 9.5&quot;)</en> </ev_longname>
-	    <ev_shortname> <en>env10</en> </ev_shortname>
-	    <ev_driverval>6</ev_driverval>
+	    <ev_longname> <en>Legal (8.5 x 14&quot;)</en> </ev_longname>
+	    <ev_shortname> <en>Legal</en> </ev_shortname>
+	    <ev_driverval>1</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-9">
-	    <ev_longname> <en>Env Monarch (3.875 x 7.5&quot;)</en> </ev_longname>
-	    <ev_shortname> <en>monarch</en> </ev_shortname>
-	    <ev_driverval>7</ev_driverval>
+	    <ev_longname> <en>Env #10 (4.125 x 9.5&quot;)</en> </ev_longname>
+	    <ev_shortname> <en>Env10</en> </ev_shortname>
+	    <ev_driverval>6</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-10">
-	    <ev_longname> <en>Env C5 (162 x 229mm)</en> </ev_longname>
-	    <ev_shortname> <en>C5</en> </ev_shortname>
-	    <ev_driverval>8</ev_driverval>
+	    <ev_longname> <en>Env Monarch (3.875 x 7.5&quot;)</en> </ev_longname>
+	    <ev_shortname> <en>EnvMonarch</en> </ev_shortname>
+	    <ev_driverval>7</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-11">
-	    <ev_longname> <en>Env DL (110 x 220mm)</en> </ev_longname>
-	    <ev_shortname> <en>DL</en> </ev_shortname>
-	    <ev_driverval>9</ev_driverval>
+	    <ev_longname> <en>Env C5 (162 x 229mm)</en> </ev_longname>
+	    <ev_shortname> <en>EnvC5</en> </ev_shortname>
+	    <ev_driverval>8</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-12">
+	    <ev_longname> <en>Env DL (110 x 220mm)</en> </ev_longname>
+	    <ev_shortname> <en>EnvDL</en> </ev_shortname>
+	    <ev_driverval>9</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-PageSize-13">
 	    <ev_longname> <en>Custom (X x Y)</en> </ev_longname>
-	    <ev_shortname> <en>custom</en> </ev_shortname>
+	    <ev_shortname> <en>Custom</en> </ev_shortname>
 	    <ev_driverval>Custom.%0x%1</ev_driverval>
 	</enum_val>
     </enum_vals>

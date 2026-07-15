@@ -60,6 +60,7 @@ int	MediaCode = -1;		// -1=undefined (default to paper)
 int	PaperCode = 0;		// (default=letter)
 int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
+int	SaveToner = 0;
 char	*Username = NULL;
 char	*Filename = NULL;
 int	Clip[] = { 20,20,20,20 };
@@ -170,10 +171,11 @@ usage(void)
 "		  21=user, 22=user (side2),\n"
 "		  23=special, 24=special (side2)\n"
 "-p paper	Paper code autodetected by printer [%d]\n"
-"		  0=letter, 1=legal, 2=A4, 3=executive, 6=env#10,\n"
-"		  7=envMonarch, 8=envC5, 9=envDL, 11=B5jis,\n"
-"		  15=A5, 205=folio, 255=custom (XxY)\n"
+"		  0=Letter, 1=Legal, 2=A4, 3=Executive, 6=Env10,\n"
+"		  7=EnvMonarch, 8=EnvC5, 9=EnvDL, 11=B5jis,\n"
+"		  15=A5, 205=Folio, 255=Custom (XxY)\n"
 "-n copies	Number of copies [%d]\n"
+"-t		Draft mode. Every other pixel is white.\n"
 "-J filename	Filename string to send to printer [%s]\n"
 "-U username	Username string to send to printer [%s]\n"
 "\n"
@@ -793,7 +795,7 @@ six:	    iwide = getint(fp);
 			if (k < sp[i]) k = sp[i];
 		    *dp = ~k;
 		    for (i = 0; i < 3; i++)
-			dp[i+1] = k ? (k - sp[i]) * 255 / k : 255;
+			dp[i+1] = k ? (k - sp[i]) * 255 / k : 0;
 		    break;
 		case 4: // CMYK
 		    for (i=0; i < 4; i++)
@@ -809,6 +811,29 @@ six:	    iwide = getint(fp);
 	}
 	memset(image+deep, 0, byte*(Clip[1]+1));
 	memset(image+deep + byte*(ihigh-Clip[3]+1), 0, byte*Clip[3]);
+	if (SaveToner)
+	{
+	    int bpl, bpl16;
+
+	    debug(2, "  -t SaveToner enabled\n");
+	    wide = (iwide + 127) & ~127;
+	    bpl = (wide + 7) / 8;
+	    bpl16 = (bpl + 15) & ~15;
+	    //switch (ideep)
+	    //{
+	    //case 0: // BITMAP
+	    //case 1: // GRAY
+	    //case 3: // RGB
+	    //case 4: // CMYK
+		for (row = 0; row < ihigh; row += 2)
+		    for (col = 0; col < bpl16; ++col)
+			image[row*bpl16 + col] &= 0x55;
+		for (row = 1; row < ihigh; row += 2)
+		    for (col = 0; col < bpl16; ++col)
+			image[row*bpl16 + col] &= 0xaa;
+	    //	break;
+	    //}
+	}
 	encode_page(deep > 1, iwide, ihigh, (char *) image);
 	free(image);
     }
@@ -823,12 +848,13 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:n:p:u:z:J:U:D:V")) != EOF)
+    while ( (c = getopt(argc, argv, "m:n:p:t:u:z:J:U:D:V")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
 	case 'n':  Copies = atoi(optarg); break;
 	case 'p':  PaperCode = atoi(optarg); break;
+	case 't':  SaveToner = 1; break;
 	case 'u':  if (sscanf(optarg, "%d,%d,%d,%d",
 			Clip, Clip+1, Clip+2, Clip+3) != 4)
 		      error(1, "Must specify four clipping margins!\n");
