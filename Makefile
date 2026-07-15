@@ -205,6 +205,7 @@ FILES	=	\
 		osx-hotplug/*.plist \
 		ppd-adjust \
 		PPD/*.ppd \
+		crd/hbpl1/*.ps \
 		crd/zjs/*.crd \
 		crd/zjs/*.ps \
 		crd/qpdl/*cms* \
@@ -770,6 +771,14 @@ install-crd:
 	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREQPDL)/crd/
 	for i in crd/qpdl/*cms* crd/qpdl/*.ps; do \
 	    $(INSTALL) -c -m 644 $$i $(SHAREQPDL)/crd/; \
+	done
+	#
+	# Install prebuilt CRD files
+	#
+	$(INSTALL) -d $(SHAREHBPL1)/
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHBPL1)/crd/
+	for i in crd/hbpl1/*cms* crd/hbpl1/*.ps; do \
+	    $(INSTALL) -c -m 644 $$i $(SHAREHBPL1)/crd/; \
 	done
 
 install-psfiles:

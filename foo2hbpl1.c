@@ -16,7 +16,10 @@ With this utility, you can print to some Dell and Fuji printers, such as these:
     - Xerox Phaser 6010N		B/W and Color	-z1
 
 AUTHORS
-This program was originally written by Dave Coffin in March 2014.
+This program began life as Robert Szalai's 'pbmtozjs' program,
+and then overhauled by Rick Richardson with several improvements.
+foo2hbpl1.c originally began life as foo2hbpl2.c and was modified
+for use with HBPLv1 type printers by Dave Coffin in March 2014.
 
 LICENSE
 This program is free software; you can redistribute it and/or modify
@@ -35,7 +38,7 @@ along with this program; if not, see
 
 */
 
-static char Version[] = "$Id: foo2hbpl1.c,v 1.3 2014/03/30 05:08:32 rick Exp $";
+static char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
 
 #include <time.h>
 #include <stdio.h>
@@ -59,7 +62,7 @@ int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
 char	*Username = NULL;
 char	*Filename = NULL;
-int	Clip[] = { 33,33,33,33 };
+int	Clip[] = { 20,20,20,20 };
 
 static const char *mname[2+24] = { //Known media types
 	"COATEDPAPER2",		// z1/--, 4=coated, light weight glossy card? (z1)
@@ -860,7 +863,7 @@ main(int argc, char *argv[])
     if (Copies < 1 || Copies > 999)
 	error(1, "Illegal value for -n%d. Must be a number [1..999]!\n", Copies);
     for (i = 0; i < 4; ++i)
-	if (Clip[i] < 33) Clip[i] = 33;
+	if (Clip[i] < 20) Clip[i] = 20;
 
     argc -= optind;
     argv += optind;

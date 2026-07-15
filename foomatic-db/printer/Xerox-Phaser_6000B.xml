@@ -44,14 +44,13 @@
 	<!--no pjl--><!--No "text"?-->
     </lang>
     <autodetect>
-<!--
-        <parallel>
+        <usb>
             <ieee1284>MFG:Xerox;CMD:HBPL;MDL:Phaser 6000B;CLS:PRINTER;STATUS:BUSY;</ieee1284>
             <manufacturer>Xerox</manufacturer>
             <model>Phaser 6000B</model>
             <commandset>HBPL</commandset>
-        </parallel>
--->
+            <description>Xerox Phaser 6000B</description>
+        </usb>
 	<snmp>
 	    <description>Xerox Phaser 6000B</description>
 	</snmp>

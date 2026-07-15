@@ -31,7 +31,7 @@
 *Manufacturer:	"Xerox"
 *Product:	"(Phaser 6000B)"
 *cupsVersion:	1.0
-*cupsManualCopies: False
+*cupsManualCopies: True
 *cupsModelNumber:  2
 *cupsFilter:	"application/vnd.cups-postscript 100 foomatic-rip"
 *cupsFilter:	"application/vnd.cups-pdf 0 foomatic-rip"
@@ -71,7 +71,7 @@
 
 
 
-*HWMargins: 11 11 11 11
+*HWMargins: 20 20 20 20
 *VariablePaperSize: True
 *MaxMediaWidth: 100000
 *MaxMediaHeight: 100000
@@ -114,72 +114,72 @@
 *OpenUI *PageSize/Page Size: PickOne
 *FoomaticRIPOption PageSize: enum CmdLine A
 *OrderDependency: 135 AnySetup *PageSize
-*DefaultPageSize: letter
-*PageSize letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
-*FoomaticRIPOptionSetting PageSize=letter: "-p0 "
-*PageSize a4/A4: "%% FoomaticRIPOptionSetting: PageSize=a4"
-*FoomaticRIPOptionSetting PageSize=a4: "-p2 "
-*PageSize a5/A5: "%% FoomaticRIPOptionSetting: PageSize=a5"
-*FoomaticRIPOptionSetting PageSize=a5: "-p15 "
+*DefaultPageSize: Letter
+*PageSize Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
+*FoomaticRIPOptionSetting PageSize=Letter: "-p0 "
+*PageSize A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
+*FoomaticRIPOptionSetting PageSize=A4: "-p2 "
+*PageSize A5/A5: "%% FoomaticRIPOptionSetting: PageSize=A5"
+*FoomaticRIPOptionSetting PageSize=A5: "-p15 "
 *PageSize B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
 *FoomaticRIPOptionSetting PageSize=B5jis: "-p11 "
-*PageSize env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=env10"
-*FoomaticRIPOptionSetting PageSize=env10: "-p6 "
-*PageSize envC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=envC5"
-*FoomaticRIPOptionSetting PageSize=envC5: "-p8 "
-*PageSize envDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=envDL"
-*FoomaticRIPOptionSetting PageSize=envDL: "-p9 "
-*PageSize envMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=envMonarch"
-*FoomaticRIPOptionSetting PageSize=envMonarch: "-p7 "
-*PageSize executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=executive"
-*FoomaticRIPOptionSetting PageSize=executive: "-p3 "
-*PageSize folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=folio"
-*FoomaticRIPOptionSetting PageSize=folio: "-p205 "
-*PageSize legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=legal"
-*FoomaticRIPOptionSetting PageSize=legal: "-p1 "
+*PageSize Env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
+*FoomaticRIPOptionSetting PageSize=Env10: "-p6 "
+*PageSize EnvC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
+*FoomaticRIPOptionSetting PageSize=EnvC5: "-p8 "
+*PageSize EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
+*FoomaticRIPOptionSetting PageSize=EnvDL: "-p9 "
+*PageSize EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
+*FoomaticRIPOptionSetting PageSize=EnvMonarch: "-p7 "
+*PageSize Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
+*FoomaticRIPOptionSetting PageSize=Executive: "-p3 "
+*PageSize Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
+*FoomaticRIPOptionSetting PageSize=Folio: "-p205 "
+*PageSize Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
+*FoomaticRIPOptionSetting PageSize=Legal: "-p1 "
 *CloseUI: *PageSize
 
 *OpenUI *PageRegion: PickOne
 *OrderDependency: 135 AnySetup *PageRegion
-*DefaultPageRegion: letter
-*PageRegion letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
-*PageRegion a4/A4: "%% FoomaticRIPOptionSetting: PageSize=a4"
-*PageRegion a5/A5: "%% FoomaticRIPOptionSetting: PageSize=a5"
+*DefaultPageRegion: Letter
+*PageRegion Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
+*PageRegion A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
+*PageRegion A5/A5: "%% FoomaticRIPOptionSetting: PageSize=A5"
 *PageRegion B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
-*PageRegion env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=env10"
-*PageRegion envC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=envC5"
-*PageRegion envDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=envDL"
-*PageRegion envMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=envMonarch"
-*PageRegion executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=executive"
-*PageRegion folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=folio"
-*PageRegion legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=legal"
+*PageRegion Env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
+*PageRegion EnvC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
+*PageRegion EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
+*PageRegion EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
+*PageRegion Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
+*PageRegion Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
+*PageRegion Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
 *CloseUI: *PageRegion
 
-*DefaultImageableArea: letter
-*ImageableArea letter/Letter: "9 12.00 603 780.00"
-*ImageableArea a4/A4: "9 12.00 586 830.00"
-*ImageableArea a5/A5: "9 12.00 411 583.00"
-*ImageableArea B5jis/B5 (JIS): "9 12.00 509 715.00"
-*ImageableArea env10/Env #10: "9 12.00 288 672.00"
-*ImageableArea envC5/Env C5: "9 12.00 450 637.00"
-*ImageableArea envDL/Env DL: "9 12.00 302 611.00"
-*ImageableArea envMonarch/Env Monarch: "9 12.00 270 528.00"
-*ImageableArea executive/Executive: "9 12.00 513 744.00"
-*ImageableArea folio/Folio: "9 12.00 603 924.00"
-*ImageableArea legal/Legal: "9 12.00 603 996.00"
+*DefaultImageableArea: Letter
+*ImageableArea Letter/Letter: "20 20.00 592 772.00"
+*ImageableArea A4/A4: "20 20.00 575 822.00"
+*ImageableArea A5/A5: "20 20.00 400 575.00"
+*ImageableArea B5jis/B5 (JIS): "20 20.00 498 707.00"
+*ImageableArea Env10/Env #10: "20 20.00 277 664.00"
+*ImageableArea EnvC5/Env C5: "20 20.00 439 629.00"
+*ImageableArea EnvDL/Env DL: "20 20.00 291 603.00"
+*ImageableArea EnvMonarch/Env Monarch: "20 20.00 259 520.00"
+*ImageableArea Executive/Executive: "20 20.00 502 736.00"
+*ImageableArea Folio/Folio: "20 20.00 598 916.00"
+*ImageableArea Legal/Legal: "20 20.00 598 988.00"
 
-*DefaultPaperDimension: letter
-*PaperDimension letter/Letter: "612 792"
-*PaperDimension a4/A4: "595 842"
-*PaperDimension a5/A5: "420 595"
+*DefaultPaperDimension: Letter
+*PaperDimension Letter/Letter: "612 792"
+*PaperDimension A4/A4: "595 842"
+*PaperDimension A5/A5: "420 595"
 *PaperDimension B5jis/B5 (JIS): "518 727"
-*PaperDimension env10/Env #10: "297 684"
-*PaperDimension envC5/Env C5: "459 649"
-*PaperDimension envDL/Env DL: "311 623"
-*PaperDimension envMonarch/Env Monarch: "279 540"
-*PaperDimension executive/Executive: "522 756"
-*PaperDimension folio/Folio: "612 936"
-*PaperDimension legal/Legal: "612 1008"
+*PaperDimension Env10/Env #10: "297 684"
+*PaperDimension EnvC5/Env C5: "459 649"
+*PaperDimension EnvDL/Env DL: "311 623"
+*PaperDimension EnvMonarch/Env Monarch: "279 540"
+*PaperDimension Executive/Executive: "522 756"
+*PaperDimension Folio/Folio: "612 936"
+*PaperDimension Legal/Legal: "612 1008"
 
 *OpenUI *MediaType/Media Type: PickOne
 *FoomaticRIPOption MediaType: enum CmdLine A
@@ -237,7 +237,7 @@
 
 *OpenUI *Copies/Copies: PickOne
 *FoomaticRIPOption Copies: int CmdLine A
-*FoomaticRIPOptionPrototype Copies: "-n%s "
+*FoomaticRIPOptionPrototype Copies: "-z1 -n%s "
 *FoomaticRIPOptionRange Copies: 1 100
 *OrderDependency: 220 AnySetup *Copies
 *DefaultCopies: 1

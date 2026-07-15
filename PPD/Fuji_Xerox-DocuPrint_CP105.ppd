@@ -114,45 +114,45 @@
 *OpenUI *PageSize/Page Size: PickOne
 *FoomaticRIPOption PageSize: enum CmdLine A
 *OrderDependency: 135 AnySetup *PageSize
-*DefaultPageSize: letter
-*PageSize letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
-*FoomaticRIPOptionSetting PageSize=letter: "-p0 "
-*PageSize a4/A4: "%% FoomaticRIPOptionSetting: PageSize=a4"
-*FoomaticRIPOptionSetting PageSize=a4: "-p2 "
-*PageSize a5/A5: "%% FoomaticRIPOptionSetting: PageSize=a5"
-*FoomaticRIPOptionSetting PageSize=a5: "-p15 "
+*DefaultPageSize: Letter
+*PageSize Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
+*FoomaticRIPOptionSetting PageSize=Letter: "-p0 "
+*PageSize A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
+*FoomaticRIPOptionSetting PageSize=A4: "-p2 "
+*PageSize A5/A5: "%% FoomaticRIPOptionSetting: PageSize=A5"
+*FoomaticRIPOptionSetting PageSize=A5: "-p15 "
 *PageSize B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
 *FoomaticRIPOptionSetting PageSize=B5jis: "-p11 "
-*PageSize env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=env10"
-*FoomaticRIPOptionSetting PageSize=env10: "-p6 "
-*PageSize envC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=envC5"
-*FoomaticRIPOptionSetting PageSize=envC5: "-p8 "
-*PageSize envDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=envDL"
-*FoomaticRIPOptionSetting PageSize=envDL: "-p9 "
-*PageSize envMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=envMonarch"
-*FoomaticRIPOptionSetting PageSize=envMonarch: "-p7 "
-*PageSize executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=executive"
-*FoomaticRIPOptionSetting PageSize=executive: "-p3 "
-*PageSize folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=folio"
-*FoomaticRIPOptionSetting PageSize=folio: "-p205 "
-*PageSize legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=legal"
-*FoomaticRIPOptionSetting PageSize=legal: "-p1 "
+*PageSize Env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
+*FoomaticRIPOptionSetting PageSize=Env10: "-p6 "
+*PageSize EnvC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
+*FoomaticRIPOptionSetting PageSize=EnvC5: "-p8 "
+*PageSize EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
+*FoomaticRIPOptionSetting PageSize=EnvDL: "-p9 "
+*PageSize EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
+*FoomaticRIPOptionSetting PageSize=EnvMonarch: "-p7 "
+*PageSize Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
+*FoomaticRIPOptionSetting PageSize=Executive: "-p3 "
+*PageSize Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
+*FoomaticRIPOptionSetting PageSize=Folio: "-p205 "
+*PageSize Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
+*FoomaticRIPOptionSetting PageSize=Legal: "-p1 "
 *CloseUI: *PageSize
 
 *OpenUI *PageRegion: PickOne
 *OrderDependency: 135 AnySetup *PageRegion
-*DefaultPageRegion: letter
-*PageRegion letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
-*PageRegion a4/A4: "%% FoomaticRIPOptionSetting: PageSize=a4"
-*PageRegion a5/A5: "%% FoomaticRIPOptionSetting: PageSize=a5"
+*DefaultPageRegion: Letter
+*PageRegion Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=letter"
+*PageRegion A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
+*PageRegion A5/A5: "%% FoomaticRIPOptionSetting: PageSize=A5"
 *PageRegion B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
-*PageRegion env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=env10"
-*PageRegion envC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=envC5"
-*PageRegion envDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=envDL"
-*PageRegion envMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=envMonarch"
-*PageRegion executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=executive"
-*PageRegion folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=folio"
-*PageRegion legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=legal"
+*PageRegion Env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
+*PageRegion EnvC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
+*PageRegion EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
+*PageRegion EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
+*PageRegion Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
+*PageRegion Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
+*PageRegion Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
 *CloseUI: *PageRegion
 
 *DefaultImageableArea: letter
