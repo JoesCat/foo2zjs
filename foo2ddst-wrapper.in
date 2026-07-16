@@ -446,6 +446,9 @@ Custom*)
 12|16k195x270) PAPER=12;      paper=executive;XDIM="9212";  YDIM="6378"
                 #set_clipping 126 87     126 87
                 ;;
+13|a3|A3)       PAPER=13;       paper=a3;        XDIM="19842"; YDIM="7014"
+                #set_clipping 160 100    160 100
+                ;;
 20|"env#10")	PAPER=20;	paper=env10;     XDIM="4950";  YDIM="5700"
 		#set_clipping 171 78	171 78
 		;;

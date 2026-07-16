@@ -31,6 +31,11 @@
 		 it should be treated as documentation for the user. -->
 	    <ev_shortname> <en>1200x600dpi</en> </ev_shortname>
 	    <ev_driverval>1200x600</ev_driverval>
+	    <constraints>
+		<constraint sense="false">
+		    <make>KONICA MINOLTA</make>
+		</constraint>
+	    </constraints>
 	</enum_val>
     </enum_vals>
 </option>

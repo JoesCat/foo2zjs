@@ -78,6 +78,16 @@
 	    <ev_shortname> <en>w553h765</en> </ev_shortname>
 	    <ev_driverval>12</ev_driverval>
 	</enum_val>
+	<enum_val id="ev/foo2ddst-PageSize-13">
+	    <ev_longname> <en>A3</en> </ev_longname>
+	    <ev_shortname> <en>A3</en> </ev_shortname>
+	    <ev_driverval>13</ev_driverval>
+	    <constraints>
+		<constraint sense="false">
+		    <make>Ricoh</make>
+		</constraint>
+	    </constraints>
+	</enum_val>
 	<enum_val id="ev/foo2ddst-PageSize-Custom">
 	    <ev_longname> <en>Custom</en> </ev_longname>
 	    <ev_shortname> <en>Custom</en> </ev_shortname>

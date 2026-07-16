@@ -492,6 +492,7 @@ start_page(BIE_CHAIN **root, int nbie, FILE *ofp)
 			    "LETTER", "LEGAL", "EXECUTIVE", "INVOICE",
 			    "A4", "A5", "A6", "JISB5", "JISB6",
 			    "16K_197x273", "16K_184x260", "16K_195x270",
+			    "A3"
 			};
 
     fprintf(ofp, "@PJL SET PAGESTATUS=START\r\n");
