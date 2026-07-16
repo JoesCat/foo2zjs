@@ -55,7 +55,7 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
  * Command line options
  */
 int	Copies = 1;		// [1..999] Page Copies (default=1)
-int	Debug = 0;
+int	Debug = 0;		// Debug>=9 if md5sum testpage.ps results
 int	MediaCode = -1;		// -1=undefined (default to paper)
 int	PaperCode = 0;		// (default=letter)
 int	Model = -1;		// -1=undefined (default -z0)
@@ -461,7 +461,8 @@ start_doc(int color)
 	"@PJL SET JOBATTR=\"@IDFT=0\"\n"
 	"@PJL ENTER LANGUAGE=HBPL\n"
 	, (Model > 0 ? "@PJL RESET\n" : "")
-	, datestr, timestr
+	, (Debug < 9 ? datestr : "02/26/2026")
+	, (Debug < 9 ? timestr : "12:34:56")
 	, Filename ? Filename : ""
 	, Username ? Username : ""
 	, mname[MediaCode]
