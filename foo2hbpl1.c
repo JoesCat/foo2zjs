@@ -237,6 +237,37 @@ struct stream
 };
 
 void
+save_toner(int color, int width, int height, char *image)
+{
+    int i, row, col;
+    char *dp;
+
+    color = (color ? 4 : 1);
+
+    // checker pattern 0x55/0xAA, 8bpp*color
+    for (row = 0; row < height; row += 2)
+    {
+	dp = image + row * width * color;
+	for (col = 0; col < width; col += 2)
+	{
+	    for (i = 0; i < color; ++i)
+		*dp++ = 0;
+	    dp += color;
+	}
+    }
+    for (row = 1; row < height; row += 2)
+    {
+	dp = image + row * width * color;
+	for (col = color; col < width; col += 2)
+	{
+	    dp += 4;
+	    for (i = 0; i < color; ++i)
+		*dp++ = 0;
+	}
+    }
+}
+
+void
 putbits(struct stream *s, unsigned val, int nbits)
 {
     if (s->off + 16 > s->size &&
@@ -812,29 +843,9 @@ six:	    iwide = getint(fp);
 	}
 	memset(image+deep, 0, byte*(Clip[1]+1));
 	memset(image+deep + byte*(ihigh-Clip[3]+1), 0, byte*Clip[3]);
-	if (SaveToner)
-	{
-	    int bpl, bpl16;
 
-	    debug(2, "  -t SaveToner enabled\n");
-	    wide = (iwide + 127) & ~127;
-	    bpl = (wide + 7) / 8;
-	    bpl16 = (bpl + 15) & ~15;
-	    //switch (ideep)
-	    //{
-	    //case 0: // BITMAP
-	    //case 1: // GRAY
-	    //case 3: // RGB
-	    //case 4: // CMYK
-		for (row = 0; row < ihigh; row += 2)
-		    for (col = 0; col < bpl16; ++col)
-			image[row*bpl16 + col] &= 0x55;
-		for (row = 1; row < ihigh; row += 2)
-		    for (col = 0; col < bpl16; ++col)
-			image[row*bpl16 + col] &= 0xaa;
-	    //	break;
-	    //}
-	}
+	if (SaveToner)
+	    save_toner(deep > 1, iwide, ihigh, (char *) image);
 	encode_page(deep > 1, iwide, ihigh, (char *) image);
 	free(image);
     }
@@ -849,7 +860,7 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:n:p:t:u:z:J:U:D:V")) != EOF)
+    while ( (c = getopt(argc, argv, "m:n:p:tT:u:z:J:U:D:V?h")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
