@@ -55,51 +55,53 @@ Usage:
 	and converts it to a Xerox HBPL version 1 stream.
 
 Normal Options:
--c		  Print in color (else monochrome)
--C colormode	  Colormode [$COLORMODE]
-		    10=ICM RGB color profile (using -G *.icm file)
--m media	  Media code to send to printer [$MEDIA]
-		  -z0:
-		    1=plain, 2=thick, 3=high-quality, 4=coated,
-		    5=label, 6=envelope, 7=recycled, 8=plain (side2),
-		    9=thick (side2), 10=high-quality (side2),
-		    11=coated (side2), 12=recycled (side2)
-		  -z1: above plus
-		    13=letterhead, 14=letterhead (side2),
-		    15=preprinted, 16=preprinted (side2),
-		    17=prepunched, 18=prepunched (side2),
-		    19=color, 20=color (side2),
-		    21=user, 22=user (side2),
-		    23=special, 24=special (side2)
--p paper	  Paper code [$PAPER]
-		    0=Letter, 1=Legal, 2=A4, 3=Executive, 6=Env10,
-		    7=EnvMonarch, 8=EnvC5, 9=EnvDL, 11=B5jis,
-		    15=A5, 205=Folio, 255=Custom (XxY)
--n copies	  Number of copies [$COPIES]
-		  Resolution is always 600x600
--t		  Draft mode. Every other pixel is white.
+-c		Print in color (else monochrome)
+-C colormode	Colormode [$COLORMODE]
+		  10=ICM RGB color profile (using -G *.icm file)
+-m media	Media code to send to printer [$MEDIA]
+		-z0:
+		  1=plain, 2=thick, 3=high-quality, 4=coated,
+		  5=label, 6=envelope, 7=recycled, 8=plain (side2),
+		  9=thick (side2), 10=high-quality (side2),
+		  11=coated (side2), 12=recycled (side2)
+		-z1: above plus
+		  13=letterhead, 14=letterhead (side2),
+		  15=preprinted, 16=preprinted (side2),
+		  17=prepunched, 18=prepunched (side2),
+		  19=color, 20=color (side2),
+		  21=user, 22=user (side2),
+		  23=special, 24=special (side2)
+-p paper	Paper code [$PAPER]
+		  0=Letter, 1=Legal, 2=A4, 3=Executive, 6=Env10,
+		  7=EnvMonarch, 8=EnvC5, 9=EnvDL, 11=B5jis,
+		  15=A5, 205=Folio, 255=Custom (XxY)
+-n copies	Number of copies [$COPIES]
+		Resolution is always 600x600
+-t		Draft mode. Every other pixel is white.
 -2/-3/-4/-6/-8/-10/-12/-14/-15/-16/-18
-		  Print with N-up (requires psutils)
--o orient	  For N-up: -op is portrait, -ol is landscape, -os is seascape.
+		Print with N-up (requires psutils)
+-o orient	For N-up: -op is portrait, -ol is landscape, -os is seascape.
 
 Printer Tweaking Options:
 -u left,top,right,bottom
-		  Clip (i.e. white-out) margins of specified width
+		Clip (i.e. white-out) margins of specified width
 
 Color Tweaking Options:
--g gsopts	  Additional options to pass to Ghostscript, such as
-		  -dDITHERPPI=nnn, etc.  May appear more than once. []
--G profile.icm	  Convert profile.icm to a Postscript CRD using icc2ps and
-		  adjust colors using the setcolorrendering PS operator.
-		  $SHARE/icm/ will be searched for profile.icm.
--I intent	  Select profile intent from ICM file [$INTENT]
+-g gsopts	Additional options to pass to Ghostscript, such as
+		  -dDITHERPPI=nnn, etc. May appear more than once. []
+-G profile.icm	Convert profile.icm to a Postscript CRD using icc2ps and
+		adjust colors using the setcolorrendering PS operator.
+		$SHARE/icm/ will be searched for profile.icm.
+-I intent	Select profile intent from ICM file [$INTENT]
 		  0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute
--G gamma-file.ps  Prepend gamma-file to the Postscript input to perform
-		  color correction using the setcolortransfer PS operator.
+-G gamma-file.ps Prepend gamma-file to the Postscript input to perform
+		color correction using the setcolortransfer PS operator.
 
 Debugging Options:
--D lvl		  Set Debug level [$DEBUG]
--V		  $VERSION
+-S plane	Output just a single color plane from a color print
+		  1=Cyan, 2=Magenta, 3=Yellow, 4=Black
+-D lvl		Set Debug level [$DEBUG]
+-V		$VERSION
 EOF
 
 	exit 1
@@ -613,7 +615,8 @@ foo2zjs-pstops $PSTOPS_OPTS | \
 $PREFILTER \
 | ($GS $PAPERSIZE -g$DIM -r$RES $GSDEV $GSOPTS \
     -sOutputFile="|cat 1>&3" $GAMMAFILE -_ >/dev/null) 3>&1 \
-| foo2hbpl1 -m$MEDIA $COPIES $CLIP_ALL $SAVETONER -J "$LPJOB" -U "$USER" -D$DEBUG
+| foo2hbpl1 -m$MEDIA $COPIES $CLIP_ALL $SAVETONER $COLOR2MONO -D$DEBUG \
+    -J "$LPJOB" -U "$USER"
 
 #
 #	Log the command line, for debugging and problem reports
@@ -622,7 +625,7 @@ if [ -x /usr/bin/logger ]; then
     logger -t "$BASENAME" -p lpr.info -- \
 	"$GSBIN $PAPERSIZE -g$DIM -r$RES $GSDEV $GSOPTS $GAMMAFILE"
     logger -t "$BASENAME" -p lpr.info -- \
-	"foo2hbpl1 -m$MEDIA $COPIES $CLIP_ALL $SAVETONER"
+	"foo2hbpl1 -m$MEDIA $COPIES $CLIP_ALL $SAVETONER $COLOR2MONO -D$DEBUG"
 fi
 
 #

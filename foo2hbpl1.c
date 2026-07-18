@@ -54,6 +54,7 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
 /*
  * Command line options
  */
+int	Color2Mono = 0;		// default=0=off
 int	Copies = 1;		// [1..999] Page Copies (default=1)
 int	Debug = 0;		// Debug>=9 if md5sum testpage.ps results
 int	MediaCode = -1;		// -1=undefined (default to paper)
@@ -187,6 +188,8 @@ usage(void)
 "                 1=(example: Xerox 6000/6010)\n"
 "\n"
 "Debugging Options:\n"
+"-S plane	Output a single color plane from a color print [%d]\n"
+"		  0=off, 1=Cyan, 2=Magenta, 3=Yellow, 4=Black\n"
 "-D lvl		Set Debug level [%d]\n"
 "-V		Version %s\n"
 	, PaperCode
@@ -195,6 +198,7 @@ usage(void)
 	, Username ? Username : ""
 	, Clip[0], Clip[1], Clip[2], Clip[3]
 	, Model
+	, Color2Mono
 	, Debug
 	, Version);
 }
@@ -237,10 +241,10 @@ struct stream
 };
 
 void
-save_toner(int color, int width, int height, char *image)
+save_toner(int color, unsigned int width, unsigned int height, char *image)
 {
-    int i, row, col;
     char *dp;
+    unsigned int i, row, col;
 
     color = (color ? 4 : 1);
 
@@ -258,13 +262,34 @@ save_toner(int color, int width, int height, char *image)
     for (row = 1; row < height; row += 2)
     {
 	dp = image + row * width * color;
-	for (col = color; col < width; col += 2)
+	for (col = 1; col < width; col += 2)
 	{
-	    dp += 4;
+	    dp += color;
 	    for (i = 0; i < color; ++i)
 		*dp++ = 0;
 	}
     }
+    debug(2, "  Done save_toner(%s)\n", (color == 4 ? "Color" : "Gray"));
+}
+
+void
+color_to_gray(int color, unsigned int width, unsigned int height, int *deep, char *image)
+{
+    char *dp, *sp;
+    unsigned int row, col;
+
+    for (row = 0; row < height; ++row)
+    {
+	sp = (image + row * width * 4 + (color & 3)); // KCMY
+	dp = (image + row * width);
+	for (col = 0; col < width; ++col)
+	{
+	    *dp++ = *sp;
+	    sp += 4;
+	}
+    }
+    *deep = 1;
+    debug(2, "  Done color_to_gray()\n");
 }
 
 void
@@ -272,7 +297,7 @@ putbits(struct stream *s, unsigned val, int nbits)
 {
     if (s->off + 16 > s->size &&
 	!(s->buf = realloc(s->buf, s->size += 0x100000)))
-	    error (1, "Out of memory\n");
+	    error(1, "Out of memory\n");
     if (s->bits)
     {
 	s->off--;
@@ -322,7 +347,7 @@ putbits(struct stream *s, unsigned val, int nbits)
 void
 put_len(struct stream *s, unsigned val)
 {
-    unsigned code[] =
+    static const unsigned code[] =
     {
 	  1, 0, 2,
 	  2, 2, 3,
@@ -382,7 +407,7 @@ put_len(struct stream *s, unsigned val)
 void
 put_diff(struct stream *s, signed char val)
 {
-    static unsigned short code[] =
+    static const unsigned short code[] =
     {
 	 2,  3, 3, 1,
 	 4,  4, 3, 2,
@@ -503,7 +528,7 @@ start_doc(int color)
 	, Copies);
     fwrite (reca, 1, sizeof reca, stdout);
 
-    debug(1, "Done start_doc(%d). Init printer JOB.\n", color);
+    debug(1, "  Done start_doc(%d). Init printer JOB.\n", color);
     pagenum++;	// Now begin printing as "JOB START=1"...
 }
 
@@ -563,14 +588,14 @@ encode_page(int color, int width, int height, char *image)
 	{ 0x01,0x63,0x1c5,0x1d5,0x1e5,0x22,0x3e6 }, // for text & graphics
 	{ 0x22,0x63,0x1c5,0x1d5,0x1e5,0x01,0x3e6 }, // for images
     };
-    unsigned char *blank;
+    unsigned char *blank, *blank0;
     struct stream stream[5] = { { 0 } };
     int dirs[] = { -1,0,-1,1,2 }, rotor[] = { 0,1,2,3,4 };
     int i, j, row, col, deep, dir, run, try, bdir, brun, total;
     int paper = 510, hsel = 0, off = 0, bit = 0, stat = 0;
     int margin = width-96;
 
-    debug(1, "start encode_page(%d)\n", pagenum);
+    debug(1, "  Start encode_page(%d)\n", pagenum);
 
     deep = 1 + color*3;
 
@@ -613,12 +638,13 @@ psize:
 	dirs[i] -= width;
     if (!color) dirs[4] = -8;
 
-    blank = calloc(height+2, width/8);
-    memset (blank++, -color, width/8+1);
+    blank = blank0 = calloc(height+2, width/8);
+    memset(blank++, -color, width/8+1);
     for (row = 1; row <= height; row++)
     {
-	for (col = deep; col < deep*2; col++)
-	    image[row*width*deep + col] = -1;
+	//for (col = deep; col < deep*2; col++)
+	//    image[row*width*deep + col] = -1;
+	memset(image + row*width * deep + deep, -1, deep);
 	for (col = 8; col < width*deep; col += 4)
 	    if (*(int *)(image + row*width*deep + col))
 	    {
@@ -706,9 +732,9 @@ psize:
 	fwrite(stream[i].buf, 1, stream[i].off, stdout);
 	free(stream[i].buf);
     }
-    free(blank-width/8-1);
+    free(blank0);
     printf("SD");
-    debug(1, "end encode_page(%d), Copies(%d)\n", pagenum, Copies);
+    debug(1, "  End encode_page(%d), Copies(%d)\n", pagenum, Copies);
     pagenum +=Copies;
 }
 #undef IP
@@ -752,7 +778,7 @@ do_file(FILE *fp)
     char tupl[128], line[128];
     unsigned char *image, *sp, *dp;
 
-    debug(1, "start do_file()\n  get dimensions\n");
+    debug(1, "Start do_file()\n");
 
     while ((type = fgetc(fp)) != EOF)
     {
@@ -805,10 +831,10 @@ six:	    iwide = getint(fp);
 	debug(2, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
 		    wide, deep, ibyte, byte);
 
-	image = calloc (ihigh+2, byte);
+	image = calloc(ihigh+2, byte);
 	for (row = 1; row <= ihigh; row++)
 	{
-	    i = fread (image, ibyte, 1, fp);
+	    i = fread(image, ibyte, 1, fp);
 	    sp = image;
 	    dp = image + row*byte;
 	    for (col = 0; col < iwide; col++)
@@ -816,43 +842,43 @@ six:	    iwide = getint(fp);
 		dp += deep;
 		switch (ideep)
 		{
-		case 0: // BITMAP
+		case 0: // B&W 1bpp -> 8bpp
 		    *dp = ((image[col >> 3] >> (~col & 7)) & 1) * 255;
 		    break;
-		case 1: // GRAY
+		case 1: // GRAY 8bpp
 		    *dp = ~*sp;
 		    break;
-		case 3: // RGB
+		case 3: // RGB -> KCMY
 		    for (k = sp[2], i = 0; i < 2; i++)
 			if (k < sp[i]) k = sp[i];
 		    *dp = ~k;
 		    for (i = 0; i < 3; i++)
 			dp[i+1] = k ? (k - sp[i]) * 255 / k : 0;
 		    break;
-		case 4: // CMYK
+		case 4: // CMYK -> KCMY
 		    for (i=0; i < 4; i++)
 			dp[i] = sp[((i-1) & 3)];
 		    break;
 		}
 		sp += ideep;
 	    }
-	    for (i = 0; i < deep*Clip[0]; i++)
-		image[row*byte + deep+i] = 0;
-	    for (i = deep*(iwide-Clip[2]); i < byte; i++)
-		image[row*byte + deep+i] = 0;
+	    memset(image + row*byte, 0, deep*(Clip[0]+1));
+	    memset(image + row*byte + deep*(iwide-Clip[2]), 0, deep*(Clip[2]+1));
 	}
-	memset(image+deep, 0, byte*(Clip[1]+1));
-	memset(image+deep + byte*(ihigh-Clip[3]+1), 0, byte*Clip[3]);
+	memset(image, 0, byte*(Clip[1]+1));
+	memset(image + byte*(ihigh-Clip[3]+1), 0, byte*Clip[3]);
 
+	if (Color2Mono && deep > 1)
+	    color_to_gray(Color2Mono, wide, ihigh+2, &deep, (char *) image);
 	if (SaveToner)
-	    save_toner(deep > 1, iwide, ihigh, (char *) image);
+	    save_toner(deep > 1, wide, ihigh+2, (char *) image);
 	encode_page(deep > 1, iwide, ihigh, (char *) image);
 	free(image);
     }
-    debug(1, "end do_file()\n");
+    debug(1, "End do_file()\n");
     return;
 fail:
-    fprintf (stderr, "Not an acceptable PBM, PPM or PAM file!!!\n");
+    fprintf(stderr, "Not an acceptable PBM, PPM or PAM file!!!\n");
 }
 
 int
@@ -860,7 +886,7 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ( (c = getopt(argc, argv, "m:n:p:tT:u:z:J:U:D:V?h")) != EOF)
+    while ((c = getopt(argc, argv, "m:n:p:tT:u:z:J:U:S:D:V?h")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
@@ -874,9 +900,12 @@ main(int argc, char *argv[])
 	case 'J':  if (optarg[0]) Filename = optarg; break;
 	case 'U':  if (optarg[0]) Username = optarg; break;
 	case 'z':  Model = atoi(optarg);
-		       if (Model < 0 || Model > 1)
-			   error(1, "Illegal value '%s' for -z\n", optarg);
+		   if (Model < 0 || Model > 1)
+		       error(1, "Illegal value '%s' for -z\n", optarg);
 		   break;
+	case 'S':  Color2Mono = atoi(optarg);
+		   if (Color2Mono < 1 || Color2Mono > 4)
+		       error(1, "Illegal value '%s' for -S\n", optarg);
 	case 'D':  Debug = atoi(optarg); break;
 	case 'V':  printf("%s\n", Version); return 0;
 	default:   usage(); return 1;
