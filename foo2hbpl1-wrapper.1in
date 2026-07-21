@@ -38,13 +38,6 @@ n l .
 10	ICM color profile (using \-G *.icm file)
 .TE
 .TP
-.BI \-d\0 duplex
-Duplex code to send to printer [1].
-.TS
-| n l | n l | n l .
-1	off	2	long edge	3	short edge
-.TE
-.TP
 .BI \-m\0 media
 Media code to send to printer [1] or [6].
 .TS
@@ -96,22 +89,8 @@ z0	\-	Dell 1250c / C1660 / C1760
 z1	1-999	Xerox 6000 / 6010
 .TE
 .TP
-.BI \-r\0 xres x yres
-Set device resolution in pixels/inch [1200x600].
-.TP
-.BI \-s\0 source
-Source (Input Slot) code to send to printer [7].
-.TS
-| n l | n l.
-1	upper	4	manual
-2	lower	7	auto
-.TE
-.TP
 .BI \-t\0
 Draft mode. Every other pixel is white.
-.TP
-.BI \-T\0 density
-Print density (1-5).  The default is 3 (medium).
 .TP
 .BI "\-2 \-3 \-4 \-5 \-6 \-8 \-9 \-10 \-12 \-14 \-15 \-16 \-18"
 Print in N-up.  Requires the \fBpsutils\fP package.
@@ -130,37 +109,17 @@ for a particular printer.
 .TP
 .BI \-u\0 xoff x yoff
 Set the offset of the start of the printable region from the
-upper left corner, in pixels [varies with paper size].
-The defaults should work on the 2200DL and 2300DL, and have not
-been tested on any other printers.
+upper left corner, in pixels [20x20].
 .TP
 .BI \-l\0 xoff x yoff
 Set the offset of the end of the printable region from the
-lower right corner, in pixels [varies with paper size].
-The defaults should work on the 2200DL and 2300DL, and have not
-been tested on any other printers.
+lower right corner, in pixels [20x20].
 .TP
-.BI \-L\0 mask
-Send the logical clipping values from \-u/-l in the ZjStream.
-\fBfoo2hbpl1-wrapper\fP always runs Ghostscript with the ideal page dimensions,
-so that the scale of the image is correct,
-regardless whether or not the printer has unprintable regions.
-This option is used to move the position of the clipped image
-back to where it belongs on the page.  The default is to send
-the amount which was clipped by \-u and \-l, and should be
-good in most cases.
-.TS
-l l.
-0	don't send any logical clipping amounts
-1	only send Y clipping amount
-2	only send X clipping amount
-3	send both X and Y clipping amounts
-.TE
+.BI \-A
+AllIsBlack: convert C=1,M=1,Y=1 to just K=1. Works with color input only.
 .TP
-.BI \-P
-Do not send START_PLANE codes on monochrome output.  May be
-needed by some monochrome-only printers, such as the
-HP LaserJet 1000.
+.BI \-B
+BlackClears: K=1 forces C,M,Y to 0. Works with color input only.
 .TP
 .BI \-z\0 model
 Model. Default is [0].
@@ -172,13 +131,6 @@ _
 z0	Dell 1250c / C1660 / C1760
 z1	Xerox 6000 / 6010
 .TE
-.TP
-.BI \-X\0 padlen
-Add extra zero padding to the end of BID segments.  The default is
-16 bytes.  Padding 16 bytes of zeroes
-is needed for older ZjStream printers, such as the Minolta 2200DL
-and HP LaserJet 1000, and seems harmless to newer ones, such as
-the Minolta 2300DL.  So the default should be good for all cases.
 .SS Color Tweaking Options
 These are the options used to control the quality of color output.
 Color correction is currently a WORK IN PROGRESS.

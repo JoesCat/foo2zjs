@@ -12,8 +12,10 @@ With this utility, you can print to some Dell and Fuji printers, such as these:
     - Dell C1760			B/W and Color
     - Epson AcuLaser C1700		B/W and Color
     - Fuji-Xerox DocuPrint CP105	B/W and Color
+These -z1 printers appear to recognize an extended command set:
     - Xerox Phaser 6000B		B/W and Color	-z1
     - Xerox Phaser 6010N		B/W and Color	-z1
+Printers listed above are personal type with 1 autotray (maybe plus a manual feed)
 
 AUTHORS
 This program began life as Robert Szalai's 'pbmtozjs' program,
@@ -54,6 +56,8 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
 /*
  * Command line options
  */
+int	AllIsBlack = 0;
+int	BlackClears = 0;
 int	Color2Mono = 0;		// default=0=off
 int	Copies = 1;		// [1..999] Page Copies (default=1)
 int	Debug = 0;		// Debug>=9 if md5sum testpage.ps results
@@ -62,6 +66,8 @@ int	PaperCode = 0;		// (default=letter)
 int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
 int	SaveToner = 0;
+int	PageWidth = 600 * 8.5;
+int	PageHeight = 600 * 11;
 char	*Username = NULL;
 char	*Filename = NULL;
 int	Clip[] = { 20,20,20,20 };
@@ -181,8 +187,10 @@ usage(void)
 "-U username	Username string to send to printer [%s]\n"
 "\n"
 "Printer Tweaking Options:\n"
-"-u left,top,right,bottom\n"
-"		Erase margins of specified width [%d,%d,%d,%d]\n"
+"-u <xoff>x<yoff> Set upper-left clip margin offset [%dx%d] pixels\n"
+"-l <xoff>x<yoff> Set lower-right clip margin offset [%dx%d] pixels\n"
+"-A		AllIsBlack: convert C=1,M=1,Y=1 to just K=1\n"
+"-B		BlackClears: K=1 forces C,M,Y to 0\n"
 "-z model	Model: [%d]\n"
 "                 0=(default) (Need more info for list)\n"
 "                 1=(example: Xerox 6000/6010)\n"
@@ -234,21 +242,15 @@ error(int fatal, char *fmt, ...)
     }
 }
 
-struct stream
-{
-    unsigned char *buf;
-    int size, off, bits;
-};
-
 void
-save_toner(int color, unsigned int width, unsigned int height, char *image)
+save_toner(int color, unsigned int width, unsigned int height, unsigned char *image)
 {
-    char *dp;
+    unsigned char *dp;
     unsigned int i, row, col;
 
     color = (color ? 4 : 1);
 
-    // checker pattern 0x55/0xAA, 8bpp*color
+    // checker pattern 0xAA/0x55, 8bpp*color
     for (row = 0; row < height; row += 2)
     {
 	dp = image + row * width * color;
@@ -273,9 +275,56 @@ save_toner(int color, unsigned int width, unsigned int height, char *image)
 }
 
 void
-color_to_gray(int color, unsigned int width, unsigned int height, int *deep, char *image)
+all_is_black(unsigned int width, unsigned int height, unsigned char *image)
 {
-    char *dp, *sp;
+    unsigned char *p;
+    unsigned int row, col;
+
+    for (row = 0; row < height; ++row)
+    {
+	p = image + row * width * 4; // KCMY
+	for (col = 0; col < width; ++col)
+	{
+	    if (p[1] == 255 && p[2] == 255 && p[3] == 255)
+	    {
+		*p++ = 255; *p++ = 0; *p++ = 0; *p++ = 0;
+		//fprintf(stderr,"a");
+	    }
+	    else
+		p += 4;
+	}
+    }
+    debug(2, "  Done all_is_black()\n");
+}
+
+void
+black_clears(unsigned int width, unsigned int height, unsigned char *image)
+{
+    unsigned char *p;
+    unsigned int row, col;
+
+    for (row = 0; row < height; ++row)
+    {
+	p = image + row * width * 4; // KCMY
+	for (col = 0; col < width; ++col)
+	{
+	    if (*p++ == 255)
+	    {
+		*p++ = 0; *p++ = 0; *p++ = 0;
+		//fprintf(stderr,"b");
+	    }
+	    else
+		p += 3;
+	}
+    }
+    debug(2, "  Done black_clears()\n");
+}
+
+void
+color_to_gray(int color, unsigned int width, unsigned int height, \
+	      int *deep, unsigned char *image)
+{
+    unsigned char *dp, *sp;
     unsigned int row, col;
 
     for (row = 0; row < height; ++row)
@@ -291,6 +340,12 @@ color_to_gray(int color, unsigned int width, unsigned int height, int *deep, cha
     *deep = 1;
     debug(2, "  Done color_to_gray()\n");
 }
+
+struct stream
+{
+    unsigned char *buf;
+    int size, off, bits;
+};
 
 void
 putbits(struct stream *s, unsigned val, int nbits)
@@ -529,7 +584,7 @@ start_doc(int color)
     fwrite (reca, 1, sizeof reca, stdout);
 
     debug(1, "  Done start_doc(%d). Init printer JOB.\n", color);
-    pagenum++;	// Now begin printing as "JOB START=1"...
+    pagenum++;	// Now begin printing as "JOB MODE=PRINTER START=1"...
 }
 
 #define IP (((int *)image) + off)
@@ -607,8 +662,8 @@ encode_page(int color, int width, int height, char *image)
 	    goto psize;
 	}
     paper = i; // 255, use custom paper size if you are here
-    setle (head+15, 2,  (width*254+300)/600);  // units of 0.1mm
-    setle (head+17, 2, (height*254+300)/600);
+    setle(head+15, 2,  (width*254+300)/600);  // units of 0.1mm
+    setle(head+17, 2, (height*254+300)/600);
     head[21] = 2;
 psize:
     head[12] = papers[paper]>>1;
@@ -625,11 +680,11 @@ psize:
 	start_doc(color);
 
     width = -(-width & -8);
-    setle (head+33, 4, pagenum);
-    setle (head+39, 4, width);
-    setle (head+43, 4, height);
-    setle (head+70, 4, width);
-    setle (head+74, 4, height);
+    setle(head+33, 4, pagenum);
+    setle(head+39, 4, width);
+    setle(head+43, 4, height);
+    setle(head+70, 4, width);
+    setle(head+74, 4, height);
     head[55] = 9 + color*130;
     if (color)	body[6] = 1;
     else	body[4] = 8;
@@ -654,7 +709,7 @@ psize:
 		break;
 	    }
     }
-    memset (image, -color, (width+1)*deep);
+    memset(image, -color, (width+1)*deep);
     image += (width+1)*deep;
     blank += width/8;
 
@@ -720,7 +775,7 @@ psize:
     {
 	putbits(stream+i, 0xff, 8);
 	stream[i].off--;
-	setle (body+32 + i*4, 4, stream[i].off);
+	setle(body+32 + i*4, 4, stream[i].off);
 	total += stream[i].off;
     }
     head[85] = 0xa2 + (total > 0xffff)*2;
@@ -868,10 +923,16 @@ six:	    iwide = getint(fp);
 	memset(image, 0, byte*(Clip[1]+1));
 	memset(image + byte*(ihigh-Clip[3]+1), 0, byte*Clip[3]);
 
-	if (Color2Mono && deep > 1)
-	    color_to_gray(Color2Mono, wide, ihigh+2, &deep, (char *) image);
+	if (deep > 1) {
+	    if (BlackClears)
+		black_clears(wide, ihigh+2, image);
+	    if (AllIsBlack)
+		all_is_black(wide, ihigh+2, image);
+	    if (Color2Mono)
+		color_to_gray(Color2Mono, wide, ihigh+2, &deep, image);
+	}
 	if (SaveToner)
-	    save_toner(deep > 1, wide, ihigh+2, (char *) image);
+	    save_toner(deep > 1, wide, ihigh+2, image);
 	encode_page(deep > 1, iwide, ihigh, (char *) image);
 	free(image);
     }
@@ -882,21 +943,47 @@ fail:
 }
 
 int
+parse_xy(char *str, int *xp, int *yp)
+{
+    char *p;
+
+    if (!str || str[0] == 0) return -1;
+
+    *xp = strtoul(str, &p, 10);
+    if (str == p) return -2;
+    while (*p && (*p < '0' || *p > '9'))
+	++p;
+    str = p;
+    if (str[0] == 0) return -3;
+    *yp = strtoul(str, &p, 10);
+    if (str == p) return -4;
+    return (0);
+}
+
+int
 main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ((c = getopt(argc, argv, "m:n:p:tT:u:z:J:U:S:D:V?h")) != EOF)
+    while ((c = getopt(argc, argv, "m:n:p:u:l:z:J:U:S:D:tABV?h")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
 	case 'n':  Copies = atoi(optarg); break;
 	case 'p':  PaperCode = atoi(optarg); break;
 	case 't':  SaveToner = 1; break;
-	case 'u':  if (sscanf(optarg, "%d,%d,%d,%d",
-			Clip, Clip+1, Clip+2, Clip+3) != 4)
-		      error(1, "Must specify four clipping margins!\n");
+	case 'u':  if (strcmp(optarg, "0") == 0)
+		       break;
+		   if (parse_xy(optarg, &Clip[0], &Clip[1]))
+		       error(1, "Illegal format '%s' for -u\n", optarg);
 		   break;
+	case 'l':  if (strcmp(optarg, "0") == 0)
+		       break;
+		   if (parse_xy(optarg, &Clip[2], &Clip[3]))
+		       error(1, "Illegal format '%s' for -l\n", optarg);
+		   break;
+	case 'A':  AllIsBlack = -1; break;
+	case 'B':  BlackClears = -1; break;
 	case 'J':  if (optarg[0]) Filename = optarg; break;
 	case 'U':  if (optarg[0]) Username = optarg; break;
 	case 'z':  Model = atoi(optarg);
@@ -929,8 +1016,14 @@ main(int argc, char *argv[])
 	error(1, "Illegal value for -n. Must be 1 for -z0 printers!\n");
     if (Copies < 1 || Copies > 999)
 	error(1, "Illegal value for -n%d. Must be a number [1..999]!\n", Copies);
-    for (i = 0; i < 4; ++i)
-	if (Clip[i] < 20) Clip[i] = 20;
+    if (Clip[0] < 20 || Clip[0] >= PageWidth)
+	error(1, "Illegal X value '%d' for -u\n", Clip[0]);
+    if (Clip[1] < 20 || Clip[1] >= PageHeight)
+	error(1, "Illegal Y value '%d' for -u\n", Clip[1]);
+    if (Clip[2] < 20 || Clip[2] >= PageWidth)
+	error(1, "Illegal X value '%d' for -l\n", Clip[2]);
+    if (Clip[3] < 20 || Clip[3] >= PageHeight)
+	error(1, "Illegal Y value '%d' for -l\n", Clip[3]);
 
     argc -= optind;
     argv += optind;

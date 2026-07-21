@@ -88,6 +88,20 @@ Username string to send to printer.
 These are the options used to customize the operation of \fBfoo2hbpl1\fP
 for a particular printer.
 .TP
+.BI \-u\0 xoff x yoff
+Set the offset of the start of the printable region from the
+upper left corner, in pixels [20x20].
+.TP
+.BI \-l\0 xoff x yoff
+Set the offset of the end of the printable region from the
+lower right corner, in pixels [20x20].
+.TP
+.BI \-A
+AllIsBlack: convert C=1,M=1,Y=1 to just K=1. Works with color input only.
+.TP
+.BI \-B
+BlackClears: K=1 forces C,M,Y to 0. Works with color input only.
+.TP
 .BI \-z\0 model
 Model. Default is [0].
 .TS
