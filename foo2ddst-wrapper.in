@@ -473,6 +473,11 @@ case "$RES" in
 1200x600)	;;
 2400x600)	XDIM=`expr $XDIM \* 2`;;
 esac
+if [ $paper = a3 ]; then
+    tmp=$XDIM
+    XDIM=$YDIM
+    YDIM=$tmp
+fi
 DIM="${XDIM}x${YDIM}"
 
 #
