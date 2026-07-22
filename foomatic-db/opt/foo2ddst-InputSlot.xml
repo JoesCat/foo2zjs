@@ -14,10 +14,15 @@
     <constraints>
 	<constraint sense="true">
 	<driver>foo2ddst</driver>
-	<arg_defval>ev/foo2ddst-InputSlot-1</arg_defval>
+	<arg_defval>ev/foo2ddst-InputSlot-3</arg_defval>
 	</constraint>
     </constraints>
     <enum_vals>
+	<enum_val id="ev/foo2ddst-InputSlot-3">
+	    <ev_longname> <en>Auto selection</en> </ev_longname>
+	    <ev_shortname> <en>Auto</en> </ev_shortname>
+	    <ev_driverval>3</ev_driverval>
+	</enum_val>
 	<enum_val id="ev/foo2ddst-InputSlot-1">
 	    <ev_longname> <en>Tray 1</en> </ev_longname>
 	    <ev_shortname> <en>Tray1</en> </ev_shortname>

@@ -62,7 +62,7 @@ Normal Options:
 -n copies         Number of copies [$COPIES]
 -r <xres>x<yres>  Set device resolution in pixels/inch [$RES]
 -s source         Source code to send to printer [$SOURCE]
-                    1=tray1 2=manual
+                    1=tray1 2=manual 3=auto
 		    Code numbers may vary with printer model.
 -t                Draft mode.  Every other pixel is white.
 -T density        Print density (1-5) [$DENSITY]
@@ -291,8 +291,8 @@ esac
 #
 case "$SOURCE" in
 1|upper)	SOURCE=1;;
-4|manual)	SOURCE=4;;
-7|auto)		SOURCE=7;;
+2|manual)	SOURCE=2;;
+3|auto)		SOURCE=3;;
 [0-9]*)		;;
 *)		error "Unknown source code $SOURCE";;
 esac

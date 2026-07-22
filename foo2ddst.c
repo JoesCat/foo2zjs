@@ -479,7 +479,7 @@ start_page(BIE_CHAIN **root, int nbie, FILE *ofp)
     char		*strsource[] =
 			{
 			    "",
-			    "TRAY1", "MANUALFEED",
+			    "TRAY1", "MANUALFEED", "AUTO"
 			};
     char		*strmedia[] =
 			{
