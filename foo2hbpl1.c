@@ -40,7 +40,7 @@ along with this program; if not, see
 
 */
 
-static char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
+static const char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
 
 #include <time.h>
 #include <stdio.h>
@@ -53,27 +53,38 @@ static char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
     #include <sys/utsname.h>
 #endif
 
-/*
- * Command line options
- */
-int	AllIsBlack = 0;
-int	BlackClears = 0;
-int	Color2Mono = 0;		// default=0=off
-int	Copies = 1;		// [1..999] Page Copies (default=1)
-int	Debug = 0;		// Debug>=9 if md5sum testpage.ps results
-int	MediaCode = -1;		// -1=undefined (default to paper)
-int	PaperCode = 0;		// (default=letter)
 #define LOGICAL_CLIP_X	2
 #define LOGICAL_CLIP_Y	1
-int	LogicalClip = LOGICAL_CLIP_X | LOGICAL_CLIP_Y;
-int	Model = -1;		// -1=undefined (default -z0)
-int	pagenum = 0;		// no pages, no printer codes sent
-int	SaveToner = 0;
-int	PageWidth = 600 * 8.5;
-int	PageHeight = 600 * 11;
-char	*Username = NULL;
-char	*Filename = NULL;
-int	Clip[] = { 20,20,20,20 };
+
+typedef struct
+{
+    unsigned char *buf;
+    int size, off, bits;
+} Stream;
+
+typedef struct
+{
+    int    AllIsBlack;
+    int    BlackClears;
+    int    Color2Mono;		// default=0=off
+    int    Copies;		// [1..999] Page Copies (default=1)
+    int    Debug;		// Debug>=9 if md5sum testpage.ps results
+    int    MediaCode;		// -1=undefined (default to paper)
+    int    PaperCode;		// (default=letter)
+    int    LogicalClip;
+    int    Model;		// -1=undefined (default -z0)
+    int    pagenum;		// no pages, no printer codes sent
+    int    SaveToner;
+    int    PageWidth;
+    int    PageHeight;
+    int    Width;
+    int    Height;
+    unsigned char *image;	// (height+2)x(width+4)x(deep,1=GRAY,4=YCMK)
+    char  *Username;
+    char  *Filename;
+    int    Clip[4];		// clipping margins [left,top,right,bottom]
+    Stream stream[5];
+} Job;
 
 static const char *mname[2+24] = { //Known media types
 	"COATEDPAPER2",		// z1/--, 4=coated, light weight glossy card? (z1)
@@ -152,7 +163,7 @@ static const short papers[] = { // Official sizes to nearest 1/600 inch
 };
 
 void
-usage(void)
+usage(Job *job)
 {
     fprintf(stderr,
 "Usage:\n"
@@ -205,24 +216,24 @@ usage(void)
 "		  0=off, 1=Cyan, 2=Magenta, 3=Yellow, 4=Black\n"
 "-D lvl		Set Debug level [%d]\n"
 "-V		Version %s\n"
-	, PaperCode
-	, Copies
-	, Filename ? Filename : ""
-	, Username ? Username : ""
-	, Clip[0], Clip[1], Clip[2], Clip[3]
-	, LogicalClip
-	, Model
-	, Color2Mono
-	, Debug
+	, job->PaperCode
+	, job->Copies
+	, job->Filename ? job->Filename : ""
+	, job->Username ? job->Username : ""
+	, job->Clip[0], job->Clip[1], job->Clip[2], job->Clip[3]
+	, job->LogicalClip
+	, job->Model
+	, job->Color2Mono
+	, job->Debug
 	, Version);
 }
 
 void
-debug(int level, char *fmt, ...)
+debug(Job *job, int level, char *fmt, ...)
 {
     va_list ap;
 
-    if (Debug < level)
+    if (job->Debug < level)
 	return;
 
     setvbuf(stderr, (char *) NULL, _IOLBF, BUFSIZ);
@@ -232,7 +243,7 @@ debug(int level, char *fmt, ...)
 }
 
 void
-error(int fatal, char *fmt, ...)
+error(Job *job, int fatal, char *fmt, ...)
 {
     va_list ap;
 
@@ -241,15 +252,15 @@ error(int fatal, char *fmt, ...)
     va_end(ap);
 
     if (fatal) {
-	if (pagenum)
+	if (job->pagenum)
 	    printf("\033%%-12345X@PJL EOJ\n%s",
-		   (pagenum > 0 && Model > 0 ? "@PJL RESET\n" : ""));
+		   (job->Model > 0 ? "@PJL RESET\n" : ""));
 	exit(fatal);
     }
 }
 
 void
-save_toner(int color, unsigned int width, unsigned int height, unsigned char *image)
+save_toner(Job *job, int color)
 {
     unsigned char *dp;
     unsigned int i, row, col;
@@ -257,39 +268,39 @@ save_toner(int color, unsigned int width, unsigned int height, unsigned char *im
     color = (color ? 4 : 1);
 
     // checker pattern 0xAA/0x55, 8bpp*color
-    for (row = 0; row < height; row += 2)
+    for (row = 0; row < job->Height; row += 2)
     {
-	dp = image + row * width * color;
-	for (col = 0; col < width; col += 2)
+	dp = job->image + row * job->Width * color;
+	for (col = 0; col < job->Width; col += 2)
 	{
 	    for (i = 0; i < color; ++i)
 		*dp++ = 0;
 	    dp += color;
 	}
     }
-    for (row = 1; row < height; row += 2)
+    for (row = 1; row < job->Height; row += 2)
     {
-	dp = image + row * width * color;
-	for (col = 1; col < width; col += 2)
+	dp = job->image + row * job->Width * color;
+	for (col = 1; col < job->Width; col += 2)
 	{
 	    dp += color;
 	    for (i = 0; i < color; ++i)
 		*dp++ = 0;
 	}
     }
-    debug(2, "  Done save_toner(%s)\n", (color == 4 ? "Color" : "Gray"));
+    debug(job, 2, "  Done save_toner(%s)\n", (color == 4 ? "Color" : "Gray"));
 }
 
 void
-all_is_black(unsigned int width, unsigned int height, unsigned char *image)
+all_is_black(Job *job)
 {
     unsigned char *p;
     unsigned int row, col;
 
-    for (row = 0; row < height; ++row)
+    for (row = 0; row < job->Height; ++row)
     {
-	p = image + row * width * 4; // KCMY
-	for (col = 0; col < width; ++col)
+	p = job->image + row * job->Width * 4; // KCMY
+	for (col = 0; col < job->Width; ++col)
 	{
 	    if (p[1] == 255 && p[2] == 255 && p[3] == 255)
 	    {
@@ -300,19 +311,19 @@ all_is_black(unsigned int width, unsigned int height, unsigned char *image)
 		p += 4;
 	}
     }
-    debug(2, "  Done all_is_black()\n");
+    debug(job, 2, "  Done all_is_black()\n");
 }
 
 void
-black_clears(unsigned int width, unsigned int height, unsigned char *image)
+black_clears(Job *job)
 {
     unsigned char *p;
     unsigned int row, col;
 
-    for (row = 0; row < height; ++row)
+    for (row = 0; row < job->Height; ++row)
     {
-	p = image + row * width * 4; // KCMY
-	for (col = 0; col < width; ++col)
+	p = job->image + row * job->Width * 4; // KCMY
+	for (col = 0; col < job->Width; ++col)
 	{
 	    if (*p++ == 255)
 	    {
@@ -323,42 +334,35 @@ black_clears(unsigned int width, unsigned int height, unsigned char *image)
 		p += 3;
 	}
     }
-    debug(2, "  Done black_clears()\n");
+    debug(job, 2, "  Done black_clears()\n");
 }
 
 void
-color_to_gray(int color, unsigned int width, unsigned int height, \
-	      int *deep, unsigned char *image)
+color_to_gray(Job *job, int *deep)
 {
     unsigned char *dp, *sp;
     unsigned int row, col;
 
-    for (row = 0; row < height; ++row)
+    for (row = 0; row < job->Height; ++row)
     {
-	sp = (image + row * width * 4 + (color & 3)); // KCMY
-	dp = (image + row * width);
-	for (col = 0; col < width; ++col)
+	sp = (job->image + row * job->Width * 4 + (job->Color2Mono & 3)); // KCMY
+	dp = (job->image + row * job->Width);
+	for (col = 0; col < job->Width; ++col)
 	{
 	    *dp++ = *sp;
 	    sp += 4;
 	}
     }
     *deep = 1;
-    debug(2, "  Done color_to_gray()\n");
+    debug(job, 2, "  Done color_to_gray()\n");
 }
 
-struct stream
-{
-    unsigned char *buf;
-    int size, off, bits;
-};
-
 void
-putbits(struct stream *s, unsigned val, int nbits)
+putbits(Job *job, Stream *s, unsigned val, int nbits)
 {
     if (s->off + 16 > s->size &&
 	!(s->buf = realloc(s->buf, s->size += 0x100000)))
-	    error(1, "Out of memory\n");
+	    error(job, 1, "Out of memory\n");
     if (s->bits)
     {
 	s->off--;
@@ -406,9 +410,9 @@ putbits(struct stream *s, unsigned val, int nbits)
 	17057	111 111 11111111111111
 */
 void
-put_len(struct stream *s, unsigned val)
+put_len(Job *job, Stream *s, unsigned val)
 {
-    static const unsigned code[] =
+    static const unsigned code[34] =
     {
 	  1, 0, 2,
 	  2, 2, 3,
@@ -427,7 +431,7 @@ put_len(struct stream *s, unsigned val)
 
     if (val < 1 || val > 17057) return;
     while (val >= code[c+3]) c += 3;
-    putbits(s, val-code[c] + code[c+1], code[c+2]);
+    putbits(job, s, val-code[c] + code[c+1], code[c+2]);
 }
 
 /*
@@ -466,9 +470,9 @@ put_len(struct stream *s, unsigned val)
 	 128	11111110000
 */
 void
-put_diff(struct stream *s, signed char val)
+put_diff(Job *job, Stream *s, signed char val)
 {
-    static const unsigned short code[] =
+    static const unsigned short code[25] =
     {
 	 2,  3, 3, 1,
 	 4,  4, 3, 2,
@@ -482,15 +486,15 @@ put_diff(struct stream *s, signed char val)
 
     switch (val)
     {
-    case  0:  putbits(s, 0, 3);  return;
-    case  1:  putbits(s, 1, 3);  return;
-    case -1:  putbits(s, 2, 3);  return;
+    case  0:  putbits(job, s, 0, 3);  return;
+    case  1:  putbits(job, s, 1, 3);  return;
+    case -1:  putbits(job, s, 2, 3);  return;
     }
     abs = ((sign = val < 0)) ? -val:val;
     while (abs >= code[c+4]) c += 4;
-    putbits(s, code[c+1], code[c+2]);
-    putbits(s, sign, 1);
-    putbits(s, abs-code[c], code[c+3]);
+    putbits(job, s, code[c+1], code[c+2]);
+    putbits(job, s, sign, 1);
+    putbits(job, s, abs-code[c], code[c+3]);
 }
 
 void
@@ -504,9 +508,9 @@ setle(unsigned char *c, int s, int i)
 }
 
 void
-start_doc(int color)
+start_doc(Job *job, int color)
 {
-    static const char reca[] =
+    static const char reca[12] =
     {
 	0x41,			// 0,RECTYPE 'A'
 	0x81,0xa1,0x00,
@@ -577,30 +581,30 @@ start_doc(int color)
 	"@PJL SET JOBATTR=\"@GDFT=0\"\n"
 	"@PJL SET JOBATTR=\"@IDFT=0\"\n"
 	"@PJL ENTER LANGUAGE=HBPL\n"
-	, (Model > 0 ? "@PJL RESET\n" : "")
-	, (Debug < 9 ? datestr : "02/26/2026")
-	, (Debug < 9 ? timestr : "12:34:56")
-	, Filename ? Filename : ""
-	, Username ? Username : ""
-	, mname[MediaCode]
+	, (job->Model > 0 ? "@PJL RESET\n" : "")
+	, (job->Debug < 9 ? datestr : "02/26/2026")
+	, (job->Debug < 9 ? timestr : "12:34:56")
+	, job->Filename ? job->Filename : ""
+	, job->Username ? job->Username : ""
+	, mname[job->MediaCode]
 	, color ? "COLOR" : "GRAYSCALE"
-	, Username ? Username : ""
+	, job->Username ? job->Username : ""
 	, cname
-	, Copies);
-    fwrite (reca, 1, sizeof reca, stdout);
+	, job->Copies);
+    fwrite (reca, 1, sizeof(reca), stdout);
 
-    debug(1, "  Done start_doc(%d). Init printer JOB.\n", color);
-    pagenum++;	// Now begin printing as "JOB MODE=PRINTER START=1"...
+    debug(job, 1, "  Done start_doc(%d). Init printer JOB.\n", color);
+    job->pagenum++; // Now begin printing as "JOB MODE=PRINTER START=1"...
 }
 
-#define IP (((int *)image) + off)
-#define CP (((char *)image) + off)
-#define DP (((char *)image) + off*deep)
+#define IP (((int *)job->image) + off)
+#define CP (((char *)job->image) + off)
+#define DP (((char *)job->image) + off*deep)
 #define BP(x) ((blank[(off+x) >> 3] << ((off+x) & 7)) & 128)
-#define put_token(s,x) putbits(s, huff[hsel][x] >> 4, huff[hsel][x] & 15)
+#define put_token(j, s,x) putbits(job, s, huff[hsel][x] >> 4, huff[hsel][x] & 15)
 
 void
-encode_page(int color, int width, int height, char *image)
+encode_page(Job *job, int color, int width, int height)
 {
     unsigned char head[90] =
     {
@@ -650,13 +654,13 @@ encode_page(int color, int width, int height, char *image)
 	{ 0x22,0x63,0x1c5,0x1d5,0x1e5,0x01,0x3e6 }, // for images
     };
     unsigned char *blank, *blank0;
-    struct stream stream[5] = { { 0 } };
+    Stream stream[5] = { { 0 } };
     int dirs[] = { -1,0,-1,1,2 }, rotor[] = { 0,1,2,3,4 };
     int i, j, row, col, deep, dir, run, try, bdir, brun, total;
     int paper = 510, hsel = 0, off = 0, bit = 0, stat = 0;
     int margin = width-96;
 
-    debug(1, "  Start encode_page(%d)\n", pagenum);
+    debug(job, 1, "  Start encode_page(%d)\n", job->pagenum);
 
     deep = 1 + color*3;
 
@@ -673,20 +677,21 @@ encode_page(int color, int width, int height, char *image)
     head[21] = 2;
 psize:
     head[12] = papers[paper]>>1;
-    if (MediaCode < 0)
-	MediaCode = ((papers[paper] & 1) ? 6+1 : 1+1);
+    if (job->MediaCode < 0)
+	job->MediaCode = ((papers[paper] & 1) ? 6+1 : 1+1);
 
-    debug(2, "  width=%d height=%d color=%d deep=%d=%s\n", \
-		width, height, color, deep, color ? "CYMK" : "GRAY");
-    debug(2, "  paper#%d,%d=%s media=%d=%s\n", \
-		paper, papers[paper]>>1, pname[paper], \
-		(MediaCode >= 1+1 ? MediaCode-1 : MediaCode), mname[MediaCode]);
+    debug(job, 2, "  width=%d height=%d color=%d deep=%d=%s\n", \
+		     width, height, color, deep, color ? "CYMK" : "GRAY");
+    debug(job, 2, "  paper#%d,%d=%s media=%d=%s\n", \
+		     paper, papers[paper]>>1, pname[paper], \
+		     (job->MediaCode >= 1+1 ? job->MediaCode-1 : job->MediaCode), \
+		     mname[job->MediaCode]);
 
-    if (!pagenum)
-	start_doc(color);
+    if (!job->pagenum)
+	start_doc(job, color);
 
     width = -(-width & -8);
-    setle(head+33, 4, pagenum);
+    setle(head+33, 4, job->pagenum);
     setle(head+39, 4, width);
     setle(head+43, 4, height);
     setle(head+70, 4, width);
@@ -703,11 +708,9 @@ psize:
     memset(blank++, -color, width/8+1);
     for (row = 1; row <= height; row++)
     {
-	//for (col = deep; col < deep*2; col++)
-	//    image[row*width*deep + col] = -1;
-	memset(image + row*width * deep + deep, -1, deep);
+	memset(job->image + row*width * deep + deep, -1, deep);
 	for (col = 8; col < width*deep; col += 4)
-	    if (*(int *)(image + row*width*deep + col))
+	    if (*(int *)(job->image + row*width*deep + col))
 	    {
 		for (col = 12; col < margin/8; col++)
 		    blank[row*(width/8)+col] = -1;
@@ -715,8 +718,8 @@ psize:
 		break;
 	    }
     }
-    memset(image, -color, (width+1)*deep);
-    image += (width+1)*deep;
+    memset(job->image, -color, (width+1)*deep);
+    job->image += (width+1)*deep;
     blank += width/8;
 
     while (off < width * height)
@@ -743,9 +746,9 @@ psize:
 	}
 	if (brun == 0)
 	{
-	    put_token(stream, 5);
+	    put_token(job, stream, 5);
 	    for (i = 0; i < deep; i++)
-		put_diff(stream+1+i, DP[i] - DP[i-deep]);
+		put_diff(job, stream+1+i, DP[i] - DP[i-deep]);
 	    bit = 0;
 	    off++;
 	    stat--;
@@ -765,21 +768,21 @@ psize:
 	    if (abs(stat) > 8 && ((stat >> 31) & 1) != hsel)
 	    {
 		hsel ^= 1;
-		put_token(stream, 6);
+		put_token(job, stream, 6);
 	    }
 	    stat = 0;
 	}
 	stat += bdir == bit;
-	put_token(stream, bdir - bit);
-	put_len(stream, brun);
+	put_token(job, stream, bdir - bit);
+	put_len(job, stream, brun);
 	bit = brun < 17057;
 	off += brun;
     }
 
-    putbits(stream, 0xff, 8);
+    putbits(job, stream, 0xff, 8);
     for (total = 48, i = 0; i <= deep; i++)
     {
-	putbits(stream+i, 0xff, 8);
+	putbits(job, stream+i, 0xff, 8);
 	stream[i].off--;
 	setle(body+32 + i*4, 4, stream[i].off);
 	total += stream[i].off;
@@ -795,8 +798,9 @@ psize:
     }
     free(blank0);
     printf("SD");
-    debug(1, "  End encode_page(%d), Copies(%d)\n", pagenum, Copies);
-    pagenum +=Copies;
+    debug(job, 1, "  End encode_page(%d), Copies(%d)\n", \
+		   job->pagenum, job->Copies);
+    job->pagenum +=job->Copies;
 }
 #undef IP
 #undef CP
@@ -805,7 +809,7 @@ psize:
 #undef put_token
 
 int
-getint(FILE *fp)
+getint(Job *job, FILE *fp)
 {
     int c, ret;
 
@@ -827,12 +831,12 @@ getint(FILE *fp)
 	ret = ret*10 + c-'0';
     if (c < 0)
 	return -1;
-    debug(3, "  getint(%d)\n", ret);
+    debug(job, 3, "  getint(%d)\n", ret);
     return ret;
 }
 
 void
-do_file(FILE *fp)
+do_file(Job *job, FILE *fp)
 {
     int type, iwide, ihigh, ideep, imax, ibyte;
     int wide, deep, byte, row, col, i, k;
@@ -840,13 +844,13 @@ do_file(FILE *fp)
     char tupl[128], line[128];
     unsigned char *image, *sp, *dp;
 
-    debug(1, "Start do_file()\n");
+    debug(job, 1, "Start do_file()\n");
 
     lcl = lct = 0;
-    if (LogicalClip & LOGICAL_CLIP_X)
-	lcl = Clip[0];
-    if (LogicalClip & LOGICAL_CLIP_Y)
-	lct = Clip[1];
+    if (job->LogicalClip & LOGICAL_CLIP_X)
+	lcl = job->Clip[0];
+    if (job->LogicalClip & LOGICAL_CLIP_Y)
+	lct = job->Clip[1];
 
     while ((type = fgetc(fp)) != EOF)
     {
@@ -862,9 +866,9 @@ do_file(FILE *fp)
 	    goto six;
 	case '6':
 	    deep = 1 + (ideep = 3);
-six:	    iwide = getint(fp);
-	    ihigh = getint(fp);
-	    imax = type == '4' ? 255 : getint(fp);
+six:	    iwide = getint(job, fp);
+	    ihigh = getint(job, fp);
+	    imax = type == '4' ? 255 : getint(job, fp);
 	    break;
 	case '7':
 	    do
@@ -886,8 +890,8 @@ six:	    iwide = getint(fp);
 	default:
 	    goto fail;
 	}
-	debug(2, "  iwide=%d ihigh=%d imax=%d ideep=%d\n", \
-		    iwide, ihigh, imax, ideep);
+	debug(job, 2, "  iwide=%d ihigh=%d imax=%d ideep=%d\n", \
+			 iwide, ihigh, imax, ideep);
 	if (iwide <= 0 || ihigh <= 0 || imax != 255) goto fail;
 	wide = -(-iwide & -8);
         if (ideep)
@@ -896,41 +900,45 @@ six:	    iwide = getint(fp);
 	    ibyte = wide >> 3;
 	byte = wide * deep;
 
-	debug(2, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
-		    wide, deep, ibyte, byte);
+	debug(job, 2, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
+			 wide, deep, ibyte, byte);
 
-	if (LogicalClip & LOGICAL_CLIP_X)
-	    lcr = iwide - Clip[2];
+	if (job->LogicalClip & LOGICAL_CLIP_X)
+	    lcr = iwide - job->Clip[2];
 	else
-	    lcr = iwide - Clip[2] - Clip[0];
-	if (LogicalClip & LOGICAL_CLIP_Y)
-	    lcb = ihigh - Clip[3];
+	    lcr = iwide - job->Clip[2] - job->Clip[0];
+	if (job->LogicalClip & LOGICAL_CLIP_Y)
+	    lcb = ihigh - job->Clip[3];
 	else
-	    lcb = ihigh - Clip[3] - Clip[1];
+	    lcb = ihigh - job->Clip[3] - job->Clip[1];
 	if (lcr <= 0 || lcb <= 0 || \
-	    Clip[1] >= ihigh || Clip[3] >= ihigh || Clip[1]+Clip[3] >= ihigh || \
-	    Clip[0] >= iwide || Clip[2] >= iwide || Clip[0]+Clip[2] >= iwide)
+	    job->Clip[1] >= ihigh || job->Clip[3] >= ihigh || \
+	    job->Clip[0] >= iwide || job->Clip[2] >= iwide || \
+	    job->Clip[1]+job->Clip[3] >= ihigh || \
+	    job->Clip[0]+job->Clip[2] >= iwide)
 	    lct = lcb = lcl = lcr = -1;
 
-	debug(2, "  Clip=[%d,%d,%d,%d] LC=%d lcl=%d lct=%d lcr=%d lcb=%d\n", \
-		    Clip[0], Clip[1], Clip[2], Clip[3], \
-		    LogicalClip, lcl, lct, lcr, lcb);
+	debug(job, 2, "  Clip=[%d,%d,%d,%d] LC=%d lcl=%d lct=%d lcr=%d lcb=%d\n", \
+			 job->Clip[0], job->Clip[1], job->Clip[2], job->Clip[3], \
+			 job->LogicalClip, lcl, lct, lcr, lcb);
 
-	image = calloc(ihigh+2, byte);
+	job->Height = ihigh+2;
+	job->Width = wide;
+	job->image = image = (unsigned char *)(calloc(ihigh+2, byte));
 	for (row = 1; row <= ihigh; row++)
 	{
-	    i = fread(image, ibyte, 1, fp);
+	    i = fread(job->image, ibyte, 1, fp);
 	    if (row > lct && row <= lcb)
 	    {
-		sp = image + lcl*ideep;
-		dp = image + (row+Clip[1]-lct)*byte + (2+Clip[0])*deep;
+		sp = job->image + lcl*ideep;
+		dp = job->image + (row+job->Clip[1]-lct)*byte + (2+job->Clip[0])*deep;
 		//for (col = 0; col < iwide; col++)
 		for (col = lcl; col < lcr; col++)
 		{
 		    switch (ideep)
 		    {
 		    case 0: // B&W 1bpp -> 8bpp
-			*dp = ((image[col >> 3] >> (~col & 7)) & 1) * 255;
+			*dp = ((job->image[col >> 3] >> (~col & 7)) & 1) * 255;
 			break;
 		    case 1: // GRAY 8bpp
 			*dp = ~*sp;
@@ -953,33 +961,33 @@ six:	    iwide = getint(fp);
 	    }
 	}
 	if (lct < 0)
-	    memset(image, 0, (ihigh+2)*byte);
+	    memset(job->image, 0, (ihigh+2)*byte);
 	else
 	{
-	    for (row = 1+Clip[1]; row <= ihigh-Clip[3]; row++)
+	    for (row = 1+job->Clip[1]; row <= ihigh-job->Clip[3]; row++)
 	    {
-		memset(image + row*byte, 0, deep*(2+Clip[0]));
-		memset(image + row*byte + deep*(wide-2-Clip[2]), \
-			0, deep*(2+Clip[2]));
+		memset(job->image + row*byte, 0, deep*(2+job->Clip[0]));
+		memset(job->image + row*byte + deep*(wide-2-job->Clip[2]), \
+			0, deep*(2+job->Clip[2]));
 	    }
-	    memset(image, 0, byte*(1+Clip[1]));
-	    memset(image + byte*(1+ihigh-Clip[3]), 0, byte*(1+Clip[3]));
+	    memset(job->image, 0, byte*(1+job->Clip[1]));
+	    memset(job->image + byte*(1+ihigh-job->Clip[3]), 0, byte*(1+job->Clip[3]));
 	}
 
 	if (deep > 1) {
-	    if (BlackClears)
-		black_clears(wide, ihigh+2, image);
-	    if (AllIsBlack)
-		all_is_black(wide, ihigh+2, image);
-	    if (Color2Mono)
-		color_to_gray(Color2Mono, wide, ihigh+2, &deep, image);
+	    if (job->BlackClears)
+		black_clears(job);
+	    if (job->AllIsBlack)
+		all_is_black(job);
+	    if (job->Color2Mono)
+		color_to_gray(job, &deep);
 	}
-	if (SaveToner)
-	    save_toner(deep > 1, wide, ihigh+2, image);
-	encode_page(deep > 1, iwide, ihigh, (char *) image);
+	if (job->SaveToner)
+	    save_toner(job, deep > 1);
+	encode_page(job, deep > 1, iwide, ihigh);
 	free(image);
     }
-    debug(1, "End do_file()\n");
+    debug(job, 1, "End do_file()\n");
     return;
 fail:
     fprintf(stderr, "Not an acceptable PBM, PPM or PAM file!!!\n");
@@ -1006,78 +1014,99 @@ parse_xy(char *str, int *xp, int *yp)
 int
 main(int argc, char *argv[])
 {
-    int	c, i;
+    Job job;
+    int c, i;
+
+    job.AllIsBlack = 0;
+    job.BlackClears = 0;
+    job.Color2Mono = 0;		// default=0=off
+    job.Copies = 1;		// [1..999] Page Copies (default=1)
+    job.Debug = 0;		// Debug>=9 if md5sum testpage.ps results
+    job.MediaCode = -1;		// -1=undefined (default to paper)
+    job.PaperCode = 0;		// (default=letter)
+    job.LogicalClip = LOGICAL_CLIP_X | LOGICAL_CLIP_Y;
+    job.Model = -1;		// -1=undefined (default -z0)
+    job.pagenum = 0;		// no pages, no printer codes sent
+    job.SaveToner = 0;
+    job.PageWidth = 600 * 8.5;
+    job.PageHeight = 600 * 11;
+    job.Username = NULL;
+    job.Filename = NULL;
+    job.Clip[0] = 20;		// clip margin, left
+    job.Clip[1] = 20;		// clip margin, top
+    job.Clip[2] = 20;		// clip margin, right
+    job.Clip[3] = 20;		// clip margin, bottom
 
     while ((c = getopt(argc, argv, "m:n:p:u:l:z:L:J:U:S:D:tABV?h")) != EOF)
 	switch (c)
 	{
-	case 'm':  MediaCode = atoi(optarg); break;
-	case 'n':  Copies = atoi(optarg); break;
-	case 'p':  PaperCode = atoi(optarg); break;
-	case 't':  SaveToner = 1; break;
-	case 'u':  if (strcmp(optarg, "0") == 0)
-		       break;
-		   if (parse_xy(optarg, &Clip[0], &Clip[1]))
-		       error(1, "Illegal format '%s' for -u\n", optarg);
-		   break;
-	case 'l':  if (strcmp(optarg, "0") == 0)
-		       break;
-		   if (parse_xy(optarg, &Clip[2], &Clip[3]))
-		       error(1, "Illegal format '%s' for -l\n", optarg);
-		   break;
-	case 'A':  AllIsBlack = -1; break;
-	case 'B':  BlackClears = -1; break;
-	case 'J':  if (optarg[0]) Filename = optarg; break;
-	case 'U':  if (optarg[0]) Username = optarg; break;
-	case 'z':  Model = atoi(optarg);
-		   if (Model < 0 || Model > 1)
-		       error(1, "Illegal value '%s' for -z\n", optarg);
-		   break;
-	case 'L':  LogicalClip = atoi(optarg);
-		   if (LogicalClip < 0 || LogicalClip > 3)
-		       error(1, "Illegal value '%s' for -L\n", optarg);
-		   break;
-	case 'S':  Color2Mono = atoi(optarg);
-		   if (Color2Mono < 1 || Color2Mono > 4)
-		       error(1, "Illegal value '%s' for -S\n", optarg);
-	case 'D':  Debug = atoi(optarg); break;
-	case 'V':  printf("%s\n", Version); return 0;
-	default:   usage(); return 1;
+	case 'm': job.MediaCode = atoi(optarg); break;
+	case 'n': job.Copies = atoi(optarg); break;
+	case 'p': job.PaperCode = atoi(optarg); break;
+	case 't': job.SaveToner = 1; break;
+	case 'u': if (strcmp(optarg, "0") == 0)
+		      break;
+		  if (parse_xy(optarg, &job.Clip[0], &job.Clip[1]))
+		      error(&job, 1, "Illegal format '%s' for -u\n", optarg);
+		  break;
+	case 'l': if (strcmp(optarg, "0") == 0)
+		      break;
+		  if (parse_xy(optarg, &job.Clip[2], &job.Clip[3]))
+		      error(&job, 1, "Illegal format '%s' for -l\n", optarg);
+		  break;
+	case 'A': job.AllIsBlack = -1; break;
+	case 'B': job.BlackClears = -1; break;
+	case 'J': if (optarg[0]) job.Filename = optarg; break;
+	case 'U': if (optarg[0]) job.Username = optarg; break;
+	case 'z': job.Model = atoi(optarg);
+		  if (job.Model < 0 || job.Model > 1)
+		      error(&job, 1, "Illegal value '%s' for -z\n", optarg);
+		  break;
+	case 'L': job.LogicalClip = atoi(optarg);
+		  if (job.LogicalClip < 0 || job.LogicalClip > 3)
+		      error(&job, 1, "Illegal value '%s' for -L\n", optarg);
+		  break;
+	case 'S': job.Color2Mono = atoi(optarg);
+		  if (job.Color2Mono < 1 || job.Color2Mono > 4)
+		      error(&job, 1, "Illegal value '%s' for -S\n", optarg);
+	case 'D': job.Debug = atoi(optarg); break;
+	case 'V': printf("%s\n", Version); return 0;
+	default:  usage(&job); return 1;
 	}
 
-    if (Model < 0) Model = 0;
-    if (MediaCode != -1 && (MediaCode <= 0 || ( \
-	(Model == 0 && MediaCode > 12 ) || \
-	(Model == 1 && MediaCode > 24))))
-	error(1, "Illegal value for -m. For -z%d range is -m[1..%d]\n", \
-	      Model, (Model ? 24 : 12), optarg);
-    if (MediaCode != -1)
+    if (job.Model < 0) job.Model = 0;
+    if (job.MediaCode != -1 && (job.MediaCode <= 0 || ( \
+	(job.Model == 0 && job.MediaCode > 12 ) || \
+	(job.Model == 1 && job.MediaCode > 24))))
+	error(&job, 1, "Illegal value for -m. For -z%d range is -m[1..%d]\n", \
+	      job.Model, (job.Model ? 24 : 12), optarg);
+    if (job.MediaCode != -1)
     {
-	MediaCode++;
-	if (Model > 0) {
-	    if (MediaCode == 4+1) MediaCode = 0;
-	    else if (MediaCode == 7+1) MediaCode = 1;
+	job.MediaCode++;
+	if (job.Model > 0) {
+	    if (job.MediaCode == 4+1) job.MediaCode = 0;
+	    else if (job.MediaCode == 7+1) job.MediaCode = 1;
 	}
     }
-    if (Model <= 0 && Copies !=1)
-	error(1, "Illegal value for -n. Must be 1 for -z0 printers!\n");
-    if (Copies < 1 || Copies > 999)
-	error(1, "Illegal value for -n%d. Must be a number [1..999]!\n", Copies);
-    if (Clip[0] < 20 || Clip[0] >= PageWidth)
-	error(1, "Illegal X value '%d' for -u\n", Clip[0]);
-    if (Clip[1] < 20 || Clip[1] >= PageHeight)
-	error(1, "Illegal Y value '%d' for -u\n", Clip[1]);
-    if (Clip[2] < 20 || Clip[2] >= PageWidth)
-	error(1, "Illegal X value '%d' for -l\n", Clip[2]);
-    if (Clip[3] < 20 || Clip[3] >= PageHeight)
-	error(1, "Illegal Y value '%d' for -l\n", Clip[3]);
+    if (job.Model <= 0 && job.Copies !=1)
+	error(&job, 1, "Illegal value for -n. Must be 1 for -z0 printers!\n");
+    if (job.Copies < 1 || job.Copies > 999)
+	error(&job, 1, "Illegal value for -n%d. Must be a number [1..999]!\n", job.Copies);
+    if (job.Clip[0] < 20 || job.Clip[0] >= job.PageWidth)
+	error(&job, 1, "Illegal X value '%d' for -u\n", job.Clip[0]);
+    if (job.Clip[1] < 20 || job.Clip[1] >= job.PageHeight)
+	error(&job, 1, "Illegal Y value '%d' for -u\n", job.Clip[1]);
+    if (job.Clip[2] < 20 || job.Clip[2] >= job.PageWidth)
+	error(&job, 1, "Illegal X value '%d' for -l\n", job.Clip[2]);
+    if (job.Clip[3] < 20 || job.Clip[3] >= job.PageHeight)
+	error(&job, 1, "Illegal Y value '%d' for -l\n", job.Clip[3]);
 
     argc -= optind;
     argv += optind;
 
     if (argc == 0)
     {
-	do_file(stdin);
+	do_file(&job, stdin);
     }
     else
     {
@@ -1086,16 +1115,16 @@ main(int argc, char *argv[])
 	    FILE *ifp;
 
 	    if (!(ifp = fopen(argv[i], "r")))
-		error(1, "Can't open '%s' for reading\n", argv[i]);
-	    do_file(ifp);
+		error(&job, 1, "Can't open '%s' for reading\n", argv[i]);
+	    do_file(&job, ifp);
 	    fclose(ifp);
 	}
     }
-    if (pagenum)
+    if (job.pagenum)
     {
 	printf("\033%%-12345X@PJL EOJ\n%s",
-		(pagenum > 0 && Model > 0 ? "@PJL RESET\n" : ""));
-	debug(1, "Done main(). End printer JOB.\n");
+		(job.Model > 0 ? "@PJL RESET\n" : ""));
+	debug(&job, 1, "Done main(). End printer JOB.\n");
     }
     return 0;
 }
