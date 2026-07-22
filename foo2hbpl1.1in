@@ -96,6 +96,16 @@ upper left corner, in pixels [20x20].
 Set the offset of the end of the printable region from the
 lower right corner, in pixels [20x20].
 .TP
+.BI \-L\0 mask
+Send logical clipping amounts implied by \-u/-l in the HBPL1 Stream [3].
+.TS
+l l.
+0	don't send any logical clipping amounts
+1	only send Y clipping amount
+2	only send X clipping amount
+3	send both X and Y clipping amounts
+.TE
+.TP
 .BI \-A
 AllIsBlack: convert C=1,M=1,Y=1 to just K=1. Works with color input only.
 .TP

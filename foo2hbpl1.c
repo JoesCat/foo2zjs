@@ -63,6 +63,9 @@ int	Copies = 1;		// [1..999] Page Copies (default=1)
 int	Debug = 0;		// Debug>=9 if md5sum testpage.ps results
 int	MediaCode = -1;		// -1=undefined (default to paper)
 int	PaperCode = 0;		// (default=letter)
+#define LOGICAL_CLIP_X	2
+#define LOGICAL_CLIP_Y	1
+int	LogicalClip = LOGICAL_CLIP_X | LOGICAL_CLIP_Y;
 int	Model = -1;		// -1=undefined (default -z0)
 int	pagenum = 0;		// no pages, no printer codes sent
 int	SaveToner = 0;
@@ -189,6 +192,8 @@ usage(void)
 "Printer Tweaking Options:\n"
 "-u <xoff>x<yoff> Set upper-left clip margin offset [%dx%d] pixels\n"
 "-l <xoff>x<yoff> Set lower-right clip margin offset [%dx%d] pixels\n"
+"-L mask	Send logical clipping values from -u/-l [%d]\n"
+"		  0=no, 1=Y, 2=X, 3=XY\n"
 "-A		AllIsBlack: convert C=1,M=1,Y=1 to just K=1\n"
 "-B		BlackClears: K=1 forces C,M,Y to 0\n"
 "-z model	Model: [%d]\n"
@@ -205,6 +210,7 @@ usage(void)
 	, Filename ? Filename : ""
 	, Username ? Username : ""
 	, Clip[0], Clip[1], Clip[2], Clip[3]
+	, LogicalClip
 	, Model
 	, Color2Mono
 	, Debug
@@ -830,10 +836,17 @@ do_file(FILE *fp)
 {
     int type, iwide, ihigh, ideep, imax, ibyte;
     int wide, deep, byte, row, col, i, k;
+    int lcl, lct, lcr, lcb;
     char tupl[128], line[128];
     unsigned char *image, *sp, *dp;
 
     debug(1, "Start do_file()\n");
+
+    lcl = lct = 0;
+    if (LogicalClip & LOGICAL_CLIP_X)
+	lcl = Clip[0];
+    if (LogicalClip & LOGICAL_CLIP_Y)
+	lct = Clip[1];
 
     while ((type = fgetc(fp)) != EOF)
     {
@@ -886,42 +899,72 @@ six:	    iwide = getint(fp);
 	debug(2, "  wide=%d deep=%d ibyte=%d byte=%d\n", \
 		    wide, deep, ibyte, byte);
 
+	if (LogicalClip & LOGICAL_CLIP_X)
+	    lcr = iwide - Clip[2];
+	else
+	    lcr = iwide - Clip[2] - Clip[0];
+	if (LogicalClip & LOGICAL_CLIP_Y)
+	    lcb = ihigh - Clip[3];
+	else
+	    lcb = ihigh - Clip[3] - Clip[1];
+	if (lcr <= 0 || lcb <= 0 || \
+	    Clip[1] >= ihigh || Clip[3] >= ihigh || Clip[1]+Clip[3] >= ihigh || \
+	    Clip[0] >= iwide || Clip[2] >= iwide || Clip[0]+Clip[2] >= iwide)
+	    lct = lcb = lcl = lcr = -1;
+
+	debug(2, "  Clip=[%d,%d,%d,%d] LC=%d lcl=%d lct=%d lcr=%d lcb=%d\n", \
+		    Clip[0], Clip[1], Clip[2], Clip[3], \
+		    LogicalClip, lcl, lct, lcr, lcb);
+
 	image = calloc(ihigh+2, byte);
 	for (row = 1; row <= ihigh; row++)
 	{
 	    i = fread(image, ibyte, 1, fp);
-	    sp = image;
-	    dp = image + row*byte;
-	    for (col = 0; col < iwide; col++)
+	    if (row > lct && row <= lcb)
 	    {
-		dp += deep;
-		switch (ideep)
+		sp = image + lcl*ideep;
+		dp = image + (row+Clip[1]-lct)*byte + (2+Clip[0])*deep;
+		//for (col = 0; col < iwide; col++)
+		for (col = lcl; col < lcr; col++)
 		{
-		case 0: // B&W 1bpp -> 8bpp
-		    *dp = ((image[col >> 3] >> (~col & 7)) & 1) * 255;
-		    break;
-		case 1: // GRAY 8bpp
-		    *dp = ~*sp;
-		    break;
-		case 3: // RGB -> KCMY
-		    for (k = sp[2], i = 0; i < 2; i++)
-			if (k < sp[i]) k = sp[i];
-		    *dp = ~k;
-		    for (i = 0; i < 3; i++)
-			dp[i+1] = k ? (k - sp[i]) * 255 / k : 0;
-		    break;
-		case 4: // CMYK -> KCMY
-		    for (i=0; i < 4; i++)
-			dp[i] = sp[((i-1) & 3)];
-		    break;
+		    switch (ideep)
+		    {
+		    case 0: // B&W 1bpp -> 8bpp
+			*dp = ((image[col >> 3] >> (~col & 7)) & 1) * 255;
+			break;
+		    case 1: // GRAY 8bpp
+			*dp = ~*sp;
+			break;
+		    case 3: // RGB -> KCMY
+			for (k = sp[2], i = 0; i < 2; i++)
+			    if (k < sp[i]) k = sp[i];
+			*dp = ~k;
+			for (i = 0; i < 3; i++)
+			    dp[i+1] = k ? (k - sp[i]) * 255 / k : 0;
+			break;
+		    case 4: // CMYK -> KCMY
+			for (i=0; i < 4; i++)
+			    dp[i] = sp[((i-1) & 3)];
+			break;
+		    }
+		    sp += ideep;
+		    dp += deep;
 		}
-		sp += ideep;
 	    }
-	    memset(image + row*byte, 0, deep*(Clip[0]+1));
-	    memset(image + row*byte + deep*(iwide-Clip[2]), 0, deep*(Clip[2]+1));
 	}
-	memset(image, 0, byte*(Clip[1]+1));
-	memset(image + byte*(ihigh-Clip[3]+1), 0, byte*Clip[3]);
+	if (lct < 0)
+	    memset(image, 0, (ihigh+2)*byte);
+	else
+	{
+	    for (row = 1+Clip[1]; row <= ihigh-Clip[3]; row++)
+	    {
+		memset(image + row*byte, 0, deep*(2+Clip[0]));
+		memset(image + row*byte + deep*(wide-2-Clip[2]), \
+			0, deep*(2+Clip[2]));
+	    }
+	    memset(image, 0, byte*(1+Clip[1]));
+	    memset(image + byte*(1+ihigh-Clip[3]), 0, byte*(1+Clip[3]));
+	}
 
 	if (deep > 1) {
 	    if (BlackClears)
@@ -965,7 +1008,7 @@ main(int argc, char *argv[])
 {
     int	c, i;
 
-    while ((c = getopt(argc, argv, "m:n:p:u:l:z:J:U:S:D:tABV?h")) != EOF)
+    while ((c = getopt(argc, argv, "m:n:p:u:l:z:L:J:U:S:D:tABV?h")) != EOF)
 	switch (c)
 	{
 	case 'm':  MediaCode = atoi(optarg); break;
@@ -989,6 +1032,10 @@ main(int argc, char *argv[])
 	case 'z':  Model = atoi(optarg);
 		   if (Model < 0 || Model > 1)
 		       error(1, "Illegal value '%s' for -z\n", optarg);
+		   break;
+	case 'L':  LogicalClip = atoi(optarg);
+		   if (LogicalClip < 0 || LogicalClip > 3)
+		       error(1, "Illegal value '%s' for -L\n", optarg);
 		   break;
 	case 'S':  Color2Mono = atoi(optarg);
 		   if (Color2Mono < 1 || Color2Mono > 4)
