@@ -350,7 +350,7 @@ Custom*)
 		XDIM="5100";  YDIM="8400";	set_clipping 50 50 50 50;;
 2|A4|a4)	PAPER=2;	paper=a4
 		XDIM="4960";  YDIM="7016";	set_clipping 50 50 50 50;;
-3|executive|executive)
+3|executive|Executive)
 		PAPER=3;	paper=executive
 		XDIM="4350"; YDIM="6300";	set_clipping 50 50 50 50;;
 6|env10|Env10|"env#10")
@@ -374,7 +374,7 @@ Custom*)
 		XDIM="4299";  YDIM="6070";	set_clipping 50 50 50 50;;
 15|A5|a5)	PAPER=15;	paper=a5
 		XDIM="3496";  YDIM="4960";	set_clipping 50 50 50 50;;
-205|folio|folio)
+205|folio|Folio)
 		PAPER=205;	paper=folio
 		XDIM="5100";  YDIM="7800";	set_clipping 50 50 50 50;;
 *)		error "Unimplemented paper code $PAPER";;

@@ -36,7 +36,7 @@
 	    <ev_driverval>15</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-4">
-	    <ev_longname> <en>Letter (8.5 x 11&quot;)</en> </ev_longname>
+	    <ev_longname> <en>US Letter (8.5 x 11&quot;)</en> </ev_longname>
 	    <ev_shortname> <en>Letter</en> </ev_shortname>
 	    <ev_driverval>0</ev_driverval>
 	</enum_val>
@@ -56,27 +56,27 @@
 	    <ev_driverval>205</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-8">
-	    <ev_longname> <en>Legal (8.5 x 14&quot;)</en> </ev_longname>
+	    <ev_longname> <en>US Legal (8.5 x 14&quot;)</en> </ev_longname>
 	    <ev_shortname> <en>Legal</en> </ev_shortname>
 	    <ev_driverval>1</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-9">
-	    <ev_longname> <en>Env #10 (4.125 x 9.5&quot;)</en> </ev_longname>
+	    <ev_longname> <en>Envelope #10 (4.125 x 9.5&quot;)</en> </ev_longname>
 	    <ev_shortname> <en>Env10</en> </ev_shortname>
 	    <ev_driverval>6</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-10">
-	    <ev_longname> <en>Env Monarch (3.875 x 7.5&quot;)</en> </ev_longname>
+	    <ev_longname> <en>Envelope Monarch (3.875 x 7.5&quot;)</en> </ev_longname>
 	    <ev_shortname> <en>EnvMonarch</en> </ev_shortname>
 	    <ev_driverval>7</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-11">
-	    <ev_longname> <en>Env C5 (162 x 229mm)</en> </ev_longname>
+	    <ev_longname> <en>Envelope C5 (162 x 229mm)</en> </ev_longname>
 	    <ev_shortname> <en>EnvC5</en> </ev_shortname>
 	    <ev_driverval>8</ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-PageSize-12">
-	    <ev_longname> <en>Env DL (110 x 220mm)</en> </ev_longname>
+	    <ev_longname> <en>Envelope DL (110 x 220mm)</en> </ev_longname>
 	    <ev_shortname> <en>EnvDL</en> </ev_shortname>
 	    <ev_driverval>9</ev_driverval>
 	</enum_val>

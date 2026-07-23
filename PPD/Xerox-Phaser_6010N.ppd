@@ -65,9 +65,10 @@
 
 *driverName foo2hbpl1-z1: ""
 *driverType F/Filter: ""
-*driverUrl: "http://foo2hbpl1.rkkda.com/"
+*driverUrl: "https://github.com/OpenPrinting/foo2zjs"
 *driverObsolete: False
-
+*driverManufacturerSupplied: False
+*driverFreeSoftware: True
 
 
 
@@ -115,7 +116,7 @@
 *FoomaticRIPOption PageSize: enum CmdLine A
 *OrderDependency: 135 AnySetup *PageSize
 *DefaultPageSize: Letter
-*PageSize Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
+*PageSize Letter/US Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
 *FoomaticRIPOptionSetting PageSize=Letter: "-p0 "
 *PageSize A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
 *FoomaticRIPOptionSetting PageSize=A4: "-p2 "
@@ -123,13 +124,13 @@
 *FoomaticRIPOptionSetting PageSize=A5: "-p15 "
 *PageSize B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
 *FoomaticRIPOptionSetting PageSize=B5jis: "-p11 "
-*PageSize Env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
+*PageSize Env10/Envelope #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
 *FoomaticRIPOptionSetting PageSize=Env10: "-p6 "
-*PageSize EnvC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
+*PageSize EnvC5/Envelope C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
 *FoomaticRIPOptionSetting PageSize=EnvC5: "-p8 "
-*PageSize EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
+*PageSize EnvDL/Envelope DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
 *FoomaticRIPOptionSetting PageSize=EnvDL: "-p9 "
-*PageSize EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
+*PageSize EnvMonarch/Envelope Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
 *FoomaticRIPOptionSetting PageSize=EnvMonarch: "-p7 "
 *PageSize Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
 *FoomaticRIPOptionSetting PageSize=Executive: "-p3 "
@@ -137,54 +138,54 @@
 *FoomaticRIPOptionSetting PageSize=FanfoldGermanLegal: "-p205 "
 *PageSize Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
 *FoomaticRIPOptionSetting PageSize=Folio: "-p205 "
-*PageSize Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
+*PageSize Legal/US Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
 *FoomaticRIPOptionSetting PageSize=Legal: "-p1 "
 *CloseUI: *PageSize
 
 *OpenUI *PageRegion: PickOne
 *OrderDependency: 135 AnySetup *PageRegion
 *DefaultPageRegion: Letter
-*PageRegion Letter/Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
+*PageRegion Letter/US Letter: "%% FoomaticRIPOptionSetting: PageSize=Letter"
 *PageRegion A4/A4: "%% FoomaticRIPOptionSetting: PageSize=A4"
 *PageRegion A5/A5: "%% FoomaticRIPOptionSetting: PageSize=A5"
 *PageRegion B5jis/B5 (JIS): "%% FoomaticRIPOptionSetting: PageSize=B5jis"
-*PageRegion Env10/Env #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
-*PageRegion EnvC5/Env C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
-*PageRegion EnvDL/Env DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
-*PageRegion EnvMonarch/Env Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
+*PageRegion Env10/Envelope #10: "%% FoomaticRIPOptionSetting: PageSize=Env10"
+*PageRegion EnvC5/Envelope C5: "%% FoomaticRIPOptionSetting: PageSize=EnvC5"
+*PageRegion EnvDL/Envelope DL: "%% FoomaticRIPOptionSetting: PageSize=EnvDL"
+*PageRegion EnvMonarch/Envelope Monarch: "%% FoomaticRIPOptionSetting: PageSize=EnvMonarch"
 *PageRegion Executive/Executive: "%% FoomaticRIPOptionSetting: PageSize=Executive"
 *PageRegion FanfoldGermanLegal/Fanfold German Legal: "%% FoomaticRIPOptionSetting: PageSize=FanfoldGermanLegal"
 *PageRegion Folio/Folio: "%% FoomaticRIPOptionSetting: PageSize=Folio"
-*PageRegion Legal/Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
+*PageRegion Legal/US Legal: "%% FoomaticRIPOptionSetting: PageSize=Legal"
 *CloseUI: *PageRegion
 
 *DefaultImageableArea: Letter
-*ImageableArea Letter/Letter: "20 20.00 592 772.00"
+*ImageableArea Letter/US Letter: "20 20.00 592 772.00"
 *ImageableArea A4/A4: "20 20.00 575 822.00"
 *ImageableArea A5/A5: "20 20.00 400 575.00"
 *ImageableArea B5jis/B5 (JIS): "20 20.00 498 707.00"
-*ImageableArea Env10/Env #10: "20 20.00 277 664.00"
-*ImageableArea EnvC5/Env C5: "20 20.00 439 629.00"
-*ImageableArea EnvDL/Env DL: "20 20.00 291 603.00"
-*ImageableArea EnvMonarch/Env Monarch: "20 20.00 259 520.00"
+*ImageableArea Env10/Envelope #10: "20 20.00 277 664.00"
+*ImageableArea EnvC5/Envelope C5: "20 20.00 439 629.00"
+*ImageableArea EnvDL/Envelope DL: "20 20.00 291 603.00"
+*ImageableArea EnvMonarch/Envelope Monarch: "20 20.00 259 520.00"
 *ImageableArea Executive/Executive: "20 20.00 502 736.00"
 *ImageableArea FanfoldGermanLegal/Fanfold German Legal: "20 20.00 598 916.00"
 *ImageableArea Folio/Folio: "20 20.00 598 916.00"
-*ImageableArea Legal/Legal: "20 20.00 598 988.00"
+*ImageableArea Legal/US Legal: "20 20.00 598 988.00"
 
 *DefaultPaperDimension: Letter
-*PaperDimension Letter/Letter: "612 792"
+*PaperDimension Letter/US Letter: "612 792"
 *PaperDimension A4/A4: "595 842"
 *PaperDimension A5/A5: "420 595"
 *PaperDimension B5jis/B5 (JIS): "518 727"
-*PaperDimension Env10/Env #10: "297 684"
-*PaperDimension EnvC5/Env C5: "459 649"
-*PaperDimension EnvDL/Env DL: "311 623"
-*PaperDimension EnvMonarch/Env Monarch: "279 540"
+*PaperDimension Env10/Envelope #10: "297 684"
+*PaperDimension EnvC5/Envelope C5: "459 649"
+*PaperDimension EnvDL/Envelope DL: "311 623"
+*PaperDimension EnvMonarch/Envelope Monarch: "279 540"
 *PaperDimension Executive/Executive: "522 756"
 *PaperDimension FanfoldGermanLegal/Fanfold German Legal: "612 1008"
 *PaperDimension Folio/Folio: "612 936"
-*PaperDimension Legal/Legal: "612 1008"
+*PaperDimension Legal/US Legal: "612 1008"
 
 *OpenUI *MediaType/Media Type: PickOne
 *FoomaticRIPOption MediaType: enum CmdLine A
