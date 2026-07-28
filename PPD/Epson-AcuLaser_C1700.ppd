@@ -56,19 +56,22 @@
 *PSVersion:	"(3010.000) 870"
 *LanguageLevel:	"3"
 *ColorDevice:	True
-*DefaultColorSpace: RGB
+*DefaultColorSpace: CMYK
 *FileSystem:	False
 *Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "MFG:Epson;MDL:AcuLaser C1700;DRV:Dfoo2hbpl1,R1,M0,TF;"
+*1284DeviceID: "MFG:Epson;MDL:AcuLaser C1700;DRV:Dfoo2hbpl1,R1,M0,F1,P0,Sv,C1,s12,TF;"
 
 *driverName foo2hbpl1: ""
 *driverType F/Filter: ""
 *driverUrl: "https://github.com/OpenPrinting/foo2zjs"
 *driverObsolete: False
 *driverManufacturerSupplied: False
+*driverLicense: "GPL"
 *driverFreeSoftware: True
+*driverSupportContactVoluntary: "http://forums.openprinting.org/ OpenPrinting forums"
+*driverColor: False
 
 
 
@@ -103,15 +106,15 @@
 *FoomaticRIPOptionSetting Quality=normal: "  "
 *CloseUI: *Quality
 
-*OpenUI *ColorMode/Color Mode: PickOne
-*FoomaticRIPOption ColorMode: enum CmdLine A
-*OrderDependency: 120 AnySetup *ColorMode
-*DefaultColorMode: Monochrome
-*ColorMode Color/Color: "%% FoomaticRIPOptionSetting: ColorMode=Color"
-*FoomaticRIPOptionSetting ColorMode=Color: "-c "
-*ColorMode Monochrome/Monochrome: "%% FoomaticRIPOptionSetting: ColorMode=Monochrome"
-*FoomaticRIPOptionSetting ColorMode=Monochrome: " "
-*CloseUI: *ColorMode
+*OpenUI *ColorModel/Color Mode: PickOne
+*FoomaticRIPOption ColorModel: enum CmdLine A
+*OrderDependency: 120 AnySetup *ColorModel
+*DefaultColorModel: Gray
+*ColorModel CMYK/Color: "%% FoomaticRIPOptionSetting: ColorModel=CMYK"
+*FoomaticRIPOptionSetting ColorModel=CMYK: "-c "
+*ColorModel Gray/Black and White: "%% FoomaticRIPOptionSetting: ColorModel=Gray"
+*FoomaticRIPOptionSetting ColorModel=Gray: " "
+*CloseUI: *ColorModel
 
 *OpenUI *PageSize/Page Size: PickOne
 *FoomaticRIPOption PageSize: enum CmdLine A

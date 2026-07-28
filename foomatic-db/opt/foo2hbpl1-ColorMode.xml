@@ -14,28 +14,28 @@
     <constraints>
 	<constraint sense="true">
 	<driver>foo2hbpl1</driver>
-	<arg_defval>ev/foo2hbpl1-ColorModel-mono</arg_defval>
+	<arg_defval>ev/foo2hbpl1-ColorModel-gray</arg_defval>
 	</constraint>
 	<constraint sense="true">
 	<driver>foo2hbpl1-z1</driver>
-	<arg_defval>ev/foo2hbpl1-ColorModel-mono</arg_defval>
+	<arg_defval>ev/foo2hbpl1-ColorModel-gray</arg_defval>
 	</constraint>
     </constraints>
     <enum_vals>
-	<enum_val id="ev/foo2hbpl1-ColorModel-mono">
-	    <ev_longname> <en>Gray</en> </ev_longname>
+	<enum_val id="ev/foo2hbpl1-ColorModel-gray">
+	    <ev_longname> <en>Gray/Black and White</en> </ev_longname>
 	    <comments><en>
 		Prints in monochrome only
 	    </en></comments>
 	    <ev_shortname> <en>Gray</en> </ev_shortname>
-	    <ev_driverval></ev_driverval>
+	    <ev_driverval> </ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-ColorModel-color">
-	    <ev_longname> <en>RGB</en> </ev_longname>
+	    <ev_longname> <en>CMYK/Color</en> </ev_longname>
 	    <comments><en>
 		Prints in color using the best compromise setting.
 	    </en></comments>
-	    <ev_shortname> <en>RGB</en> </ev_shortname>
+	    <ev_shortname> <en>CMYK</en> </ev_shortname>
 	    <ev_driverval>-c</ev_driverval>
 	</enum_val>
     </enum_vals>

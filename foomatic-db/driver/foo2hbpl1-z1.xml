@@ -1,6 +1,12 @@
-<driver id="driver/foo2hbpl1">
-    <name>foo2hbpl1</name>
+<!--
+     foo2hbpl1 -z1 driver
+-->
+
+<driver id="driver/foo2hbpl1-z1">
+    <name>foo2hbpl1-z1</name>
     <url>https://github.com/OpenPrinting/foo2zjs</url>
+    <thirdpartysupplied />
+    <license>GPL</license>
     <execution>
 	<filter />
 	<prototype>foo2hbpl1-wrapper -z1 %A</prototype>
@@ -10,8 +16,12 @@
 	This driver is developed for HBPLv1 printers (with extended code set)
 	like the Xerox Phaser 6000B and the Xerox Phaser 6010N printers.
 
+	&lt;p&gt;
+
 	If you have another printer that works using these codes, please
 	notify the developers or maintainers for this project.
+
+	&lt;p&gt;
 
 	Images to print Resolution is limited to 600x600 dpi, and you should
 	stay at least 50 pixels (2mm) away from the edges to avoid clipping.
