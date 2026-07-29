@@ -31,6 +31,7 @@ SHARESLX=$(PREFIX)/share/foo2slx
 SHAREHC=$(PREFIX)/share/foo2hiperc
 SHAREHBPL=$(PREFIX)/share/foo2hbpl
 SHAREDDST=$(PREFIX)/share/foo2ddst
+SHAREHBPL1=$(PREFIX)/share/foo2hbpl1
 MANDIR=$(PREFIX)/share/man
 DOCDIR=$(PREFIX)/share/doc/foo2zjs/
 INSTALL=install
@@ -148,6 +149,8 @@ FILES	=	\
 		foo2hbpl2.1in \
 		foo2ddst.c \
 		foo2ddst.1in \
+		foo2hbpl1.c \
+		foo2hbpl1.1in \
 		cups.h \
 		xqx.h \
 		xqxdecode.c \
@@ -187,6 +190,8 @@ FILES	=	\
 		foo2hbpl2-wrapper.1in \
 		foo2ddst-wrapper.in \
 		foo2ddst-wrapper.1in \
+		foo2hbpl1-wrapper.in \
+		foo2hbpl1-wrapper.1in \
 		gamma.ps \
 		gamma-lookup.ps \
 		align.ps \
@@ -259,6 +264,7 @@ PROGS+=		foo2hiperc hipercdecode
 PROGS+=		foo2hbpl2 hbpldecode
 PROGS+=		gipddecode
 PROGS+=		foo2ddst ddstdecode
+PROGS+=		foo2hbpl1
 ifneq ($(CUPS_SERVERBIN),)
     ifneq ($(CUPS_DEVEL),)
 	ifneq ($(CUPS_GOODAPI),)
@@ -269,7 +275,7 @@ endif
 SHELLS=		foo2zjs-wrapper foo2oak-wrapper foo2hp2600-wrapper \
 		foo2xqx-wrapper foo2lava-wrapper foo2qpdl-wrapper \
 		foo2slx-wrapper foo2hiperc-wrapper foo2hbpl2-wrapper \
-		foo2ddst-wrapper
+		foo2ddst-wrapper foo2hbpl1-wrapper
 SHELLS+=	foo2zjs-pstops
 SHELLS+=	printer-profile
 MANPAGES=	foo2zjs-wrapper.1 foo2zjs.1 zjsdecode.1
@@ -282,6 +288,7 @@ MANPAGES+=	foo2slx-wrapper.1 foo2slx.1 slxdecode.1
 MANPAGES+=	foo2hiperc-wrapper.1 foo2hiperc.1 hipercdecode.1
 MANPAGES+=	foo2hbpl2-wrapper.1 foo2hbpl2.1 hbpldecode.1
 MANPAGES+=	foo2ddst-wrapper.1 foo2ddst.1 ddstdecode.1
+MANPAGES+=	foo2hbpl1-wrapper.1 foo2hbpl1.1
 MANPAGES+=	gipddecode.1
 MANPAGES+=	foo2zjs-pstops.1 arm2hpdl.1 usb_printerid.1
 MANPAGES+=	printer-profile.1
@@ -308,7 +315,8 @@ GSOPTS=	-q -dBATCH -dSAFER -dQUIET -dNOPAUSE -sPAPERSIZE=letter -r$(GXR)x$(GYR)
 JBGOPTS=-m 16 -d 0 -p 92	# Equivalent options for pbmtojbg
 
 .SUFFIXES: .ps .pbm .pgm .pgm2 .ppm .ppm2 .zjs .cmyk .pksm .zc .zm .jbg \
-	   .cups .cupm .1 .1in .fig .gif .xqx .lava .qpdl .slx .hc .hbpl .ddst
+	   .cups .cupm .1 .1in .fig .gif .xqx .lava .qpdl .slx .hc .hbpl \
+	   .ddst .hbpl1
 
 .fig.gif:
 	fig2dev -L gif $*.fig | giftrans -t "#ffffff" -o $*.gif
@@ -381,6 +389,9 @@ JBGOPTS=-m 16 -d 0 -p 92	# Equivalent options for pbmtojbg
 .pbm.ddst:
 	./foo2ddst < $*.pbm > $*.ddst
 
+.pbm.hbpl1:
+	./foo2hbpl1 < $*.pbm > $*.hbpl1
+
 #
 # The usual build rules
 #
@@ -450,6 +461,9 @@ all-done:
 	@echo "yourself."
 
 
+foo2hbpl1: foo2hbpl1.o
+	$(CC) $(CFLAGS) -o $@ foo2hbpl1.o $(LDFLAGS)
+
 foo2ddst: foo2ddst.o
 	$(CC) $(CFLAGS) -o $@ foo2ddst.o $(LIBJBG) $(LDFLAGS)
 
@@ -480,6 +494,12 @@ foo2xqx: foo2xqx.o
 foo2zjs: foo2zjs.o
 	$(CC) $(CFLAGS) -o $@ foo2zjs.o $(LIBJBG) $(LDFLAGS)
 
+
+foo2hbpl1-wrapper: foo2hbpl1-wrapper.in Makefile
+	[ ! -f $@ ] || chmod +w $@
+	sed < $@.in > $@ \
+	    -e 's@^PREFIX=.*@PREFIX=$(PREFIX)@' || (rm -f $@ && exit 1)
+	chmod 555 $@
 
 foo2ddst-wrapper: foo2ddst-wrapper.in Makefile
 	[ ! -f $@ ] || chmod +w $@
@@ -838,9 +858,12 @@ install-extra:
 		$(INSTALL) -c -m 644 $$i $(SHAREHC)/icm/; \
 	    fi; \
 	done
-	# foo2hbpl ICM files (if any)
+	# foo2hbpl(2) ICM files (if any)
 	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHBPL)/icm/
 	for i in hbpl*.icm; do \
+	    if [ $$i = hbpl1*.icm ]; then \
+		continue; \
+	    fi; \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREHBPL)/icm/; \
 	    fi; \
@@ -850,6 +873,13 @@ install-extra:
 	for i in ddst*.icm; do \
 	    if [ -f $$i ]; then \
 		$(INSTALL) -c -m 644 $$i $(SHAREDDST)/icm/; \
+	    fi; \
+	done
+	# foo2hbpl1 ICM files (if any)
+	$(INSTALL) $(LPuid) $(LPgid) -m 755 -d $(SHAREHBPL1)/icm/
+	for i in hbpl1*.icm; do \
+	    if [ -f $$i ]; then \
+		$(INSTALL) -c -m 644 $$i $(SHAREHBPL1)/icm/; \
 	    fi; \
 	done
 
@@ -1173,8 +1203,9 @@ uninstall: uninstall-aa
 	-rm -f $(MANDIR)/man1/foo2xqx*.1 $(MANDIR)/man1/xqxdecode.1
 	-rm -f $(MANDIR)/man1/opldecode.1 $(MANDIR)/man1/rodecode.1
 	-rm -f $(MANDIR)/man1/foo2hiperc*.1 $(MANDIR)/man1/hipercdecode.1
-	-rm -f $(MANDIR)/man1/foo2hbpl*.1 $(MANDIR)/man1/hbpldecode.1
+	-rm -f $(MANDIR)/man1/foo2hbpl2*.1 $(MANDIR)/man1/hbpldecode.1
 	-rm -f $(MANDIR)/man1/foo2ddst*.1 $(MANDIR)/man1/ddstdecode.1
+	-rm -f $(MANDIR)/man1/foo2hbpl1*.1
 	-rm -f $(MANDIR)/man1/gipddecode.1
 	-rm -f $(MANDIR)/man1/arm2hpdl.1 $(MANDIR)/man1/usb_printerid.1
 	-rm -rf /usr/share/foo2zjs/
@@ -1187,6 +1218,7 @@ uninstall: uninstall-aa
 	-rm -rf /usr/share/foo2hiperc/
 	-rm -rf /usr/share/foo2hbpl/
 	-rm -rf /usr/share/foo2ddst/
+	-rm -rf /usr/share/foo2hbpl1/
 	-rm -f /usr/bin/arm2hpdl
 	-rm -f /usr/bin/foo2zjs-wrapper /usr/bin/foo2zjs /usr/bin/zjsdecode
 	-rm -f /usr/bin/foo2oak-wrapper /usr/bin/foo2oak /usr/bin/oakdecode
@@ -1200,6 +1232,7 @@ uninstall: uninstall-aa
 	-rm -f /usr/bin/foo2hbpl2-wrapper /usr/bin/foo2hbpl2
 	-rm -f /usr/bin/hbpldecode
 	-rm -f /usr/bin/foo2ddst-wrapper /usr/bin/foo2ddst /usr/bin/ddstdecode
+	-rm -f /usr/bin/foo2hbpl1-wrapper /usr/bin/foo2hbpl1
 	-rm -f /usr/bin/gipddecode
 	-rm -f /usr/bin/opldecode
 	-rm -f /usr/bin/rodecode
@@ -1233,6 +1266,7 @@ clean:
 	-rm -f foo2hbpl2.o hbpldecode.o
 	-rm -f opldecode.o gipddecode.o
 	-rm -f foo2dsst.o ddstdecode.o
+	-rm -f foo2hbpl1.o
 	-rm -f command2foo2lava-pjl.o
 	-rm -f foo2oak.html foo2zjs.html foo2hp.html foo2xqx.html foo2lava.html
 	-rm -f foo2slx.html foo2qpdl.html foo2hiperc.html foo2hbpl.html
@@ -1540,6 +1574,7 @@ endif
 	    -e "s@\$${URLHC}@$(URLHC)@" \
 	    -e "s@\$${URLHBPL}@$(URLHBPL)@" \
 	    -e "s@\$${URLDDST}@$(URLDDST)@" \
+	    -e "s@\$${URLHBPL1}@$(URLHBPL1)@" \
 	    -e "s/\$${MODpage}/$$MODpage/" \
 	    -e "s/\$${MODver}/$$MODver/"
 	chmod a-w $*.1
@@ -1580,6 +1615,8 @@ install-man: man
 	$(INSTALL) -c -m 644 foo2ddst.1 $(MANDIR)/man1/
 	$(INSTALL) -c -m 644 foo2ddst-wrapper.1 $(MANDIR)/man1/
 	$(INSTALL) -c -m 644 ddstdecode.1 $(MANDIR)/man1/
+	$(INSTALL) -c -m 644 foo2hbpl1.1 $(MANDIR)/man1/
+	$(INSTALL) -c -m 644 foo2hbpl1-wrapper.1 $(MANDIR)/man1/
 	$(INSTALL) -c -m 644 gipddecode.1 $(MANDIR)/man1/
 	$(INSTALL) -c -m 644 foo2zjs-pstops.1 $(MANDIR)/man1/
 	$(INSTALL) -c -m 644 arm2hpdl.1 $(MANDIR)/man1/
@@ -1693,6 +1730,7 @@ URLSLX=http://foo2slx.rkkda.com
 URLHC=http://foo2hiperc.rkkda.com
 URLHBPL=http://foo2hbpl.rkkda.com
 URLDDST=http://foo2ddst.rkkda.com
+URLHBPL1=https://github.com/OpenPrinting/foo2zjs
 FTPSITE=~/.ncftp-website
 FTPOPTS=
 FTPOPTS=-S
