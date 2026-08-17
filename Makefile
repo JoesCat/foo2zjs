@@ -1488,6 +1488,7 @@ ppd:
 	    *M215*)		driver=foo2hbpl2;; \
 	    *M1400*)		driver=foo2hbpl2;; \
 	    *SP_*)		driver=foo2ddst;; \
+	    *bizhub*)		driver=foo2ddst;; \
 	    *)                  driver=foo2zjs;; \
 	    esac; \
 	    echo $$driver - $$printer; \
