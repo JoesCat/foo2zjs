@@ -7,19 +7,18 @@
 '\"	MANUAL PAGE SOURCE
 '\"==========================================================================
 .SH NAME
-foo2hbpl1-wrapper \- Convert Postscript into a ZJS printer stream
+foo2hbpl1-wrapper \- Convert Postscript into a HBPLv1 printer stream
 .SH SYNOPSIS
 .B foo2hbpl1-wrapper
 .RI [ options "] [" ps-file ]
 .SH DESCRIPTION
 .B foo2hbpl1-wrapper
-is a Foomatic compatible printer wrapper for the \fBfoo2hbpl1\fP printer driver.
-This script reads a Postscript \fIps-file\fP or standard input
-and converts it to Zenographics ZjStream printer format
-for driving the
+is a Foomatic compatible printer wrapper for the \fBfoo2hbpl1\fP printer
+driver. This script reads a Postscript \fIps-file\fP or standard input and
+converts it to Host Based Printer Language (v1) format for driving the
 Dell 1250c, Dell C1660w, Dell C1760w,
-Epson AcuLaser C1700,
-and Fuji-Xerox CP105b printers.
+Epson AcuLaser C1700, Fuji-Xerox CP105b,
+Xerox Phaser 6000B and the Xerox Phaser 6010N printers.
 .P
 This script can be used in a standalone fashion, but is intended to
 be called from a printer spooler system which uses the Foomatic
@@ -37,76 +36,62 @@ Print in color (else monochrome).
 Color correction mode [0].
 .TS
 n l .
-10	ICM color profile (using -G *.icm file)
-.TE
-.TP
-.BI \-d\0 duplex
-Duplex code to send to printer [1].
-.TS
-| n l | n l | n l .
-1	off	2	long edge	3	short edge
+10	ICM color profile (using \-G *.icm file)
 .TE
 .TP
 .BI \-m\0 media
-Media code to send to printer [1].
+Media code to send to printer [1] or [6].
 .TS
-l r.
+l r r r r.
 _
-Media	HBPL
+Media	\-m	\-m	\-m	\-m
+\^	\-z0	\-z0	\-z1	\-z1
+\^	side1	side2	side1	side2
 _
-plain	1
-bond	2
-lwcard	3
-lwgcard	4
-labels	5
-envelope	6
-recycled	7
-plain2	8
-bond2	9
-lwcard2	10
-lwgcard2	11
-recycled2	12
+plain	1	8	1	8
+thick	2	9	2	9
+high-quality	3	10	3	10
+coated	4	11	4	11
+label	5	\-	5	\-
+envelope	6	\-	6	\-
+recycled	7	12	7	12
+letterhead	\-	\-	13	14
+preprinted	\-	\-	15	16
+prepunched	\-	\-	17	18
+color	\-	\-	19	20
+user1	\-	\-	21	22
+special	\-	\-	23	24
 .TE
 .TP
 .BI \-p\0 paper
-Paper size code to send to printer [1].
+Paper code sizes autodetected by printer [0].
 .TS
-l r.
-_
-Paper	HBPL
-_
-A4	1
-B5jis	2
-letter	4
-executive	5
-fanfold german legal	6
-folio	6
-legal	7
-env#10	9
-envMonarch	10
-envC5	11
-envDL	12
+box;
+| n l | n l.
+0	Letter	1	Legal
+2	A4	3	Executive
+\-	\-	\-	\-
+6	env #10	7	env Monarch
+8	env C5	9	env DL
+\-	\-	11	B5jis
+\-	\-	\-	\-
+\-	\-	15	A5
+205	Folio	255	Custom (X x Y)
 .TE
 .TP
 .BI \-n\0 copies
-Number of copies [1].
-.TP
-.BI \-r\0 xres x yres
-Set device resolution in pixels/inch [1200x600].
-.TP
-.BI \-s\0 source
-Source (Input Slot) code to send to printer [7].
+Number of copies of each page [1]. Only available for \-z1 printers.
 .TS
-| n l | n l.
-1	upper	4	manual
-2	lower	7	auto
+l l l.
+_
+Model	Range	Example printer(s)
+_
+z0	\-	Dell 1250c / C1660 / C1760
+z1	1-999	Xerox 6000 / 6010
 .TE
 .TP
-.BI \-t
-Draft mode.  Every other pixel is white.
-.TP
-.BI \-T\0 density
-Print density (1-5).  The default is 3 (medium).
+.BI \-t\0
+Draft mode. Every other pixel is white.
 .TP
 .BI "\-2 \-3 \-4 \-5 \-6 \-8 \-9 \-10 \-12 \-14 \-15 \-16 \-18"
 Print in N-up.  Requires the \fBpsutils\fP package.
@@ -115,9 +100,9 @@ Print in N-up.  Requires the \fBpsutils\fP package.
 Orientation used for N-up.
 .TS
 l l l.
-Portrait	-op	(normal)
-Landscape	-ol	(rotated 90 degrees anticlockwise)
-Seascape	-os	(rotated 90 degrees clockwise)
+Portrait	\-op	(normal)
+Landscape	\-ol	(rotated 90 degrees anticlockwise)
+Seascape	\-os	(rotated 90 degrees clockwise)
 .TE
 .SS Printer Tweaking Options
 These are the options used to customize the operation of \fBfoo2hbpl1\fP
@@ -125,24 +110,20 @@ for a particular printer.
 .TP
 .BI \-u\0 xoff x yoff
 Set the offset of the start of the printable region from the
-upper left corner, in pixels [varies with paper size].
-The defaults should work on the 2200DL and 2300DL, and have not
-been tested on any other printers.
+upper left corner, in pixels [20x20].
 .TP
 .BI \-l\0 xoff x yoff
 Set the offset of the end of the printable region from the
-lower right corner, in pixels [varies with paper size].
-The defaults should work on the 2200DL and 2300DL, and have not
-been tested on any other printers.
+lower right corner, in pixels [20x20].
 .TP
 .BI \-L\0 mask
-Send the logical clipping values from -u/-l in the ZjStream.
-\fBfoo2hbpl1-wrapper\fP always runs Ghostscript with the ideal page dimensions,
-so that the scale of the image is correct,
+Send logical clipping amounts implied by \-u/-l in the HBPL1 Stream [3].
+\fBfoo2hbpl1-wrapper\fP always runs Ghostscript with the ideal page
+dimensions, so that the scale of the image is correct,
 regardless whether or not the printer has unprintable regions.
 This option is used to move the position of the clipped image
 back to where it belongs on the page.  The default is to send
-the amount which was clipped by -u and -l, and should be
+the amount which was clipped by \-u and \-l, and should be
 good in most cases.
 .TS
 l l.
@@ -152,23 +133,28 @@ l l.
 3	send both X and Y clipping amounts
 .TE
 .TP
-.BI \-P
-Do not send START_PLANE codes on monochrome output.  May be
-needed by some monochrome-only printers, such as the
-HP LaserJet 1000.
+.BI \-A
+AllIsBlack: convert C=1,M=1,Y=1 to just K=1. Works with color input only.
 .TP
-.BI \-X\0 padlen
-Add extra zero padding to the end of BID segments.  The default is
-16 bytes.  Padding 16 bytes of zeroes
-is needed for older ZjStream printers, such as the Minolta 2200DL
-and HP LaserJet 1000, and seems harmless to newer ones, such as
-the Minolta 2300DL.  So the default should be good for all cases.
+.BI \-B
+BlackClears: K=1 forces C,M,Y to 0. Works with color input only.
+.TP
+.BI \-z\0 model
+Model. Default is [0].
+.TS
+l l.
+_
+Model	Example printer(s)
+_
+z0	Dell 1250c / C1660 / C1760
+z1	Xerox 6000 / 6010
+.TE
 .SS Color Tweaking Options
 These are the options used to control the quality of color output.
 Color correction is currently a WORK IN PROGRESS.
 .TP
 .BI \-g\0 gsopts
-Additional options to pass to Ghostscript, such as -g\(lq-dDITHERPPI=nnn\(rq,
+Additional options to pass to Ghostscript, such as \-g\(lq-dDITHERPPI=nnn\(rq,
 etc.  This option may appear more than once.
 .TP
 .BI \-G\0 profile.icm
@@ -193,7 +179,7 @@ These options are used for debugging \fBfoo2hbpl1\fP and its wrapper.
 .TP
 .BI \-S\0 plane
 Output just a single color plane from a color print and print it
-on the black plane.  The default is to output all color planes.
+on the black plane. The default is to output all color planes.
 .TS
 l l.
 1	Cyan
@@ -206,22 +192,22 @@ l l.
 Set Debug level [0].
 
 .SH EXAMPLES
-Create a monochrome ZjStream from a Postscript document,
+Create a monochrome HBPL1v1 from a Postscript document,
 examine it, and then print it using a RAW print queue:
 
 .RS
 .nf
 foo2hbpl1-wrapper testpage.ps > testpage.prn
-hbpl1decode < testpage.prn
-lpr -P raw testpage.prn
+hbpldecode < testpage.prn
+lpr \-P raw testpage.prn
 .fi
 .RE
 .P
-Create a color ZjStream stream from a Postscript document:
+Create a color HBPL1v1 stream from a Postscript document:
 
 .RS
 .nf
-foo2hbpl1-wrapper -c testpage.ps > testpage.prn
+foo2hbpl1-wrapper \-c testpage.ps > testpage.prn
 .fi
 .RE
 
@@ -233,7 +219,7 @@ foo2hbpl1-wrapper -c testpage.ps > testpage.prn
 .SH "AUTHOR"
 Rick Richardson <rick.richardson@comcast.net>
 .br
-${URLHBPL}/
+${URLHBPL1}/
 '\"
 '\"
 '\"

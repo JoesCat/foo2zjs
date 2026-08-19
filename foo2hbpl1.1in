@@ -14,37 +14,153 @@ foo2hbpl1 \- Convert Ghostscript output to an HBPLv1 printer stream
 .SH DESCRIPTION
 .B foo2hbpl1
 converts Ghostscript pbmraw, pgmraw, ppmraw, or pamcmyk32 output
-formats to monochrome or color HBPL version 1 streams, to drive the
+formats to Monochrome or Color HBPL version 1 streams, to drive
+HBPLv1 compatible printers like the
 Dell 1250c, Dell C1660w, Dell C1760w,
-Epson AcuLaser C1700,
-and Fuji-Xerox CP105b printers.
+Epson AcuLaser C1700, Fuji-Xerox CP105b,
+Xerox Phaser 6000B and the Xerox Phaser 6010N.
 
 .SH COMMAND LINE OPTIONS
+.SS Normal Options
+These are the options used to select the parameters of a
+print job that are usually controlled on a per job basis.
+.TP
+.BI \-m\0 media
+Media code to send to printer [1] or [6].
+.TS
+l r r r r.
+_
+Media	\-m	\-m	\-m	\-m
+\^	\-z0	\-z0	\-z1	\-z1
+\^	side1	side2	side1	side2
+_
+plain	1	8	1	8
+thick	2	9	2	9
+high-quality	3	10	3	10
+coated	4	11	4	11
+label	5	\-	5	\-
+envelope	6	\-	6	\-
+recycled	7	12	7	12
+letterhead	\-	\-	13	14
+preprinted	\-	\-	15	16
+prepunched	\-	\-	17	18
+color	\-	\-	19	20
+user1	\-	\-	21	22
+special	\-	\-	23	24
+.TE
+.TP
+.BI \-p\0 paper
+Paper code sizes autodetected by printer [0].
+.TS
+box;
+| n l | n l.
+0	Letter	1	Legal
+2	A4	3	Executive
+\-	\-	\-	\-
+6	env #10	7	env Monarch
+8	env C5	9	env DL
+\-	\-	11	B5jis
+\-	\-	\-	\-
+\-	\-	15	A5
+205	Folio	255	Custom (X x Y)
+.TE
+.TP
+.BI \-n\0 copies
+Number of copies of each page [1]. Only available for \-z1 printers.
+.TS
+l l l.
+_
+Model	Range	Example printer(s)
+_
+z0	\-	Dell 1250c / C1660 / C1760
+z1	1-999	Xerox 6000 / 6010
+.TE
+.TP
+.BI \-t\0
+Draft mode. Every other pixel is white.
 .TP
 .BI \-J\0 filename
 Filename string to send to printer.
 .TP
 .BI \-U\0 username
 Username string to send to printer.
+.SS Printer Tweaking Options
+These are the options used to customize the operation of \fBfoo2hbpl1\fP
+for a particular printer.
+.TP
+.BI \-u\0 xoff x yoff
+Set the offset of the start of the printable region from the
+upper left corner, in pixels [20x20].
+.TP
+.BI \-l\0 xoff x yoff
+Set the offset of the end of the printable region from the
+lower right corner, in pixels [20x20].
+.TP
+.BI \-L\0 mask
+Send logical clipping amounts implied by \-u/-l in the HBPL1 Stream [3].
+.TS
+l l.
+0	don't send any logical clipping amounts
+1	only send Y clipping amount
+2	only send X clipping amount
+3	send both X and Y clipping amounts
+.TE
+.TP
+.BI \-A
+AllIsBlack: convert C=1,M=1,Y=1 to just K=1. Works with color input only.
+.TP
+.BI \-B
+BlackClears: K=1 forces C,M,Y to 0. Works with color input only.
+.TP
+.BI \-z\0 model
+Model. Default is [0].
+.TS
+l l.
+_
+Model	Example printer(s)
+_
+z0	Dell 1250c / C1660 / C1760
+z1	Xerox 6000 / 6010
+.TE
+.SS Debugging Options
+These options are used for debugging \fBfoo2hbpl1\fP.
+.TP
+.BI \-S\0 plane
+Output just a single color plane from a color print and print it
+on the black plane. The default is to output all color planes.
+.TS
+l l.
+1	Cyan
+2	Magenta
+3	Yellow
+4	Black
+.TE
+.TP
+.BI \-D\0 level
+Set Debug level [0].
+.TP
+.BI \-V\0
+Show \fBfoo2hbpl1\fP Version.
+
 .SH EXAMPLES
-Create a black and white ZJS stream:
+Create a black and white HBPL1v1 stream:
 
 .RS
 .nf
-gs -q -dBATCH -dSAFER -dQUIET -dNOPAUSE \ 
-    -sPAPERSIZE=letter -r600x600 -sDEVICE=pgmraw \ 
-    -sOutputFile=- - < testpage.ps \ 
+gs \-q \-dBATCH \-dSAFER \-dQUIET \-dNOPAUSE \ 
+    \-sPAPERSIZE=letter \-r600x600 \-sDEVICE=pgmraw \ 
+    \-sOutputFile=- \- < testpage.ps \ 
 | foo2hbpl1 >testpage.zm
 .fi
 .RE
 .P
-Create a color ZJS stream:
+Create a color HBPL1v1 stream:
 
 .RS
 .nf
-gs -q -dBATCH -dSAFER -dQUIET -dNOPAUSE \ 
-    -sPAPERSIZE=letter -g5100x6600 -r600x600 -sDEVICE=pamcmyk32 \ 
-    -sOutputFile=- - < testpage.ps \ 
+gs \-q \-dBATCH \-dSAFER \-dQUIET \-dNOPAUSE \ 
+    \-sPAPERSIZE=letter \-g5100x6600 \-r600x600 \-sDEVICE=pamcmyk32 \ 
+    \-sOutputFile=- \- < testpage.ps \ 
 | foo2hbpl1 >testpage.zc
 .fi
 .RE
@@ -61,7 +177,9 @@ Peter Korf <peter@niendo.de>
 .br
 Dave Coffin <dcoffin@cybercom.net>
 .br
-${URLHBPL}/
+Joe Da Silva <digital@joescat.com>
+.br
+${URLHBPL1}/
 '\"
 '\"
 '\"
