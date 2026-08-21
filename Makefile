@@ -1522,6 +1522,10 @@ ppd:
 	    *M215*)		driver=foo2hbpl2;; \
 	    *M1400*)		driver=foo2hbpl2;; \
 	    *SP_*)		driver=foo2ddst;; \
+	    *1250c*)		driver=foo2hbpl1;; \
+	    *C1660*|*C1760*)	driver=foo2hbpl1;; \
+	    *C1700*)		driver=foo2hbpl1;; \
+	    *CP105*)		driver=foo2hbpl1;; \
 	    *)                  driver=foo2zjs;; \
 	    esac; \
 	    echo $$driver - $$printer; \
@@ -1758,6 +1762,7 @@ foo2zjs.html foo2oak.html foo2hp.html \
 	    -e "s@\$${URLHC}@$(URLHC)@g" \
 	    -e "s@\$${URLHBPL}@$(URLHBPL)@g" \
 	    -e "s@\$${URLDDST}@$(URLDDST)@g" \
+	    -e "s@\$${URLHBPL1}@$(URLHBPL1)@g" \
 	    -e "s@\$${PRODUCT}@$$PRODUCT@g" \
 	    -e "s/\$${MODindex}/$$MODindex $$TZ/" \
 	    -e "s/\$${MODtarball}/$$MODtarball $$TZ/" \
