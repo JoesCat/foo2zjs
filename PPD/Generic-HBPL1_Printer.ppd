@@ -20,7 +20,7 @@
 *% DO NOT cut and paste this file into an editor with your mouse. This can
 *% introduce additional line breaks which lead to unexpected results.
 *%
-*% You may save this file as 'Dell-C1760-foo2hbpl1.ppd'
+*% You may save this file as 'Generic-HBPL1_Printer-foo2hbpl1.ppd'
 *%
 *%
 *FormatVersion:	"4.3"
@@ -28,17 +28,17 @@
 *LanguageVersion: English 
 *LanguageEncoding: ISOLatin1
 *PCFileName:	"FOO2HBPL.PPD"
-*Manufacturer:	"Dell"
-*Product:	"(Laser Printer C1760)"
+*Manufacturer:	"Generic"
+*Product:	"(HBPL1 Printer)"
 *cupsVersion:	1.0
 *cupsManualCopies: True
 *cupsModelNumber:  2
 *cupsFilter:	"application/vnd.cups-postscript 100 foomatic-rip"
 *cupsFilter:	"application/vnd.cups-pdf 0 foomatic-rip"
 *%pprRIP:        foomatic-rip other
-*ModelName:     "Dell C1760"
-*ShortNickName: "Dell C1760 foo2hbpl1"
-*NickName:      "Dell C1760 Foomatic/foo2hbpl1 (recommended)"
+*ModelName:     "Generic HBPL1 Printer"
+*ShortNickName: "Generic HBPL1 Printer foo2hbpl1"
+*NickName:      "Generic HBPL1 Printer Foomatic/foo2hbpl1 (recommended)"
 *PSVersion:	"(3010.000) 550"
 *PSVersion:	"(3010.000) 651"
 *PSVersion:	"(3010.000) 652"
@@ -58,10 +58,10 @@
 *ColorDevice:	True
 *DefaultColorSpace: RGB
 *FileSystem:	False
-*Throughput:	"10"
+*Throughput:	"1"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "MFG:Dell;MDL:Laser Printer C1760;CMD:HBPL;DES:Dell C1760;DRV:Dfoo2hbpl1,R1,M0,TF;"
+*1284DeviceID: "MFG:Generic;MDL:HBPL1 Printer;CMD:HBPL;DES:Generic HBPL1 Printer;DRV:Dfoo2hbpl1,R1,M0,TF;"
 
 *driverName foo2hbpl1: ""
 *driverType F/Filter: ""
@@ -87,7 +87,7 @@
 *ParamCustomPageSize WidthOffset: 4 points 0 0
 *ParamCustomPageSize HeightOffset: 5 points 0 0
 
-*FoomaticIDs: Dell-C1760 foo2hbpl1
+*FoomaticIDs: Generic-HBPL1_Printer foo2hbpl1
 *FoomaticRIPCommandLine: "foo2hbpl1-wrapper %A"
 
 *OpenGroup: General/General

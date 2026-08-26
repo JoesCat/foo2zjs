@@ -20,7 +20,7 @@
 *% DO NOT cut and paste this file into an editor with your mouse. This can
 *% introduce additional line breaks which lead to unexpected results.
 *%
-*% You may save this file as 'Dell-C1760-foo2hbpl1.ppd'
+*% You may save this file as 'Xerox-Phaser_6010N-foo2hbpl1-z1.ppd'
 *%
 *%
 *FormatVersion:	"4.3"
@@ -28,17 +28,17 @@
 *LanguageVersion: English 
 *LanguageEncoding: ISOLatin1
 *PCFileName:	"FOO2HBPL.PPD"
-*Manufacturer:	"Dell"
-*Product:	"(Laser Printer C1760)"
+*Manufacturer:	"Xerox"
+*Product:	"(Phaser 6010N)"
 *cupsVersion:	1.0
 *cupsManualCopies: True
 *cupsModelNumber:  2
 *cupsFilter:	"application/vnd.cups-postscript 100 foomatic-rip"
 *cupsFilter:	"application/vnd.cups-pdf 0 foomatic-rip"
 *%pprRIP:        foomatic-rip other
-*ModelName:     "Dell C1760"
-*ShortNickName: "Dell C1760 foo2hbpl1"
-*NickName:      "Dell C1760 Foomatic/foo2hbpl1 (recommended)"
+*ModelName:     "Xerox Phaser 6010N"
+*ShortNickName: "Xerox Phaser 6010N foo2hbpl1-z1"
+*NickName:      "Xerox Phaser 6010N Foomatic/foo2hbpl1-z1 (recommended)"
 *PSVersion:	"(3010.000) 550"
 *PSVersion:	"(3010.000) 651"
 *PSVersion:	"(3010.000) 652"
@@ -58,12 +58,12 @@
 *ColorDevice:	True
 *DefaultColorSpace: RGB
 *FileSystem:	False
-*Throughput:	"10"
+*Throughput:	"12"
 *LandscapeOrientation: Plus90
 *TTRasterizer:	Type42
-*1284DeviceID: "MFG:Dell;MDL:Laser Printer C1760;CMD:HBPL;DES:Dell C1760;DRV:Dfoo2hbpl1,R1,M0,TF;"
+*1284DeviceID: "MFG:Xerox;MDL:Phaser 6010N;CMD:HBPL;DRV:Dfoo2hbpl1-z1,R1,M0,TF;"
 
-*driverName foo2hbpl1: ""
+*driverName foo2hbpl1-z1: ""
 *driverType F/Filter: ""
 *driverUrl: "https://github.com/OpenPrinting/foo2zjs"
 *driverObsolete: False
@@ -72,7 +72,7 @@
 
 
 
-*HWMargins: 6.12 6.12 6.12 6.12
+*HWMargins: 6.00 6.00 6 6
 *VariablePaperSize: True
 *MaxMediaWidth: 100000
 *MaxMediaHeight: 100000
@@ -87,8 +87,8 @@
 *ParamCustomPageSize WidthOffset: 4 points 0 0
 *ParamCustomPageSize HeightOffset: 5 points 0 0
 
-*FoomaticIDs: Dell-C1760 foo2hbpl1
-*FoomaticRIPCommandLine: "foo2hbpl1-wrapper %A"
+*FoomaticIDs: Xerox-Phaser_6010N foo2hbpl1-z1
+*FoomaticRIPCommandLine: "foo2hbpl1-wrapper -z1 %A"
 
 *OpenGroup: General/General
 
@@ -160,18 +160,18 @@
 *CloseUI: *PageRegion
 
 *DefaultImageableArea: Letter
-*ImageableArea Letter/US Letter: "6.12 6.12 605.88 785.88"
-*ImageableArea A4/A4: "6.12 6.12 588.88 835.88"
-*ImageableArea A5/A5: "6.12 6.12 413.88 588.88"
-*ImageableArea B5jis/B5-JIS: "6.12 6.12 511.88 720.88"
-*ImageableArea Env10/Envelope #10: "6.12 6.12 290.88 677.88"
-*ImageableArea EnvC5/Envelope C5: "6.12 6.12 452.88 642.88"
-*ImageableArea EnvDL/Envelope DL: "6.12 6.12 304.88 616.88"
-*ImageableArea EnvMonarch/Envelope Monarch: "6.12 6.12 272.88 533.88"
-*ImageableArea Executive/Executive: "6.12 6.12 515.88 749.88"
-*ImageableArea FanfoldGermanLegal/Fanfold German Legal: "6.12 6.12 605.88 1001.88"
-*ImageableArea Folio/Folio: "6.12 6.12 605.88 929.88"
-*ImageableArea Legal/US Legal: "6.12 6.12 605.88 1001.88"
+*ImageableArea Letter/US Letter: "6.00 6.00 606.00 786.00"
+*ImageableArea A4/A4: "6.00 6.00 589.00 836.00"
+*ImageableArea A5/A5: "6.00 6.00 414.00 589.00"
+*ImageableArea B5jis/B5-JIS: "6.00 6.00 512.00 721.00"
+*ImageableArea Env10/Envelope #10: "6.00 6.00 291.00 678.00"
+*ImageableArea EnvC5/Envelope C5: "6.00 6.00 453.00 643.00"
+*ImageableArea EnvDL/Envelope DL: "6.00 6.00 305.00 617.00"
+*ImageableArea EnvMonarch/Envelope Monarch: "6.00 6.00 273.00 534.00"
+*ImageableArea Executive/Executive: "6.00 6.00 516.00 750.00"
+*ImageableArea FanfoldGermanLegal/Fanfold German Legal: "6.00 6.00 606.00 1002.00"
+*ImageableArea Folio/Folio: "6.00 6.00 606.00 930.00"
+*ImageableArea Legal/US Legal: "6.00 6.00 606.00 1002.00"
 
 *DefaultPaperDimension: Letter
 *PaperDimension Letter/US Letter: "612 792"
@@ -203,14 +203,38 @@
 *FoomaticRIPOptionSetting MediaType=coated: "-m4 "
 *MediaType coated2/Coated Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=coated2"
 *FoomaticRIPOptionSetting MediaType=coated2: "-m11 "
+*MediaType color/Color Paper: "%% FoomaticRIPOptionSetting: MediaType=color"
+*FoomaticRIPOptionSetting MediaType=color: "-m19 "
+*MediaType color2/Color Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=color2"
+*FoomaticRIPOptionSetting MediaType=color2: "-m20 "
+*MediaType custom/Custom Paper: "%% FoomaticRIPOptionSetting: MediaType=custom"
+*FoomaticRIPOptionSetting MediaType=custom: "-m21 "
+*MediaType custom2/Custom Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=custom2"
+*FoomaticRIPOptionSetting MediaType=custom2: "-m22 "
 *MediaType envelope/Envelope: "%% FoomaticRIPOptionSetting: MediaType=envelope"
 *FoomaticRIPOptionSetting MediaType=envelope: "-m6 "
 *MediaType labels/Labels: "%% FoomaticRIPOptionSetting: MediaType=labels"
 *FoomaticRIPOptionSetting MediaType=labels: "-m5 "
+*MediaType letterhead/Letterhead: "%% FoomaticRIPOptionSetting: MediaType=letterhead"
+*FoomaticRIPOptionSetting MediaType=letterhead: "-m13 "
+*MediaType letterhead2/Letterhead - Side 2: "%% FoomaticRIPOptionSetting: MediaType=letterhead2"
+*FoomaticRIPOptionSetting MediaType=letterhead2: "-m14 "
+*MediaType preprinted/Preprinted Paper: "%% FoomaticRIPOptionSetting: MediaType=preprinted"
+*FoomaticRIPOptionSetting MediaType=preprinted: "-m15 "
+*MediaType preprinted2/Preprinted Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=preprinted2"
+*FoomaticRIPOptionSetting MediaType=preprinted2: "-m16 "
+*MediaType prepunched/Prepunched Paper: "%% FoomaticRIPOptionSetting: MediaType=prepunched"
+*FoomaticRIPOptionSetting MediaType=prepunched: "-m17 "
+*MediaType prepunched2/Prepunched Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=prepunched2"
+*FoomaticRIPOptionSetting MediaType=prepunched2: "-m18 "
 *MediaType recycled/Recycled Paper: "%% FoomaticRIPOptionSetting: MediaType=recycled"
 *FoomaticRIPOptionSetting MediaType=recycled: "-m7 "
 *MediaType recycled2/Recycled Paper - Side 2: "%% FoomaticRIPOptionSetting: MediaType=recycled2"
 *FoomaticRIPOptionSetting MediaType=recycled2: "-m12 "
+*MediaType special/Special Paper: "%% FoomaticRIPOptionSetting: MediaType=special"
+*FoomaticRIPOptionSetting MediaType=special: "-m23 "
+*MediaType special2/Special Paper - side 2: "%% FoomaticRIPOptionSetting: MediaType=special2"
+*FoomaticRIPOptionSetting MediaType=special2: "-m24 "
 *MediaType thick/Thick Stock: "%% FoomaticRIPOptionSetting: MediaType=thick"
 *FoomaticRIPOptionSetting MediaType=thick: "-m2 "
 *MediaType thick2/Thick Stock - Side 2: "%% FoomaticRIPOptionSetting: MediaType=thick2"
@@ -365,6 +389,15 @@
 *CloseGroup: Adjustment
 
 *OpenGroup: CombinedJobs/Combined Jobs
+
+*OpenUI *NoReset/Reset before and after JOB: Boolean
+*FoomaticRIPOption NoReset: bool CmdLine A
+*FoomaticRIPOptionSetting NoReset: " -e"
+*OrderDependency: 220 AnySetup *NoReset
+*DefaultNoReset: False
+*NoReset True/NoReset: "%% FoomaticRIPOptionSetting: NoReset=True"
+*NoReset False/Reset: "%% FoomaticRIPOptionSetting: NoReset=False"
+*CloseUI: *NoReset
 
 *OpenUI *JobSize/Break large JOB into smaller JOBs: PickOne
 *FoomaticRIPOption JobSize: enum CmdLine A

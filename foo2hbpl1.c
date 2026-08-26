@@ -44,8 +44,9 @@ along with this program; if not, see
 
 */
 
-static const char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Exp $";
+static const char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/08/23 12:00:00 joe Exp $";
 
+#define _FILE_OFFSET_BITS 64
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -59,7 +60,6 @@ static const char Version[] = "$Id: foo2hbpl1.c,v 1.4 2026/07/14 12:00:00 joe Ex
 
 #define LOGICAL_CLIP_X	2
 #define LOGICAL_CLIP_Y	1
-#define PRINTMAX	20*1024*1024
 
 typedef struct
 {
@@ -81,6 +81,8 @@ typedef struct
     int    pagenum;		// no pages, no printer codes sent
     int    SaveToner;		// -t, every second pixel is blank
     int    PrintSize;		// printer job byte count, <= 50M
+    int    PrintMax;		// default=off limit JOB size
+    int    PrintReset;		// RESET printer before/after JOB
     int    PageWidth;
     int    PageHeight;
     int    Width;
@@ -214,6 +216,9 @@ usage(Job *job)
 "-l <xoff>x<yoff> Set lower-right clip margin offset [%dx%d] pixels\n"
 "-L mask	Send logical clipping values from -u/-l [%d]\n"
 "		  0=no, 1=Y, 2=X, 3=XY\n"
+"-e		no RESET printer before or after JOB (exlude -z0)\n"
+"-f size	Break JOB into one or more smaller JOBs [%d]\n"
+"		  0=Off, 1=~5M, 2=~20M, 3=~100M\n"
 "-A		AllIsBlack: convert C=1,M=1,Y=1 to just K=1\n"
 "-B		BlackClears: K=1 forces C,M,Y to 0\n"
 "-z model	Model: [%d]\n"
@@ -233,6 +238,7 @@ usage(Job *job)
 	, job->UpperLeftX, job->UpperLeftY
 	, job->LowerRightX, job->LowerRightY
 	, job->LogicalClip
+	, job->PrintMax
 	, job->Model
 	, job->Color2Mono
 	, job->Debug
@@ -270,8 +276,9 @@ reset_streams(Job *job)
 void
 end_doc(Job *job, int done)
 {
-    printf("\033%%-12345X@PJL EOJ\n%s",
-	   (job->Model > 0 && done > 0 ? "@PJL RESET\n" : ""));
+    printf("\033%%-12345X@PJL EOJ\n");
+    if (job->Model > 0 && job->PrintReset > 0 && done > 0)
+	printf("@PJL RESET\n");
     debug(job, 1, "End printer JOB.\n");
 }
 
@@ -619,7 +626,7 @@ start_doc(Job *job, int done, int color)
 	"@PJL SET JOBATTR=\"@GDFT=0\"\n"
 	"@PJL SET JOBATTR=\"@IDFT=0\"\n"
 	"@PJL ENTER LANGUAGE=HBPL\n"
-	, (job->Model > 0 && done > 0 ? "@PJL RESET\n" : "")
+	, ((job->Model > 0 && job->PrintReset > 0 && done > 0) ? "@PJL RESET\n" : "")
 	, (job->Debug < 9 ? datestr : "02/26/2026")
 	, (job->Debug < 9 ? timestr : "12:34:56")
 	, job->Filename ? job->Filename : ""
@@ -729,7 +736,7 @@ psize:
 
     if (!job->pagenum)
 	start_doc(job, 1, color);
-    else if (job->PrintSize > PRINTMAX)
+    else if (job->PrintMax > 0 && job->PrintSize > job->PrintMax)
     {
 	debug(job, 1, "  Break JOB into smaller segments\n");
 	end_doc(job, 0);
@@ -1081,6 +1088,8 @@ main(int argc, char *argv[])
     job.pagenum = 0;		// no pages, no printer codes sent
     job.SaveToner = 0;
     job.PrintSize = 0;		// nothing sent to printer (so far)
+    job.PrintMax = 0;		// default Off
+    job.PrintReset = 1;		// default reset before/after print JOB
     job.PageWidth = 600 * 8.5;
     job.PageHeight = 600 * 11;
     job.UpperLeftX = 20;	// clip margin, left
@@ -1091,9 +1100,11 @@ main(int argc, char *argv[])
     job.Username = job.Filename = NULL;
     memset(job.stream, 0, sizeof(Stream)*5);
 
-    while ((c = getopt(argc, argv, "m:n:p:u:l:z:L:J:U:S:D:tABV?h")) != EOF)
+    while ((c = getopt(argc, argv, "f:l:m:n:p:u:z:D:J:L:S:U:etABV?h")) != EOF)
 	switch (c)
 	{
+	case 'e': job.PrintReset = 0; break;
+	case 'f': job.PrintMax = atoi(optarg); break;
 	case 'm': job.MediaCode = atoi(optarg); break;
 	case 'n': job.Copies = atoi(optarg); break;
 	case 'p': job.PaperCode = atoi(optarg); break;
@@ -1154,6 +1165,16 @@ main(int argc, char *argv[])
 	error(&job, 1, "Illegal X value '%d' for -l\n", job.LowerRightX);
     if (job.LowerRightY < 20 || job.LowerRightY >= job.PageHeight)
 	error(&job, 1, "Illegal Y value '%d' for -l\n", job.LowerRightY);
+    if (job.PrintMax == 0)
+	job.PrintMax = -1; // don't break JOBs into smaller JOBs
+    else if (job.PrintMax == 1)
+	job.PrintMax = 5*1024*1024; // Break JOBs larger than 5MB
+    else if (job.PrintMax == 2)
+	job.PrintMax = 20*1024*1024; // Break JOBs larger than 20MB
+    else if (job.PrintMax == 3)
+	job.PrintMax = 100*1024*1024; // Break JOBs larger than 100MB
+    else
+	error(&job, 1, "Illegal value for -f%d. Must be [0..2]!\n", job.PrintMax);
 
     argc -= optind;
     argv += optind;

@@ -20,6 +20,10 @@
 	    <driver>foo2hbpl1</driver>
 	    <arg_defval>ev/foo2hbpl1-ICM-none</arg_defval>
 	</constraint>
+	<constraint sense="true">
+	    <driver>foo2hbpl1-z1</driver>
+	    <arg_defval>ev/foo2hbpl1-ICM-none</arg_defval>
+	</constraint>
     </constraints>
     <enum_vals>
 	<enum_val id="ev/foo2hbpl1-ICM-none">
@@ -29,24 +33,20 @@
 	    <ev_shortname> <en>none</en> </ev_shortname>
 	    <ev_driverval>-C10 -Gnone.icm</ev_driverval>
 	</enum_val>
-
-        <enum_val id="ev/foo2hbpl1-ICM-testing">
-            <ev_longname> <en>File testing.icm</en> </ev_longname>
-            <ev_shortname> <en>testing</en> </ev_shortname>
-            <ev_driverval>-C10 -Gtesting.icm</ev_driverval>
-        </enum_val>
-
-        <enum_val id="ev/foo2hbpl1-ICM-testing2">
-            <ev_longname> <en>File testing2.icm</en> </ev_longname>
-            <ev_shortname> <en>testing2</en> </ev_shortname>
-            <ev_driverval>-C10 -Gtesting2.icm</ev_driverval>
-        </enum_val>
-
-        <enum_val id="ev/foo2hbpl1-ICM-testing3">
-            <ev_longname> <en>File testing3.icm</en> </ev_longname>
-            <ev_shortname> <en>testing3</en> </ev_shortname>
-            <ev_driverval>-C10 -Gtesting3.icm</ev_driverval>
-        </enum_val>
-
+	<enum_val id="ev/foo2hbpl1-ICM-testing">
+	    <ev_longname> <en>File testing.icm</en> </ev_longname>
+	    <ev_shortname> <en>testing</en> </ev_shortname>
+	    <ev_driverval>-C10 -Gtesting.icm</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-ICM-testing2">
+	    <ev_longname> <en>File testing2.icm</en> </ev_longname>
+	    <ev_shortname> <en>testing2</en> </ev_shortname>
+	    <ev_driverval>-C10 -Gtesting2.icm</ev_driverval>
+	</enum_val>
+	<enum_val id="ev/foo2hbpl1-ICM-testing3">
+	    <ev_longname> <en>File testing3.icm</en> </ev_longname>
+	    <ev_shortname> <en>testing3</en> </ev_shortname>
+	    <ev_driverval>-C10 -Gtesting3.icm</ev_driverval>
+	</enum_val>
     </enum_vals>
 </option>

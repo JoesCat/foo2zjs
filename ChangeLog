@@ -6,6 +6,9 @@
 	  color and grayscale documents without resetting printer."
 	  NOTE: patch was merged, not applied, so it can co-exists with
 	  existing hbpl(2) code, not replace it. Patch date=2014-04-05.
+	  Added HBPLv1 Xerox Phaser 6000B/6010N and 2 Generic printers.
+	  Updated unfinished options and then also added extra options.
+	  Merged by Joe Da Silva <digital@joescat.com> 2026-08-25
 
 2026-02-06:	ValdikSS <iam@valdikss.org.ru>
 	First release under OpenPrinting umbrella.

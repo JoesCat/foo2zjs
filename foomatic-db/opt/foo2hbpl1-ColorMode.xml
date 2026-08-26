@@ -13,24 +13,28 @@
     </arg_execution>
     <constraints>
 	<constraint sense="true">
-	<driver>foo2hbpl1</driver>
-	<arg_defval>ev/foo2hbpl1-ColorMode-mono</arg_defval>
+	    <driver>foo2hbpl1</driver>
+	    <arg_defval>ev/foo2hbpl1-ColorMode-color</arg_defval>
+	</constraint>
+	<constraint sense="true">
+	    <driver>foo2hbpl1-z1</driver>
+	    <arg_defval>ev/foo2hbpl1-ColorMode-color</arg_defval>
 	</constraint>
     </constraints>
     <enum_vals>
 	<enum_val id="ev/foo2hbpl1-ColorMode-mono">
+	    <comments>
+		<en>Prints in monochrome only</en>
+	    </comments>
 	    <ev_longname> <en>Monochrome</en> </ev_longname>
-	    <comments><en>
-		Prints in monochrome only
-	    </en></comments>
 	    <ev_shortname> <en>Monochrome</en> </ev_shortname>
 	    <ev_driverval></ev_driverval>
 	</enum_val>
 	<enum_val id="ev/foo2hbpl1-ColorMode-color">
+	    <comments>
+		<en>Prints in color using the best compromise setting.</en>
+	    </comments>
 	    <ev_longname> <en>Color</en> </ev_longname>
-	    <comments><en>
-		Prints in color using the best compromise setting.
-	    </en></comments>
 	    <ev_shortname> <en>Color</en> </ev_shortname>
 	    <ev_driverval>-c</ev_driverval>
 	</enum_val>

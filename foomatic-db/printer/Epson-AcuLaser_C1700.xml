@@ -2,8 +2,8 @@
     <make>Epson</make>
     <model>AcuLaser C1700</model>
     <mechanism>
-	<laser/>
-	<color/>
+	<laser />
+	<color />
 	<resolution>
 	    <dpi>
 		<x>600</x>
@@ -12,11 +12,12 @@
 	</resolution>
 	<margins>
 	    <general>
-		<unit>inch</unit>
-		<top>0.085</top>
-		<bottom>0.085</bottom>
-		<left>0.085</left>
-		<right>0.085</right>
+		<unit>mm</unit>
+		<relative />
+		<top>2.16</top>
+		<left>2.16</left>
+		<right>2.16</right>
+		<bottom>2.16</bottom>
 	    </general>
 	</margins>
 <!--
@@ -40,32 +41,30 @@
     </mechanism>
     <url>http://www.epson.co.uk/gb/en/viewcon/corporatesite/products/mainunits/overview/10816</url>
     <lang>
-	<proprietary/>
+	<proprietary />
 	<!--no pjl--><!--No "text"?-->
     </lang>
     <autodetect>
-<!--
-        <parallel>
-            <ieee1284>MFG:Xerox;CMD:SPLC;MDL:Phaser 6110;CLS:PRINTER;STATUS:BUSY;</ieee1284>
-            <manufacturer>Xerox</manufacturer>
-            <model>Phaser 6110</model>
-            <commandset>SPLC</commandset>
-        </parallel>
+	<general>
+<!-- note: this is a best guess by comparing with other drivers
+     if you have an actual printer, can you please help to provide actual info?
+	    <ieee1284>MFG:Xerox;CMD:SPLC;MDL:Phaser 6110;CLS:PRINTER;STATUS:BUSY;</ieee1284>
 -->
-	<snmp>
+	    <commandset>SPLC</commandset>
 	    <description>Epson AcuLaser C1700</description>
-	</snmp>
+	    <manufacturer>Xerox</manufacturer>
+	    <model>Phaser 6110</model>
+        </general>
     </autodetect>
-    <functionality>C</functionality>
+    <functionality>B</functionality>
     <driver>foo2hbpl1</driver>
-    <!--not "unverified"--><!--no "contrib_url"-->
+    <!--not "unverified"-->
+    <contrib_url>https://github.com/OpenPrinting/foo2zjs</contrib_url>
     <comments> <en>
+	The Epson AcuLaser C1700 is a compact color LED Laser printer
+	supported by the foo2hbpl1 open software printer driver.
 
-	The Epson AcuLaser C1700 is color printer with a 2014 street price
-	of $200.
-
-	These printers are supported by the foo2hbpl1 open software printer
-	driver.
+Throughput = 10
 
     </en> </comments>
 </printer>

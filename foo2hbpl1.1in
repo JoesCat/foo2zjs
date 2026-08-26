@@ -53,7 +53,7 @@ special	\-	\-	23	24
 Paper code sizes autodetected by printer [0].
 .TS
 box;
-| n l | n l.
+n l | n l.
 0	Letter	1	Legal
 2	A4	3	Executive
 \-	\-	\-	\-
@@ -100,10 +100,32 @@ lower right corner, in pixels [20x20].
 Send logical clipping amounts implied by \-u/-l in the HBPL1 Stream [3].
 .TS
 l l.
-0	don't send any logical clipping amounts
-1	only send Y clipping amount
-2	only send X clipping amount
-3	send both X and Y clipping amounts
+_
+Code	Clipping
+_
+\-L0	don't send any logical clipping amounts
+\-L1	only send Y clipping amount
+\-L2	only send X clipping amount
+\-L3	send both X and Y clipping amounts
+.TE
+.TP
+.BI \-e\0
+Do not RESET Printer before printing a JOB. This is useful if you need
+to preset custom adjustments before printing. \-z1 printers are default
+RESET before printing unless you disable with \-e.
+.TP
+.BI \-f\0 size
+If large print JOBs exceed this size, then break it down into more than
+one JOB so that they remain near or below a given size [0].
+.TS
+l l.
+_
+Code	How to handle this print JOB if it is very large
+_
+\-f0	default, each JOB remains as one JOB
+\-f1	break JOBs larger than ~5MB into one or more JOBs
+\-f2	break JOBs larger than ~20MB into one or more JOBs
+\-f3	break JOBs larger than ~100MB into one or more JOBs
 .TE
 .TP
 .BI \-A
@@ -120,7 +142,7 @@ _
 Model	Example printer(s)
 _
 z0	Dell 1250c / C1660 / C1760
-z1	Xerox 6000 / 6010
+z1	Xerox Phaser 6000B / 6010N
 .TE
 .SS Debugging Options
 These options are used for debugging \fBfoo2hbpl1\fP.
@@ -130,10 +152,13 @@ Output just a single color plane from a color print and print it
 on the black plane. The default is to output all color planes.
 .TS
 l l.
-1	Cyan
-2	Magenta
-3	Yellow
-4	Black
+_
+Code	Color Plane
+_
+\-S1	Cyan
+\-S2	Magenta
+\-S3	Yellow
+\-S4	Black
 .TE
 .TP
 .BI \-D\0 level

@@ -1,6 +1,6 @@
-<printer id="printer/Dell-C1760">
-    <make>Dell</make>
-    <model>C1760</model>
+<printer id="printer/Xerox-Phaser_6010N">
+    <make>Xerox</make>
+    <model>Phaser 6010N</model>
     <mechanism>
 	<laser />
 	<color />
@@ -14,10 +14,10 @@
 	    <general>
 		<unit>mm</unit>
 		<relative />
-		<top>2.16</top>
-		<left>2.16</left>
-		<right>2.16</right>
-		<bottom>2.16</bottom>
+		<top>2.117</top>
+		<left>2.117</left>
+		<right>2.117</right>
+		<bottom>2.117</bottom>
 	    </general>
 	</margins>
 <!--
@@ -39,32 +39,29 @@
 	</consumables>
 -->
     </mechanism>
-    <url>http://accessories.us.dell.com/sna/productdetail.aspx?c=us&amp;cs=04&amp;l=en&amp;s=bsd&amp;sku=225-4111</url>
+    <url>http://www.office.xerox.com/printers/color-printers/phaser-6010/enus.html</url>
     <lang>
 	<proprietary />
-	<!--no pjl--><!--No "text"?-->
     </lang>
     <autodetect>
 	<general>
-<!-- note: this is a best guess by comparing with other drivers
-     if you have an actual printer, can you please help to provide actual info?
-	    <ieee1284>MFG:Dell;CMD:HBPL;MDL:Laser Printer C1760;CLS:PRINTER;STATUS:BUSY;</ieee1284>
--->
+	    <!-- 2026aug08: this is recognized when plugging in printer via USB -->
+	    <ieee1284>MFG:Xerox;CMD:HBPL;MDL:Phaser 6010N;CLS:PRINTER;STATUS:BUSY;</ieee1284>
 	    <commandset>HBPL</commandset>
-	    <description>Dell C1760</description>
-	    <manufacturer>Dell</manufacturer>
-	    <model>Laser Printer C1760</model>
+	    <description>Xerox Phaser 6010N</description>
+	    <manufacturer>Xerox</manufacturer>
+	    <model>Phaser 6010N</model>
 	</general>
     </autodetect>
     <functionality>B</functionality>
-    <driver>foo2hbpl1</driver>
-    <!--not "unverified"-->
+    <driver>foo2hbpl1-z1</driver>
     <contrib_url>https://github.com/OpenPrinting/foo2zjs</contrib_url>
     <comments> <en>
-	The Dell C1760 is a compact color LED Laser printer supported
-	by the foo2hbpl1 open software printer driver.
+	The Xerox Phaser 6010N (USB/Net) is a compact color LED laser
+	printer supported by the foo2hbpl1 open software printer
+	driver and uses option -z1 for extra functionality.
 
-Throughput = 10
+Throughput = 12
 
     </en> </comments>
 </printer>

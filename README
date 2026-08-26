@@ -143,6 +143,10 @@ GENERAL
 	- Dell C1760
 	- Epson AcuLaser C1700
 	- Fuji-Xerox DocuPrint CP105
+	- Generic-HBPL1_Printer
+	- Generic-HBPL1_z1_Printer
+	- Xerox Phaser 6000B
+	- Xerox Phaser 6010N
 
     FOO2HBPL2
     ---------
